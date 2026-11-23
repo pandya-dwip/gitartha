@@ -73,6 +73,21 @@ section marks what is in place now and what is planned.
 - Documented in `docs/database/LOCAL_SQLITE_SCHEMA.md`,
   `LOCAL_DATABASE_IMPLEMENTATION.md` and `LOCAL_DATABASE_TESTING.md`.
 
+## Content pipeline (in place, Milestone 3)
+
+- Scripture is authored as JSON in `assets/data/bhagavad_gita/` (the single source),
+  which is bundled as Flutter assets.
+- `lib/data/content/` validates it (JSON Schema Draft 2020-12 plus semantic checks, in
+  `structural` / `draft` / `strict` modes), parses it into typed `json_serializable`
+  models, and imports it into the local Drift cache on explicit request
+  (`contentRepositoryProvider`). It never runs at startup, and never touches personal
+  data.
+- Content ids map to deterministic UUID v5 (`content_ids.dart`), shared with the
+  future Supabase import.
+- The CLI `tool/validate_gita_content.dart` runs the same validation from the command
+  line.
+- Documented in `docs/content/`.
+
 ## Supabase backend (planned)
 
 - The source of truth for **shared scripture content** only.

@@ -15,83 +15,40 @@ come from a verified source whose licence permits its use.
 3. **Do not commit copyrighted text to a public repository** unless its licence allows
    redistribution.
 
-## Recommended layout
+## Where the content comes from
+
+There is **one** content repository:
+[`assets/data/bhagavad_gita/`](../../assets/data/bhagavad_gita/README.md) (18 chapter
+JSON files and `sources/sources.json`). Do not keep a second copy of the scripture
+here. Any Supabase seed is generated from that repository:
 
 ```text
 supabase/seed/
-├── README.md                     this file
-├── data/
-│   ├── sources.json              content_sources rows
-│   ├── chapters.json             18 chapter rows
-│   └── shlokas/
-│       ├── chapter_01.json       verses of chapter 1
-│       ├── chapter_02.json
-│       └── … chapter_18.json
-└── sql/                          generated from data/, reviewed, then run
+├── README.md        this file
+└── sql/             (future) generated from assets/data/bhagavad_gita, reviewed, then run
     ├── 01_sources.sql
     ├── 02_chapters.sql
     ├── 03_shlokas_chapter_01.sql
-    ├── …
-    └── 20_attributions.sql
+    └── …
 ```
 
-Files are UTF-8 (without a BOM), and Devanagari is stored as-is, not as escape
-sequences. Field names match the database columns exactly.
-
-### `chapters.json`
-
-```json
-[
-  {
-    "id": 1,
-    "sanskrit_name": "<from source>",
-    "hindi_name": "<from source>",
-    "english_name": "<from source>",
-    "introduction": null,
-    "overview": null,
-    "central_theme": null,
-    "key_topics": null,
-    "summary": null,
-    "conclusion": null
-  }
-]
-```
-
-### `shlokas/chapter_NN.json`
-
-```json
-[
-  {
-    "chapter_id": 1,
-    "verse_number": 1,
-    "index_title": null,
-    "index_summary": null,
-    "sanskrit_text": "<from source>",
-    "transliteration": "<from source>",
-    "hindi_meaning": null,
-    "hindi_meaning_note": null,
-    "english_meaning": null,
-    "context": null,
-    "life_lesson": null,
-    "spiritual_meaning": null,
-    "reflection_question": null,
-    "sources": { "sanskrit_text": "<source key>", "transliteration": "<source key>" }
-  }
-]
-```
-
-- Leave out `id`, `reference`, `created_at` and `updated_at`. The database generates
-  them.
-- Use `null` for content that is not written yet, never `""`. Empty strings are
-  rejected.
-- `sources` maps each filled section to a source key from `sources.json`, and becomes
-  `shloka_source_attributions` rows.
+- Validate first in strict mode:
+  `dart run tool/validate_gita_content.dart --mode=strict`. Seed only `approved`
+  content, using the same gate as the local approved import
+  (`docs/content/CONTENT_IMPORT_PIPELINE.md`).
+- Map fields exactly as the local import does (`""` → NULL, no `reference`, which is
+  generated, and deterministic ids). See the field mapping in the content README, §9.
+- The generator is a future tool. It is not implemented yet.
 
 ## Rules for the SQL
 
-**Upsert by natural key. Never delete and re-insert verses.** Every verse UUID is
-permanent, because users' local reflections and bookmarks reference it. Re-seeding must
-update rows in place:
+**Use the deterministic content UUIDs. Never delete and re-insert verses.** Every
+verse UUID is permanent, because users' local reflections and bookmarks reference it.
+Verse, source and attribution ids are the name-based UUIDs from
+`lib/data/content/content_ids.dart` (for example `chapter_01_verse_041` →
+`8c555087-1c57-50db-9632-7bbd1e10a472`). These are the same ids the app's local import
+already uses. Generate the SQL from the JSON with those functions, and re-seed by
+updating rows in place:
 
 ```sql
 insert into public.chapters (id, sanskrit_name, hindi_name, english_name)
@@ -101,18 +58,17 @@ on conflict (id) do update set
   hindi_name    = excluded.hindi_name,
   english_name  = excluded.english_name;
 
-insert into public.shlokas (chapter_id, verse_number, sanskrit_text, transliteration)
-values (1, 1, '…', '…')
-on conflict (chapter_id, verse_number) do update set
+insert into public.shlokas (id, chapter_id, verse_number, sanskrit_text, transliteration)
+values ('<ContentIds.shloka(chapter_01_verse_001)>', 1, 1, '…', '…')
+on conflict (id) do update set
   sanskrit_text   = excluded.sanskrit_text,
   transliteration = excluded.transliteration;
   -- only list the columns this seed file owns, so later edits to other
   -- columns are not overwritten
 
-insert into public.shloka_source_attributions (shloka_id, source_id, content_section)
-select s.id, src.id, 'sanskrit_text'
-from public.shlokas s, public.content_sources src
-where s.chapter_id = 1 and s.verse_number = 1 and src.name = '…'
+insert into public.shloka_source_attributions (id, shloka_id, source_id, content_section)
+values ('<ContentIds.attribution(...)>', '<verse uuid>', '<ContentIds.source(key)>',
+        'sanskrit_text')
 on conflict (shloka_id, source_id, content_section) do nothing;
 ```
 

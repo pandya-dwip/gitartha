@@ -48,15 +48,21 @@ class ShlokaDao extends DatabaseAccessor<AppDatabase> with _$ShlokaDaoMixin {
     return query.getSingleOrNull();
   }
 
-  /// The live shloka at [chapterId].[verseNumber], or null.
-  Future<LocalShloka?> getShlokaByVerse(int chapterId, int verseNumber) =>
-      (select(localShlokas)..where(
-            (s) =>
-                s.chapterId.equals(chapterId) &
-                s.verseNumber.equals(verseNumber) &
-                _isLive(s),
-          ))
-          .getSingleOrNull();
+  /// The live shloka at [chapterId].[verseNumber], or null. With
+  /// [includeDeleted], whichever row occupies that slot.
+  Future<LocalShloka?> getShlokaByVerse(
+    int chapterId,
+    int verseNumber, {
+    bool includeDeleted = false,
+  }) {
+    final query = select(localShlokas)
+      ..where(
+        (s) =>
+            s.chapterId.equals(chapterId) & s.verseNumber.equals(verseNumber),
+      );
+    if (!includeDeleted) query.where(_isLive);
+    return query.getSingleOrNull();
+  }
 
   /// Live shlokas whose reference (exact, e.g. `2.47`), index title or text
   /// contains [query]. Results are in chapter/verse order, at most [limit].

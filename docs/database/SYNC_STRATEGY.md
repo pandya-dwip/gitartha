@@ -165,11 +165,14 @@ local schema version changes in a way that affects the cache. It clears the `con
 and repeats steps 4–6 from the beginning. Because the upsert keeps existing ids, this
 never orphans personal data. **Do not** implement it by dropping `local_shlokas`.
 
-## Sources and attributions (not yet synced)
+## Sources and attributions (cached since schema v2, not yet synced)
 
-`content_sources` behaves exactly like `chapters` and `shlokas` (`updated_at`,
+Local schema v2 caches both (`local_content_sources`,
+`local_shloka_source_attributions`), and the content import fills them. Sources and
+attributions use deterministic UUIDs (`ContentIds`), so server and cache rows share
+ids. `content_sources` behaves exactly like `chapters` and `shlokas` (`updated_at`,
 `deleted_at`, and a `(updated_at, id)` index), so it can join the same procedure as a
-third entity whenever it is cached locally.
+third entity.
 
 `shloka_source_attributions` is different. Rows are immutable and editors delete them
 physically, so incremental sync cannot detect removals. Options, if attributions must be
@@ -181,7 +184,11 @@ available offline:
 3. A later migration adds `deleted_at` to attributions and replaces physical delete with
    soft delete.
 
-This is listed as an open decision in `DATABASE_ARCHITECTURE.md`.
+Choosing among these is still an open decision for the sync milestone.
+
+**Repository-imported rows** carry the 1970 sentinel timestamp
+(`docs/content/CONTENT_IMPORT_PIPELINE.md`), so the never-go-backwards upsert lets any
+server row replace them.
 
 ## Edge cases
 

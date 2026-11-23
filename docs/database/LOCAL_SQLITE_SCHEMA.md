@@ -7,7 +7,8 @@ and the exported snapshot in
 This document explains that schema. If the two ever disagree, the code wins.
 
 - **File:** `gitartha.sqlite` in the app's documents directory.
-- **Schema version:** 1.
+- **Schema version:** 2. v1 was created in Milestone 2; v2 (Milestone 3) added
+  `local_content_sources` and `local_shloka_source_attributions`.
 - **Engine:** SQLite, bundled by `sqlite3` through `drift_flutter`.
 
 How the code is organised (DAOs, repository, initialization, migrations) is described in
@@ -37,7 +38,8 @@ described in [`LOCAL_DATABASE_TESTING.md`](LOCAL_DATABASE_TESTING.md).
 | Data | Id |
 |---|---|
 | Chapters | Supabase integer id = chapter number 1–18 |
-| Shlokas | Supabase UUID, stored as TEXT, exactly as received. Never regenerated |
+| Shlokas | UUID, stored as TEXT and never regenerated. Content imported from the JSON repository uses the deterministic `ContentIds.shloka(<content id>)` (UUID v5), which the Supabase import will also use |
+| Content sources, attributions | Deterministic UUID v5 (`ContentIds.source`, `ContentIds.attribution`) |
 | Personal records | UUID v4 generated on the device (`generateUuidV4`, secure RNG) |
 | Settings, sync metadata | Text key |
 
@@ -74,6 +76,8 @@ local_chapters 1 ──< local_shlokas 1 ──< reflections        (0..N per sh
                                     ├──o bookmarks          (0..1, unique shloka_id)
                                     ├──o reading_progress   (0..1, unique shloka_id)
                                     └──< reading_history    (0..N, append-only)
+
+local_shlokas 1 ──< local_shloka_source_attributions >── 1 local_content_sources   (v2, shared content)
 
 local_settings, sync_metadata       standalone key/value tables
 ```
@@ -149,6 +153,47 @@ filters by chapter. There are no personal columns: answers live in `reflections`
 `deleted_at IS NULL`. Every reading query (chapter lists, verse lookup, search,
 progress summaries) uses this definition. Lookup by id can include retired shlokas
 (`includeDeleted: true`), for example to show the verse behind an old reflection.
+
+### `local_content_sources` (schema v2)
+
+Mirrors Supabase `content_sources`.
+
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | TEXT | **PK** (36 chars). `ContentIds.source(<source key>)` |
+| `name` | TEXT | NOT NULL |
+| `author`, `source_url`, `license`, `attribution` | TEXT | nullable. `license` NULL = not verified |
+| `created_at`, `updated_at` | TEXT | NOT NULL |
+| `deleted_at` | TEXT | nullable. Tombstone |
+
+**Index:** `local_content_sources_updated_at_idx (updated_at, id)`.
+
+### `local_shloka_source_attributions` (schema v2)
+
+Mirrors Supabase `shloka_source_attributions`: which source each section of a verse came
+from. This is shared content, never personal.
+
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | TEXT | **PK**. `ContentIds.attribution(verse, source, section)` |
+| `shloka_id` | TEXT | NOT NULL, FK → `local_shlokas(id)` **RESTRICT** |
+| `source_id` | TEXT | NOT NULL, FK → `local_content_sources(id)` **RESTRICT** |
+| `content_section` | TEXT | NOT NULL, CHECK in the nine sections (including `hindi_meaning_note`) |
+| `created_at` | TEXT | NOT NULL |
+
+- **Unique:** `(shloka_id, source_id, content_section)`, which also indexes per-verse
+  lookup.
+- **Index:** `local_shloka_source_attributions_source_idx (source_id)`.
+
+Rows are immutable. A re-import inserts missing mappings and deletes ones that are no
+longer in the content.
+
+### Rows imported from the JSON repository
+
+Cache rows written by the content import (`docs/content/CONTENT_IMPORT_PIPELINE.md`)
+carry `created_at = updated_at = 1970-01-01T00:00:00.000000Z`. This means "repository
+content, no server revision". Any row from Supabase is newer and replaces it, and the
+importer never overwrites rows that came from the server.
 
 ### `sync_metadata`
 

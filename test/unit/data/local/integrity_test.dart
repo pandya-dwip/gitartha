@@ -18,33 +18,40 @@ void main() {
     setUp(() => db = openTestDatabase());
     tearDown(() => db.close());
 
-    test('creates every table, as STRICT, at schema version 1', () async {
-      await db.ensureInitialized();
-      final tables = await db
-          .customSelect(
-            "SELECT name, strict FROM pragma_table_list WHERE schema = 'main' "
-            "AND name NOT LIKE 'sqlite_%' ORDER BY name",
-          )
-          .get();
-      expect(tables.map((r) => r.read<String>('name')), [
-        'bookmarks',
-        'local_chapters',
-        'local_settings',
-        'local_shlokas',
-        'personal_notes',
-        'reading_history',
-        'reading_progress',
-        'reflections',
-        'sync_metadata',
-      ]);
-      expect(tables.every((r) => r.read<int>('strict') == 1), isTrue);
+    test(
+      'creates every table, as STRICT, at the current schema version',
+      () async {
+        await db.ensureInitialized();
+        final tables = await db
+            .customSelect(
+              "SELECT name, strict FROM pragma_table_list WHERE schema = 'main' "
+              "AND name NOT LIKE 'sqlite_%' ORDER BY name",
+            )
+            .get();
+        expect(tables.map((r) => r.read<String>('name')), [
+          'bookmarks',
+          'local_chapters',
+          'local_content_sources',
+          'local_settings',
+          'local_shloka_source_attributions',
+          'local_shlokas',
+          'personal_notes',
+          'reading_history',
+          'reading_progress',
+          'reflections',
+          'sync_metadata',
+        ]);
+        expect(tables.every((r) => r.read<int>('strict') == 1), isTrue);
 
-      final version = await db.customSelect('PRAGMA user_version').getSingle();
-      expect(
-        version.read<int>('user_version'),
-        AppDatabase.currentSchemaVersion,
-      );
-    });
+        final version = await db
+            .customSelect('PRAGMA user_version')
+            .getSingle();
+        expect(
+          version.read<int>('user_version'),
+          AppDatabase.currentSchemaVersion,
+        );
+      },
+    );
 
     test('creates the expected indexes', () async {
       final rows = await db
@@ -56,6 +63,8 @@ void main() {
       expect(rows.map((r) => r.read<String>('name')), [
         'bookmarks_created_idx',
         'local_chapters_updated_at_idx',
+        'local_content_sources_updated_at_idx',
+        'local_shloka_source_attributions_source_idx',
         'local_shlokas_reference_idx',
         'local_shlokas_updated_at_idx',
         'personal_notes_shloka_updated_idx',
@@ -192,7 +201,9 @@ void main() {
       driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
       final db = AppDatabase(
         NativeDatabase.memory(
-          setup: (raw) => raw.execute('PRAGMA user_version = 2'),
+          setup: (raw) => raw.execute(
+            'PRAGMA user_version = ${AppDatabase.currentSchemaVersion + 1}',
+          ),
         ),
       );
       addTearDown(db.close);
@@ -202,7 +213,7 @@ void main() {
           isA<LocalDatabaseException>().having(
             (e) => e.message,
             'message',
-            contains('schema version 2'),
+            contains('schema version ${AppDatabase.currentSchemaVersion + 1}'),
           ),
         ),
       );

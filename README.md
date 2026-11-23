@@ -81,10 +81,17 @@ dart format .                                   # format
 flutter analyze                                 # static analysis
 flutter test                                    # unit + widget tests
 flutter test integration_test                   # on-device tests (needs a device)
-dart run build_runner build --delete-conflicting-outputs   # code generation
+dart run build_runner build                     # code generation (Drift, json_serializable)
+
+# Bhagavad Gita content (read-only checks; see docs/content/)
+dart run tool/validate_gita_content.dart                 # draft mode, all 18 chapters
+dart run tool/validate_gita_content.dart --mode=strict   # publishing rules
+flutter test test/unit/data/content                      # validation + import pipeline tests
+flutter test test/drift                                  # local schema migration tests
 ```
 
-Generated files (`*.g.dart`) are committed alongside their sources.
+Generated files (`*.g.dart`, `app_database.steps.dart`, `drift_schemas/`,
+`test/drift/**/generated/`) are committed alongside their sources.
 
 ## Folder structure
 

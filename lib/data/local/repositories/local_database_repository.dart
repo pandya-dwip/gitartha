@@ -13,7 +13,9 @@ export '../database/app_database.dart'
     show
         Bookmark,
         LocalChapter,
+        LocalContentSource,
         LocalShloka,
+        LocalShlokaSourceAttribution,
         PersonalNote,
         ReadingHistoryEntry,
         ReadingProgressEntry,
@@ -83,6 +85,19 @@ class LocalDatabaseRepository {
     await _db.chapterDao.upsertChapters(chapters);
     await _db.shlokaDao.upsertShlokas(shlokas);
   });
+
+  /// Live content sources (translations, editions, commentaries), by name.
+  Future<List<LocalContentSource>> getContentSources() =>
+      _db.contentSourceDao.getSources();
+
+  Future<LocalContentSource?> getContentSource(String sourceId) =>
+      _db.contentSourceDao.getSource(sourceId);
+
+  /// Which sources each section of [shlokaId] came from, for attribution
+  /// display.
+  Future<List<LocalShlokaSourceAttribution>> getSourceAttributionsForShloka(
+    String shlokaId,
+  ) => _db.contentSourceDao.getAttributionsForShloka(shlokaId);
 
   // ---------------------------------------------------------------------------
   // Reflections

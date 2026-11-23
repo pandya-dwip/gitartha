@@ -130,10 +130,10 @@ docs/database/
 
 These are not blocking for the initial schema, but they need an owner:
 
-1. **Offline attribution display.** Sources and attributions are stored in Supabase, but
-   the specified local schema does not cache them. If licences require attribution to be
-   shown next to content, and they often do, add `local_content_sources` and
-   `local_shloka_source_attributions` to the local schema. See `SYNC_STRATEGY.md`.
+1. **Offline attribution display:** *resolved locally in Milestone 3.* Local schema
+   v2 caches sources and attributions (`local_content_sources`,
+   `local_shloka_source_attributions`). Still open: how sync refreshes attributions
+   (see `SYNC_STRATEGY.md`).
 2. **Journal.** The project brief lists "journal entries" as local data, but no separate
    table was specified. Today `reflections` (dated, many per verse) serves this need. A
    free-form journal that is not tied to a verse would need its own local table.

@@ -32,6 +32,12 @@ dependencies:
   # Model serialization
   json_annotation: ^4.12.0
 
+  # Content pipeline: JSON Schema (Draft 2020-12) validation of the
+  # Bhagavad Gita content repository, and SHA-1 for deterministic (v5)
+  # content UUIDs. crypto was already a transitive dependency.
+  json_schema: ^5.2.2
+  crypto: ^3.0.8
+
   # Lightweight preferences (e.g. theme mode)
   shared_preferences: ^2.5.6
 
@@ -57,6 +63,13 @@ flutter:
     - assets/images/illustrations/
     - assets/data/chapters/
     - assets/data/sample/
+    # Bhagavad Gita content repository (source of truth for scripture).
+    # Only runtime data is bundled: chapters, sources and the two JSON
+    # Schemas. README.md and content-guidelines.md are not.
+    - assets/data/bhagavad_gita/chapters/
+    - assets/data/bhagavad_gita/sources/
+    - assets/data/bhagavad_gita/schema/chapter.schema.json
+    - assets/data/bhagavad_gita/schema/sources.schema.json
 
   # Bundled fonts (assets/fonts/devanagari, assets/fonts/english) will be
   # declared here once the font files are added.

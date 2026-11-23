@@ -4309,6 +4309,983 @@ class SyncMetadataCompanion extends UpdateCompanion<SyncMetadataEntry> {
   }
 }
 
+class $LocalContentSourcesTable extends LocalContentSources
+    with TableInfo<$LocalContentSourcesTable, LocalContentSource> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LocalContentSourcesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    check: () => id.length.equals(36),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _authorMeta = const VerificationMeta('author');
+  @override
+  late final GeneratedColumn<String> author = GeneratedColumn<String>(
+    'author',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sourceUrlMeta = const VerificationMeta(
+    'sourceUrl',
+  );
+  @override
+  late final GeneratedColumn<String> sourceUrl = GeneratedColumn<String>(
+    'source_url',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _licenseMeta = const VerificationMeta(
+    'license',
+  );
+  @override
+  late final GeneratedColumn<String> license = GeneratedColumn<String>(
+    'license',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _attributionMeta = const VerificationMeta(
+    'attribution',
+  );
+  @override
+  late final GeneratedColumn<String> attribution = GeneratedColumn<String>(
+    'attribution',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime, String> createdAt =
+      GeneratedColumn<String>(
+        'created_at',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<DateTime>($LocalContentSourcesTable.$convertercreatedAt);
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime, String> updatedAt =
+      GeneratedColumn<String>(
+        'updated_at',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<DateTime>($LocalContentSourcesTable.$converterupdatedAt);
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime?, String> deletedAt =
+      GeneratedColumn<String>(
+        'deleted_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      ).withConverter<DateTime?>(
+        $LocalContentSourcesTable.$converterdeletedAtn,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    author,
+    sourceUrl,
+    license,
+    attribution,
+    createdAt,
+    updatedAt,
+    deletedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'local_content_sources';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LocalContentSource> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('author')) {
+      context.handle(
+        _authorMeta,
+        author.isAcceptableOrUnknown(data['author']!, _authorMeta),
+      );
+    }
+    if (data.containsKey('source_url')) {
+      context.handle(
+        _sourceUrlMeta,
+        sourceUrl.isAcceptableOrUnknown(data['source_url']!, _sourceUrlMeta),
+      );
+    }
+    if (data.containsKey('license')) {
+      context.handle(
+        _licenseMeta,
+        license.isAcceptableOrUnknown(data['license']!, _licenseMeta),
+      );
+    }
+    if (data.containsKey('attribution')) {
+      context.handle(
+        _attributionMeta,
+        attribution.isAcceptableOrUnknown(
+          data['attribution']!,
+          _attributionMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  LocalContentSource map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LocalContentSource(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      author: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}author'],
+      ),
+      sourceUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_url'],
+      ),
+      license: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}license'],
+      ),
+      attribution: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}attribution'],
+      ),
+      createdAt: $LocalContentSourcesTable.$convertercreatedAt.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}created_at'],
+        )!,
+      ),
+      updatedAt: $LocalContentSourcesTable.$converterupdatedAt.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}updated_at'],
+        )!,
+      ),
+      deletedAt: $LocalContentSourcesTable.$converterdeletedAtn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}deleted_at'],
+        ),
+      ),
+    );
+  }
+
+  @override
+  $LocalContentSourcesTable createAlias(String alias) {
+    return $LocalContentSourcesTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<DateTime, String> $convertercreatedAt =
+      const UtcTimestampConverter();
+  static TypeConverter<DateTime, String> $converterupdatedAt =
+      const UtcTimestampConverter();
+  static TypeConverter<DateTime, String> $converterdeletedAt =
+      const UtcTimestampConverter();
+  static TypeConverter<DateTime?, String?> $converterdeletedAtn =
+      NullAwareTypeConverter.wrap($converterdeletedAt);
+  @override
+  bool get isStrict => true;
+}
+
+class LocalContentSource extends DataClass
+    implements Insertable<LocalContentSource> {
+  final String id;
+  final String name;
+  final String? author;
+  final String? sourceUrl;
+  final String? license;
+  final String? attribution;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  const LocalContentSource({
+    required this.id,
+    required this.name,
+    this.author,
+    this.sourceUrl,
+    this.license,
+    this.attribution,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || author != null) {
+      map['author'] = Variable<String>(author);
+    }
+    if (!nullToAbsent || sourceUrl != null) {
+      map['source_url'] = Variable<String>(sourceUrl);
+    }
+    if (!nullToAbsent || license != null) {
+      map['license'] = Variable<String>(license);
+    }
+    if (!nullToAbsent || attribution != null) {
+      map['attribution'] = Variable<String>(attribution);
+    }
+    {
+      map['created_at'] = Variable<String>(
+        $LocalContentSourcesTable.$convertercreatedAt.toSql(createdAt),
+      );
+    }
+    {
+      map['updated_at'] = Variable<String>(
+        $LocalContentSourcesTable.$converterupdatedAt.toSql(updatedAt),
+      );
+    }
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<String>(
+        $LocalContentSourcesTable.$converterdeletedAtn.toSql(deletedAt),
+      );
+    }
+    return map;
+  }
+
+  LocalContentSourcesCompanion toCompanion(bool nullToAbsent) {
+    return LocalContentSourcesCompanion(
+      id: Value(id),
+      name: Value(name),
+      author: author == null && nullToAbsent
+          ? const Value.absent()
+          : Value(author),
+      sourceUrl: sourceUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sourceUrl),
+      license: license == null && nullToAbsent
+          ? const Value.absent()
+          : Value(license),
+      attribution: attribution == null && nullToAbsent
+          ? const Value.absent()
+          : Value(attribution),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+    );
+  }
+
+  factory LocalContentSource.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LocalContentSource(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      author: serializer.fromJson<String?>(json['author']),
+      sourceUrl: serializer.fromJson<String?>(json['sourceUrl']),
+      license: serializer.fromJson<String?>(json['license']),
+      attribution: serializer.fromJson<String?>(json['attribution']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'author': serializer.toJson<String?>(author),
+      'sourceUrl': serializer.toJson<String?>(sourceUrl),
+      'license': serializer.toJson<String?>(license),
+      'attribution': serializer.toJson<String?>(attribution),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+    };
+  }
+
+  LocalContentSource copyWith({
+    String? id,
+    String? name,
+    Value<String?> author = const Value.absent(),
+    Value<String?> sourceUrl = const Value.absent(),
+    Value<String?> license = const Value.absent(),
+    Value<String?> attribution = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+  }) => LocalContentSource(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    author: author.present ? author.value : this.author,
+    sourceUrl: sourceUrl.present ? sourceUrl.value : this.sourceUrl,
+    license: license.present ? license.value : this.license,
+    attribution: attribution.present ? attribution.value : this.attribution,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+  );
+  LocalContentSource copyWithCompanion(LocalContentSourcesCompanion data) {
+    return LocalContentSource(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      author: data.author.present ? data.author.value : this.author,
+      sourceUrl: data.sourceUrl.present ? data.sourceUrl.value : this.sourceUrl,
+      license: data.license.present ? data.license.value : this.license,
+      attribution: data.attribution.present
+          ? data.attribution.value
+          : this.attribution,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalContentSource(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('author: $author, ')
+          ..write('sourceUrl: $sourceUrl, ')
+          ..write('license: $license, ')
+          ..write('attribution: $attribution, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    name,
+    author,
+    sourceUrl,
+    license,
+    attribution,
+    createdAt,
+    updatedAt,
+    deletedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LocalContentSource &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.author == this.author &&
+          other.sourceUrl == this.sourceUrl &&
+          other.license == this.license &&
+          other.attribution == this.attribution &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt);
+}
+
+class LocalContentSourcesCompanion extends UpdateCompanion<LocalContentSource> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String?> author;
+  final Value<String?> sourceUrl;
+  final Value<String?> license;
+  final Value<String?> attribution;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<int> rowid;
+  const LocalContentSourcesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.author = const Value.absent(),
+    this.sourceUrl = const Value.absent(),
+    this.license = const Value.absent(),
+    this.attribution = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LocalContentSourcesCompanion.insert({
+    required String id,
+    required String name,
+    this.author = const Value.absent(),
+    this.sourceUrl = const Value.absent(),
+    this.license = const Value.absent(),
+    this.attribution = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<LocalContentSource> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? author,
+    Expression<String>? sourceUrl,
+    Expression<String>? license,
+    Expression<String>? attribution,
+    Expression<String>? createdAt,
+    Expression<String>? updatedAt,
+    Expression<String>? deletedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (author != null) 'author': author,
+      if (sourceUrl != null) 'source_url': sourceUrl,
+      if (license != null) 'license': license,
+      if (attribution != null) 'attribution': attribution,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LocalContentSourcesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<String?>? author,
+    Value<String?>? sourceUrl,
+    Value<String?>? license,
+    Value<String?>? attribution,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<int>? rowid,
+  }) {
+    return LocalContentSourcesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      author: author ?? this.author,
+      sourceUrl: sourceUrl ?? this.sourceUrl,
+      license: license ?? this.license,
+      attribution: attribution ?? this.attribution,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (author.present) {
+      map['author'] = Variable<String>(author.value);
+    }
+    if (sourceUrl.present) {
+      map['source_url'] = Variable<String>(sourceUrl.value);
+    }
+    if (license.present) {
+      map['license'] = Variable<String>(license.value);
+    }
+    if (attribution.present) {
+      map['attribution'] = Variable<String>(attribution.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<String>(
+        $LocalContentSourcesTable.$convertercreatedAt.toSql(createdAt.value),
+      );
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<String>(
+        $LocalContentSourcesTable.$converterupdatedAt.toSql(updatedAt.value),
+      );
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<String>(
+        $LocalContentSourcesTable.$converterdeletedAtn.toSql(deletedAt.value),
+      );
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalContentSourcesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('author: $author, ')
+          ..write('sourceUrl: $sourceUrl, ')
+          ..write('license: $license, ')
+          ..write('attribution: $attribution, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $LocalShlokaSourceAttributionsTable extends LocalShlokaSourceAttributions
+    with
+        TableInfo<
+          $LocalShlokaSourceAttributionsTable,
+          LocalShlokaSourceAttribution
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LocalShlokaSourceAttributionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    check: () => id.length.equals(36),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _shlokaIdMeta = const VerificationMeta(
+    'shlokaId',
+  );
+  @override
+  late final GeneratedColumn<String> shlokaId = GeneratedColumn<String>(
+    'shloka_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES local_shlokas (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _sourceIdMeta = const VerificationMeta(
+    'sourceId',
+  );
+  @override
+  late final GeneratedColumn<String> sourceId = GeneratedColumn<String>(
+    'source_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES local_content_sources (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _contentSectionMeta = const VerificationMeta(
+    'contentSection',
+  );
+  @override
+  late final GeneratedColumn<String> contentSection = GeneratedColumn<String>(
+    'content_section',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime, String> createdAt =
+      GeneratedColumn<String>(
+        'created_at',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<DateTime>(
+        $LocalShlokaSourceAttributionsTable.$convertercreatedAt,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    shlokaId,
+    sourceId,
+    contentSection,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'local_shloka_source_attributions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LocalShlokaSourceAttribution> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('shloka_id')) {
+      context.handle(
+        _shlokaIdMeta,
+        shlokaId.isAcceptableOrUnknown(data['shloka_id']!, _shlokaIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_shlokaIdMeta);
+    }
+    if (data.containsKey('source_id')) {
+      context.handle(
+        _sourceIdMeta,
+        sourceId.isAcceptableOrUnknown(data['source_id']!, _sourceIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceIdMeta);
+    }
+    if (data.containsKey('content_section')) {
+      context.handle(
+        _contentSectionMeta,
+        contentSection.isAcceptableOrUnknown(
+          data['content_section']!,
+          _contentSectionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_contentSectionMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {shlokaId, sourceId, contentSection},
+  ];
+  @override
+  LocalShlokaSourceAttribution map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LocalShlokaSourceAttribution(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      shlokaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}shloka_id'],
+      )!,
+      sourceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_id'],
+      )!,
+      contentSection: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content_section'],
+      )!,
+      createdAt: $LocalShlokaSourceAttributionsTable.$convertercreatedAt
+          .fromSql(
+            attachedDatabase.typeMapping.read(
+              DriftSqlType.string,
+              data['${effectivePrefix}created_at'],
+            )!,
+          ),
+    );
+  }
+
+  @override
+  $LocalShlokaSourceAttributionsTable createAlias(String alias) {
+    return $LocalShlokaSourceAttributionsTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<DateTime, String> $convertercreatedAt =
+      const UtcTimestampConverter();
+  @override
+  bool get isStrict => true;
+}
+
+class LocalShlokaSourceAttribution extends DataClass
+    implements Insertable<LocalShlokaSourceAttribution> {
+  final String id;
+  final String shlokaId;
+  final String sourceId;
+
+  /// One of the nine attributable verse fields.
+  final String contentSection;
+  final DateTime createdAt;
+  const LocalShlokaSourceAttribution({
+    required this.id,
+    required this.shlokaId,
+    required this.sourceId,
+    required this.contentSection,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['shloka_id'] = Variable<String>(shlokaId);
+    map['source_id'] = Variable<String>(sourceId);
+    map['content_section'] = Variable<String>(contentSection);
+    {
+      map['created_at'] = Variable<String>(
+        $LocalShlokaSourceAttributionsTable.$convertercreatedAt.toSql(
+          createdAt,
+        ),
+      );
+    }
+    return map;
+  }
+
+  LocalShlokaSourceAttributionsCompanion toCompanion(bool nullToAbsent) {
+    return LocalShlokaSourceAttributionsCompanion(
+      id: Value(id),
+      shlokaId: Value(shlokaId),
+      sourceId: Value(sourceId),
+      contentSection: Value(contentSection),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory LocalShlokaSourceAttribution.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LocalShlokaSourceAttribution(
+      id: serializer.fromJson<String>(json['id']),
+      shlokaId: serializer.fromJson<String>(json['shlokaId']),
+      sourceId: serializer.fromJson<String>(json['sourceId']),
+      contentSection: serializer.fromJson<String>(json['contentSection']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'shlokaId': serializer.toJson<String>(shlokaId),
+      'sourceId': serializer.toJson<String>(sourceId),
+      'contentSection': serializer.toJson<String>(contentSection),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  LocalShlokaSourceAttribution copyWith({
+    String? id,
+    String? shlokaId,
+    String? sourceId,
+    String? contentSection,
+    DateTime? createdAt,
+  }) => LocalShlokaSourceAttribution(
+    id: id ?? this.id,
+    shlokaId: shlokaId ?? this.shlokaId,
+    sourceId: sourceId ?? this.sourceId,
+    contentSection: contentSection ?? this.contentSection,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  LocalShlokaSourceAttribution copyWithCompanion(
+    LocalShlokaSourceAttributionsCompanion data,
+  ) {
+    return LocalShlokaSourceAttribution(
+      id: data.id.present ? data.id.value : this.id,
+      shlokaId: data.shlokaId.present ? data.shlokaId.value : this.shlokaId,
+      sourceId: data.sourceId.present ? data.sourceId.value : this.sourceId,
+      contentSection: data.contentSection.present
+          ? data.contentSection.value
+          : this.contentSection,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalShlokaSourceAttribution(')
+          ..write('id: $id, ')
+          ..write('shlokaId: $shlokaId, ')
+          ..write('sourceId: $sourceId, ')
+          ..write('contentSection: $contentSection, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, shlokaId, sourceId, contentSection, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LocalShlokaSourceAttribution &&
+          other.id == this.id &&
+          other.shlokaId == this.shlokaId &&
+          other.sourceId == this.sourceId &&
+          other.contentSection == this.contentSection &&
+          other.createdAt == this.createdAt);
+}
+
+class LocalShlokaSourceAttributionsCompanion
+    extends UpdateCompanion<LocalShlokaSourceAttribution> {
+  final Value<String> id;
+  final Value<String> shlokaId;
+  final Value<String> sourceId;
+  final Value<String> contentSection;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const LocalShlokaSourceAttributionsCompanion({
+    this.id = const Value.absent(),
+    this.shlokaId = const Value.absent(),
+    this.sourceId = const Value.absent(),
+    this.contentSection = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LocalShlokaSourceAttributionsCompanion.insert({
+    required String id,
+    required String shlokaId,
+    required String sourceId,
+    required String contentSection,
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       shlokaId = Value(shlokaId),
+       sourceId = Value(sourceId),
+       contentSection = Value(contentSection),
+       createdAt = Value(createdAt);
+  static Insertable<LocalShlokaSourceAttribution> custom({
+    Expression<String>? id,
+    Expression<String>? shlokaId,
+    Expression<String>? sourceId,
+    Expression<String>? contentSection,
+    Expression<String>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (shlokaId != null) 'shloka_id': shlokaId,
+      if (sourceId != null) 'source_id': sourceId,
+      if (contentSection != null) 'content_section': contentSection,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LocalShlokaSourceAttributionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? shlokaId,
+    Value<String>? sourceId,
+    Value<String>? contentSection,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return LocalShlokaSourceAttributionsCompanion(
+      id: id ?? this.id,
+      shlokaId: shlokaId ?? this.shlokaId,
+      sourceId: sourceId ?? this.sourceId,
+      contentSection: contentSection ?? this.contentSection,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (shlokaId.present) {
+      map['shloka_id'] = Variable<String>(shlokaId.value);
+    }
+    if (sourceId.present) {
+      map['source_id'] = Variable<String>(sourceId.value);
+    }
+    if (contentSection.present) {
+      map['content_section'] = Variable<String>(contentSection.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<String>(
+        $LocalShlokaSourceAttributionsTable.$convertercreatedAt.toSql(
+          createdAt.value,
+        ),
+      );
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LocalShlokaSourceAttributionsCompanion(')
+          ..write('id: $id, ')
+          ..write('shlokaId: $shlokaId, ')
+          ..write('sourceId: $sourceId, ')
+          ..write('contentSection: $contentSection, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4323,6 +5300,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ReadingHistoryTable readingHistory = $ReadingHistoryTable(this);
   late final $LocalSettingsTable localSettings = $LocalSettingsTable(this);
   late final $SyncMetadataTable syncMetadata = $SyncMetadataTable(this);
+  late final $LocalContentSourcesTable localContentSources =
+      $LocalContentSourcesTable(this);
+  late final $LocalShlokaSourceAttributionsTable localShlokaSourceAttributions =
+      $LocalShlokaSourceAttributionsTable(this);
   late final Index localChaptersUpdatedAtIdx = Index(
     'local_chapters_updated_at_idx',
     'CREATE INDEX local_chapters_updated_at_idx ON local_chapters (updated_at, id)',
@@ -4363,6 +5344,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'reading_history_occurred_idx',
     'CREATE INDEX reading_history_occurred_idx ON reading_history (occurred_at)',
   );
+  late final Index localContentSourcesUpdatedAtIdx = Index(
+    'local_content_sources_updated_at_idx',
+    'CREATE INDEX local_content_sources_updated_at_idx ON local_content_sources (updated_at, id)',
+  );
+  late final Index localShlokaSourceAttributionsSourceIdx = Index(
+    'local_shloka_source_attributions_source_idx',
+    'CREATE INDEX local_shloka_source_attributions_source_idx ON local_shloka_source_attributions (source_id)',
+  );
   late final ChapterDao chapterDao = ChapterDao(this as AppDatabase);
   late final ShlokaDao shlokaDao = ShlokaDao(this as AppDatabase);
   late final ReflectionDao reflectionDao = ReflectionDao(this as AppDatabase);
@@ -4380,6 +5369,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final SyncMetadataDao syncMetadataDao = SyncMetadataDao(
     this as AppDatabase,
   );
+  late final ContentSourceDao contentSourceDao = ContentSourceDao(
+    this as AppDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4394,6 +5386,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     readingHistory,
     localSettings,
     syncMetadata,
+    localContentSources,
+    localShlokaSourceAttributions,
     localChaptersUpdatedAtIdx,
     localShlokasReferenceIdx,
     localShlokasUpdatedAtIdx,
@@ -4404,6 +5398,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     bookmarksCreatedIdx,
     readingHistoryShlokaOccurredIdx,
     readingHistoryOccurredIdx,
+    localContentSourcesUpdatedAtIdx,
+    localShlokaSourceAttributionsSourceIdx,
   ];
 }
 
@@ -5030,6 +6026,32 @@ final class $$LocalShlokasTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<
+    $LocalShlokaSourceAttributionsTable,
+    List<LocalShlokaSourceAttribution>
+  >
+  _localShlokaSourceAttributionsRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.localShlokaSourceAttributions,
+        aliasName:
+            'local_shlokas__id__local_shloka_source_attributions__shloka_id',
+      );
+
+  $$LocalShlokaSourceAttributionsTableProcessedTableManager
+  get localShlokaSourceAttributionsRefs {
+    final manager = $$LocalShlokaSourceAttributionsTableTableManager(
+      $_db,
+      $_db.localShlokaSourceAttributions,
+    ).filter((f) => f.shlokaId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _localShlokaSourceAttributionsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$LocalShlokasTableFilterComposer
@@ -5274,6 +6296,35 @@ class $$LocalShlokasTableFilterComposer
                 $removeJoinBuilderFromRootComposer,
           ),
     );
+    return f(composer);
+  }
+
+  Expression<bool> localShlokaSourceAttributionsRefs(
+    Expression<bool> Function(
+      $$LocalShlokaSourceAttributionsTableFilterComposer f,
+    )
+    f,
+  ) {
+    final $$LocalShlokaSourceAttributionsTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.localShlokaSourceAttributions,
+          getReferencedColumn: (t) => t.shlokaId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$LocalShlokaSourceAttributionsTableFilterComposer(
+                $db: $db,
+                $table: $db.localShlokaSourceAttributions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
     return f(composer);
   }
 }
@@ -5625,6 +6676,35 @@ class $$LocalShlokasTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> localShlokaSourceAttributionsRefs<T extends Object>(
+    Expression<T> Function(
+      $$LocalShlokaSourceAttributionsTableAnnotationComposer a,
+    )
+    f,
+  ) {
+    final $$LocalShlokaSourceAttributionsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.localShlokaSourceAttributions,
+          getReferencedColumn: (t) => t.shlokaId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$LocalShlokaSourceAttributionsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.localShlokaSourceAttributions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$LocalShlokasTableTableManager
@@ -5647,6 +6727,7 @@ class $$LocalShlokasTableTableManager
             bool bookmarksRefs,
             bool readingProgressRefs,
             bool readingHistoryRefs,
+            bool localShlokaSourceAttributionsRefs,
           })
         > {
   $$LocalShlokasTableTableManager(_$AppDatabase db, $LocalShlokasTable table)
@@ -5760,6 +6841,7 @@ class $$LocalShlokasTableTableManager
                 bookmarksRefs = false,
                 readingProgressRefs = false,
                 readingHistoryRefs = false,
+                localShlokaSourceAttributionsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -5769,6 +6851,8 @@ class $$LocalShlokasTableTableManager
                     if (bookmarksRefs) db.bookmarks,
                     if (readingProgressRefs) db.readingProgress,
                     if (readingHistoryRefs) db.readingHistory,
+                    if (localShlokaSourceAttributionsRefs)
+                      db.localShlokaSourceAttributions,
                   ],
                   addJoins:
                       <
@@ -5911,6 +6995,27 @@ class $$LocalShlokasTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (localShlokaSourceAttributionsRefs)
+                        await $_getPrefetchedData<
+                          LocalShloka,
+                          $LocalShlokasTable,
+                          LocalShlokaSourceAttribution
+                        >(
+                          currentTable: table,
+                          referencedTable: $$LocalShlokasTableReferences
+                              ._localShlokaSourceAttributionsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$LocalShlokasTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).localShlokaSourceAttributionsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.shlokaId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -5938,6 +7043,7 @@ typedef $$LocalShlokasTableProcessedTableManager =
         bool bookmarksRefs,
         bool readingProgressRefs,
         bool readingHistoryRefs,
+        bool localShlokaSourceAttributionsRefs,
       })
     >;
 typedef $$ReflectionsTableCreateCompanionBuilder =
@@ -7928,6 +9034,868 @@ typedef $$SyncMetadataTableProcessedTableManager =
       SyncMetadataEntry,
       PrefetchHooks Function()
     >;
+typedef $$LocalContentSourcesTableCreateCompanionBuilder =
+    LocalContentSourcesCompanion Function({
+      required String id,
+      required String name,
+      Value<String?> author,
+      Value<String?> sourceUrl,
+      Value<String?> license,
+      Value<String?> attribution,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int> rowid,
+    });
+typedef $$LocalContentSourcesTableUpdateCompanionBuilder =
+    LocalContentSourcesCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<String?> author,
+      Value<String?> sourceUrl,
+      Value<String?> license,
+      Value<String?> attribution,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int> rowid,
+    });
+
+final class $$LocalContentSourcesTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $LocalContentSourcesTable,
+          LocalContentSource
+        > {
+  $$LocalContentSourcesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<
+    $LocalShlokaSourceAttributionsTable,
+    List<LocalShlokaSourceAttribution>
+  >
+  _localShlokaSourceAttributionsRefsTable(
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.localShlokaSourceAttributions,
+    aliasName:
+        'local_content_sources__id__local_shloka_source_attributions__source_id',
+  );
+
+  $$LocalShlokaSourceAttributionsTableProcessedTableManager
+  get localShlokaSourceAttributionsRefs {
+    final manager = $$LocalShlokaSourceAttributionsTableTableManager(
+      $_db,
+      $_db.localShlokaSourceAttributions,
+    ).filter((f) => f.sourceId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _localShlokaSourceAttributionsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$LocalContentSourcesTableFilterComposer
+    extends Composer<_$AppDatabase, $LocalContentSourcesTable> {
+  $$LocalContentSourcesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get author => $composableBuilder(
+    column: $table.author,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceUrl => $composableBuilder(
+    column: $table.sourceUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get license => $composableBuilder(
+    column: $table.license,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get attribution => $composableBuilder(
+    column: $table.attribution,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<DateTime, DateTime, String> get createdAt =>
+      $composableBuilder(
+        column: $table.createdAt,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnWithTypeConverterFilters<DateTime, DateTime, String> get updatedAt =>
+      $composableBuilder(
+        column: $table.updatedAt,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnWithTypeConverterFilters<DateTime?, DateTime, String> get deletedAt =>
+      $composableBuilder(
+        column: $table.deletedAt,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  Expression<bool> localShlokaSourceAttributionsRefs(
+    Expression<bool> Function(
+      $$LocalShlokaSourceAttributionsTableFilterComposer f,
+    )
+    f,
+  ) {
+    final $$LocalShlokaSourceAttributionsTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.localShlokaSourceAttributions,
+          getReferencedColumn: (t) => t.sourceId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$LocalShlokaSourceAttributionsTableFilterComposer(
+                $db: $db,
+                $table: $db.localShlokaSourceAttributions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$LocalContentSourcesTableOrderingComposer
+    extends Composer<_$AppDatabase, $LocalContentSourcesTable> {
+  $$LocalContentSourcesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get author => $composableBuilder(
+    column: $table.author,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceUrl => $composableBuilder(
+    column: $table.sourceUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get license => $composableBuilder(
+    column: $table.license,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get attribution => $composableBuilder(
+    column: $table.attribution,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LocalContentSourcesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LocalContentSourcesTable> {
+  $$LocalContentSourcesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get author =>
+      $composableBuilder(column: $table.author, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceUrl =>
+      $composableBuilder(column: $table.sourceUrl, builder: (column) => column);
+
+  GeneratedColumn<String> get license =>
+      $composableBuilder(column: $table.license, builder: (column) => column);
+
+  GeneratedColumn<String> get attribution => $composableBuilder(
+    column: $table.attribution,
+    builder: (column) => column,
+  );
+
+  GeneratedColumnWithTypeConverter<DateTime, String> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<DateTime, String> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<DateTime?, String> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  Expression<T> localShlokaSourceAttributionsRefs<T extends Object>(
+    Expression<T> Function(
+      $$LocalShlokaSourceAttributionsTableAnnotationComposer a,
+    )
+    f,
+  ) {
+    final $$LocalShlokaSourceAttributionsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.localShlokaSourceAttributions,
+          getReferencedColumn: (t) => t.sourceId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$LocalShlokaSourceAttributionsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.localShlokaSourceAttributions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$LocalContentSourcesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LocalContentSourcesTable,
+          LocalContentSource,
+          $$LocalContentSourcesTableFilterComposer,
+          $$LocalContentSourcesTableOrderingComposer,
+          $$LocalContentSourcesTableAnnotationComposer,
+          $$LocalContentSourcesTableCreateCompanionBuilder,
+          $$LocalContentSourcesTableUpdateCompanionBuilder,
+          (LocalContentSource, $$LocalContentSourcesTableReferences),
+          LocalContentSource,
+          PrefetchHooks Function({bool localShlokaSourceAttributionsRefs})
+        > {
+  $$LocalContentSourcesTableTableManager(
+    _$AppDatabase db,
+    $LocalContentSourcesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LocalContentSourcesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LocalContentSourcesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$LocalContentSourcesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> author = const Value.absent(),
+                Value<String?> sourceUrl = const Value.absent(),
+                Value<String?> license = const Value.absent(),
+                Value<String?> attribution = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LocalContentSourcesCompanion(
+                id: id,
+                name: name,
+                author: author,
+                sourceUrl: sourceUrl,
+                license: license,
+                attribution: attribution,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                Value<String?> author = const Value.absent(),
+                Value<String?> sourceUrl = const Value.absent(),
+                Value<String?> license = const Value.absent(),
+                Value<String?> attribution = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LocalContentSourcesCompanion.insert(
+                id: id,
+                name: name,
+                author: author,
+                sourceUrl: sourceUrl,
+                license: license,
+                attribution: attribution,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$LocalContentSourcesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({localShlokaSourceAttributionsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (localShlokaSourceAttributionsRefs)
+                  db.localShlokaSourceAttributions,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (localShlokaSourceAttributionsRefs)
+                    await $_getPrefetchedData<
+                      LocalContentSource,
+                      $LocalContentSourcesTable,
+                      LocalShlokaSourceAttribution
+                    >(
+                      currentTable: table,
+                      referencedTable: $$LocalContentSourcesTableReferences
+                          ._localShlokaSourceAttributionsRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$LocalContentSourcesTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).localShlokaSourceAttributionsRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.sourceId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$LocalContentSourcesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LocalContentSourcesTable,
+      LocalContentSource,
+      $$LocalContentSourcesTableFilterComposer,
+      $$LocalContentSourcesTableOrderingComposer,
+      $$LocalContentSourcesTableAnnotationComposer,
+      $$LocalContentSourcesTableCreateCompanionBuilder,
+      $$LocalContentSourcesTableUpdateCompanionBuilder,
+      (LocalContentSource, $$LocalContentSourcesTableReferences),
+      LocalContentSource,
+      PrefetchHooks Function({bool localShlokaSourceAttributionsRefs})
+    >;
+typedef $$LocalShlokaSourceAttributionsTableCreateCompanionBuilder =
+    LocalShlokaSourceAttributionsCompanion Function({
+      required String id,
+      required String shlokaId,
+      required String sourceId,
+      required String contentSection,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$LocalShlokaSourceAttributionsTableUpdateCompanionBuilder =
+    LocalShlokaSourceAttributionsCompanion Function({
+      Value<String> id,
+      Value<String> shlokaId,
+      Value<String> sourceId,
+      Value<String> contentSection,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+final class $$LocalShlokaSourceAttributionsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $LocalShlokaSourceAttributionsTable,
+          LocalShlokaSourceAttribution
+        > {
+  $$LocalShlokaSourceAttributionsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $LocalShlokasTable _shlokaIdTable(_$AppDatabase db) =>
+      db.localShlokas.createAlias(
+        'local_shloka_source_attributions__shloka_id__local_shlokas__id',
+      );
+
+  $$LocalShlokasTableProcessedTableManager get shlokaId {
+    final $_column = $_itemColumn<String>('shloka_id')!;
+
+    final manager = $$LocalShlokasTableTableManager(
+      $_db,
+      $_db.localShlokas,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_shlokaIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $LocalContentSourcesTable _sourceIdTable(
+    _$AppDatabase db,
+  ) => db.localContentSources.createAlias(
+    'local_shloka_source_attributions__source_id__local_content_sources__id',
+  );
+
+  $$LocalContentSourcesTableProcessedTableManager get sourceId {
+    final $_column = $_itemColumn<String>('source_id')!;
+
+    final manager = $$LocalContentSourcesTableTableManager(
+      $_db,
+      $_db.localContentSources,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_sourceIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$LocalShlokaSourceAttributionsTableFilterComposer
+    extends Composer<_$AppDatabase, $LocalShlokaSourceAttributionsTable> {
+  $$LocalShlokaSourceAttributionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contentSection => $composableBuilder(
+    column: $table.contentSection,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<DateTime, DateTime, String> get createdAt =>
+      $composableBuilder(
+        column: $table.createdAt,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  $$LocalShlokasTableFilterComposer get shlokaId {
+    final $$LocalShlokasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.shlokaId,
+      referencedTable: $db.localShlokas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LocalShlokasTableFilterComposer(
+            $db: $db,
+            $table: $db.localShlokas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$LocalContentSourcesTableFilterComposer get sourceId {
+    final $$LocalContentSourcesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sourceId,
+      referencedTable: $db.localContentSources,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LocalContentSourcesTableFilterComposer(
+            $db: $db,
+            $table: $db.localContentSources,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$LocalShlokaSourceAttributionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $LocalShlokaSourceAttributionsTable> {
+  $$LocalShlokaSourceAttributionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contentSection => $composableBuilder(
+    column: $table.contentSection,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$LocalShlokasTableOrderingComposer get shlokaId {
+    final $$LocalShlokasTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.shlokaId,
+      referencedTable: $db.localShlokas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LocalShlokasTableOrderingComposer(
+            $db: $db,
+            $table: $db.localShlokas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$LocalContentSourcesTableOrderingComposer get sourceId {
+    final $$LocalContentSourcesTableOrderingComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.sourceId,
+          referencedTable: $db.localContentSources,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$LocalContentSourcesTableOrderingComposer(
+                $db: $db,
+                $table: $db.localContentSources,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$LocalShlokaSourceAttributionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LocalShlokaSourceAttributionsTable> {
+  $$LocalShlokaSourceAttributionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get contentSection => $composableBuilder(
+    column: $table.contentSection,
+    builder: (column) => column,
+  );
+
+  GeneratedColumnWithTypeConverter<DateTime, String> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$LocalShlokasTableAnnotationComposer get shlokaId {
+    final $$LocalShlokasTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.shlokaId,
+      referencedTable: $db.localShlokas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LocalShlokasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.localShlokas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$LocalContentSourcesTableAnnotationComposer get sourceId {
+    final $$LocalContentSourcesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.sourceId,
+          referencedTable: $db.localContentSources,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$LocalContentSourcesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.localContentSources,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$LocalShlokaSourceAttributionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LocalShlokaSourceAttributionsTable,
+          LocalShlokaSourceAttribution,
+          $$LocalShlokaSourceAttributionsTableFilterComposer,
+          $$LocalShlokaSourceAttributionsTableOrderingComposer,
+          $$LocalShlokaSourceAttributionsTableAnnotationComposer,
+          $$LocalShlokaSourceAttributionsTableCreateCompanionBuilder,
+          $$LocalShlokaSourceAttributionsTableUpdateCompanionBuilder,
+          (
+            LocalShlokaSourceAttribution,
+            $$LocalShlokaSourceAttributionsTableReferences,
+          ),
+          LocalShlokaSourceAttribution,
+          PrefetchHooks Function({bool shlokaId, bool sourceId})
+        > {
+  $$LocalShlokaSourceAttributionsTableTableManager(
+    _$AppDatabase db,
+    $LocalShlokaSourceAttributionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LocalShlokaSourceAttributionsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$LocalShlokaSourceAttributionsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$LocalShlokaSourceAttributionsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> shlokaId = const Value.absent(),
+                Value<String> sourceId = const Value.absent(),
+                Value<String> contentSection = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LocalShlokaSourceAttributionsCompanion(
+                id: id,
+                shlokaId: shlokaId,
+                sourceId: sourceId,
+                contentSection: contentSection,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String shlokaId,
+                required String sourceId,
+                required String contentSection,
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => LocalShlokaSourceAttributionsCompanion.insert(
+                id: id,
+                shlokaId: shlokaId,
+                sourceId: sourceId,
+                contentSection: contentSection,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$LocalShlokaSourceAttributionsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({shlokaId = false, sourceId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (shlokaId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.shlokaId,
+                                referencedTable:
+                                    $$LocalShlokaSourceAttributionsTableReferences
+                                        ._shlokaIdTable(db),
+                                referencedColumn:
+                                    $$LocalShlokaSourceAttributionsTableReferences
+                                        ._shlokaIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+                    if (sourceId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.sourceId,
+                                referencedTable:
+                                    $$LocalShlokaSourceAttributionsTableReferences
+                                        ._sourceIdTable(db),
+                                referencedColumn:
+                                    $$LocalShlokaSourceAttributionsTableReferences
+                                        ._sourceIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$LocalShlokaSourceAttributionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LocalShlokaSourceAttributionsTable,
+      LocalShlokaSourceAttribution,
+      $$LocalShlokaSourceAttributionsTableFilterComposer,
+      $$LocalShlokaSourceAttributionsTableOrderingComposer,
+      $$LocalShlokaSourceAttributionsTableAnnotationComposer,
+      $$LocalShlokaSourceAttributionsTableCreateCompanionBuilder,
+      $$LocalShlokaSourceAttributionsTableUpdateCompanionBuilder,
+      (
+        LocalShlokaSourceAttribution,
+        $$LocalShlokaSourceAttributionsTableReferences,
+      ),
+      LocalShlokaSourceAttribution,
+      PrefetchHooks Function({bool shlokaId, bool sourceId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -7950,4 +9918,12 @@ class $AppDatabaseManager {
       $$LocalSettingsTableTableManager(_db, _db.localSettings);
   $$SyncMetadataTableTableManager get syncMetadata =>
       $$SyncMetadataTableTableManager(_db, _db.syncMetadata);
+  $$LocalContentSourcesTableTableManager get localContentSources =>
+      $$LocalContentSourcesTableTableManager(_db, _db.localContentSources);
+  $$LocalShlokaSourceAttributionsTableTableManager
+  get localShlokaSourceAttributions =>
+      $$LocalShlokaSourceAttributionsTableTableManager(
+        _db,
+        _db.localShlokaSourceAttributions,
+      );
 }

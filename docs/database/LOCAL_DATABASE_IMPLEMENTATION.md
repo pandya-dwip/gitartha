@@ -32,7 +32,7 @@ lib/
     │   ├── app_database.g.dart        generated
     │   ├── database_connection.dart   persistent file connection (drift_flutter)
     │   ├── converters.dart            UTC timestamps, JSON string lists, enums
-    │   └── tables/                    one file per table (9)
+    │   └── tables/                    one file per table (11)
     ├── daos/                          one DAO per table (+ helpers), each with .g.dart
     │   ├── chapter_dao.dart           shloka_dao.dart        reflection_dao.dart
     │   ├── personal_note_dao.dart     bookmark_dao.dart      reading_progress_dao.dart
@@ -76,6 +76,7 @@ tables or DAOs.
 | `ReadingHistoryDao` | `recordActivity`, `getRecentHistory`, `getHistoryForShloka`, `getHistoryBetween`, `getLatestActivity` |
 | `SettingsDao` | `setValue`/`getValue`/`watchValue`/`deleteValue`/`getAll`, plus typed `get/setString`, `Bool`, `Int`, `Double`, `Json` |
 | `SyncMetadataDao` | `getValue`/`setValue`/`deleteValue`/`getAll` (storage only, no sync logic) |
+| `ContentSourceDao` (v2) | `getSources`, `getSource`, `upsertSource`, `getAttributionsForShloka`, `replaceAttributionsForShloka` |
 
 Notes:
 
@@ -162,23 +163,29 @@ main()
 
 ## Migration strategy
 
-- `AppDatabase.currentSchemaVersion = 1`. `onCreate` creates all tables and indexes.
-- `onUpgrade` refuses to proceed unless an explicit migration exists:
+- `AppDatabase.currentSchemaVersion = 2`. `onCreate` creates all tables and indexes.
+- `onUpgrade` runs the generated `stepByStep` helper (`app_database.steps.dart`):
+  - **v1 → v2** (Milestone 3): `createTable(localContentSources)`,
+    `createTable(localShlokaSourceAttributions)` and their two indexes. This step is
+    purely additive.
+- Before stepping, `onUpgrade` refuses what it can't do safely:
   - **Downgrade** (database newer than the app): `LocalDatabaseException`, "update the
     app". Data is left untouched.
   - **Unknown upgrade path:** `LocalDatabaseException`. There is never a silent
     "drop and recreate".
-- Schema v1 is exported to `drift_schemas/app_database/drift_schema_v1.json`, and
-  `test/drift/app_database/migration_test.dart` checks the code still matches it.
+- Snapshots `drift_schemas/app_database/drift_schema_v1.json` and `_v2.json` are
+  exported. `test/drift/app_database/migration_test.dart` upgrades a v1 database that
+  holds one of every personal record, then checks that the result equals a fresh v2
+  schema and that every record survived.
 
-**To change the schema** (for example adding a bookmark label in v2):
+**To change the schema** (next: v3):
 
 1. Edit the table classes.
-2. Bump `currentSchemaVersion` to 2.
+2. Bump `currentSchemaVersion`.
 3. Run `dart run build_runner build`, then `dart run drift_dev make-migrations`. This
-   exports `drift_schema_v2.json`, generates `schema_versions.dart` with a `stepByStep`
-   helper, and adds an upgrade test template under `test/drift/`.
-4. Implement the step in `onUpgrade` using `stepByStep(from1To2: …)`, with additive
+   exports the new snapshot, regenerates `app_database.steps.dart`, and regenerates the
+   test helpers in `test/drift/app_database/generated/`.
+4. Add the step to `stepByStep(...)` in `AppDatabase`, with additive
    operations such as `m.addColumn(...)` and `m.createTable(...)`. Never drop or recreate
    tables that hold personal data. When a table must be rebuilt, use
    `m.alterTable(TableMigration(...))`, which copies the rows.

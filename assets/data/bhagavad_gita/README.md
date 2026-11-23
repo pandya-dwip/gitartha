@@ -27,7 +27,7 @@ assets/data/bhagavad_gita/
 └── sources/
     └── sources.json              verified sources (translations, editions, commentaries)
 
-tool/validate_gita_content.dart   validator (project root, Dart SDK only)
+tool/validate_gita_content.dart   validator CLI (uses lib/data/content/)
 ```
 
 There is **one file per chapter**. Verses live inside their chapter file, never in
@@ -183,13 +183,19 @@ because no source was supplied with it.
 From the project root:
 
 ```sh
-dart run tool/validate_gita_content.dart            # summary per chapter
-dart run tool/validate_gita_content.dart --verbose  # also lists each verse's missing fields
+dart run tool/validate_gita_content.dart                  # draft mode, all chapters
+dart run tool/validate_gita_content.dart --mode=strict    # publishing rules
+dart run tool/validate_gita_content.dart --chapter=1 --verbose
+dart run tool/validate_gita_content.dart --output=report.json   # JSON report file
 ```
 
-It needs only the Dart SDK (no packages) and exits `1` if there are errors. It checks:
+It exits `1` on validation errors and `2` on bad arguments. It uses the same pipeline
+as the app (`lib/data/content/`). Modes, codes and details:
+[`docs/content/CONTENT_VALIDATION.md`](../../../docs/content/CONTENT_VALIDATION.md).
+It checks:
 
-- **Structure:** each file against its JSON Schema (parsed and interpreted directly).
+- **Structure:** each file against its JSON Schema (Draft 2020-12, with the
+  `json_schema` package).
 - **Consistency:**
   - file name matches `chapter.id`;
   - `id` and `reference` agree with `verse_number`;
@@ -255,7 +261,7 @@ No import tool exists yet. When one is written, it must follow these rules.
 | `chapter.conclusion` | `chapters.conclusion` | `""` → NULL |
 | `chapter.review_status` | — | Import gate (see below), not stored |
 | *(file's `chapter.id`)* | `shlokas.chapter_id` | Verses have no `chapter_id` key; it comes from the file they are in |
-| `verse.id` | — (`shlokas.id` is a UUID) | Mapped to the UUID through the natural key, see below |
+| `verse.id` | `shlokas.id` via `ContentIds.shloka(verse.id)` | Deterministic UUID v5, see below |
 | `verse.verse_number` | `shlokas.verse_number` | As is |
 | `verse.reference` | `shlokas.reference` | **Not written.** It is a generated column. The import checks it matches |
 | `verse.index_title` | `shlokas.index_title` | `""` → NULL |
@@ -271,32 +277,35 @@ No import tool exists yet. When one is written, it must follow these rules.
 | `verse.reflection_question` | `shlokas.reflection_question` | `""` → NULL |
 | `verse.source_attributions[]` | `shloka_source_attributions` (one row each) | `shloka_id` = the verse's UUID, `source_id` = the source's UUID, `content_section` as is |
 | `verse.review_status` | — | Import gate, not stored |
-| `sources[].id` | — (`content_sources.id` is a UUID) | Needs a key column, see "Schema changes" |
+| `sources[].id` | `content_sources.id` via `ContentIds.source(id)` | Deterministic UUID v5 |
 | `sources[].name` / `author` / `source_url` / `license` / `attribution` | `content_sources.*` (same names) | `""` → NULL |
 
 Empty strings must become NULL, because the database rejects blank text.
 
 ### Verse ids and UUIDs
 
-A text id such as `chapter_01_verse_041` is never written into the UUID column.
-Instead:
+A text id such as `chapter_01_verse_041` is never written into a UUID column.
+Instead, every content key maps to a **deterministic name-based (version 5) UUID**
+under a fixed Gitartha namespace (`lib/data/content/content_ids.dart`):
 
-1. `verse.id` is fully determined by `(chapter_id, verse_number)`, and the validator
-   enforces this. `(chapter_id, verse_number)` is also unique in Supabase
-   (`shlokas_chapter_verse_key`). The import therefore **upserts on that natural key**:
-   `INSERT … ON CONFLICT (chapter_id, verse_number) DO UPDATE …`. Supabase generates
-   the UUID on first insert and keeps it permanently. Later imports update the same
-   row.
-2. The import reads back `id, chapter_id, verse_number` to build the
-   `verse.id → UUID` map. It uses the map to write attributions, and can save it as a
-   generated report (for example `supabase/seed/generated/shloka_ids.json`, not
-   hand-edited) for traceability.
-3. Verses are **never deleted and re-inserted**. That would change their UUIDs and
-   orphan users' local reflections. Removing a verse means setting `deleted_at` in the
-   database.
-4. If a verse ever has to be renumbered, that is a deliberate one-off update of
-   `verse_number` on the existing row (keeping its UUID), together with renaming its
-   JSON `id`.
+| Key | UUID |
+|---|---|
+| verse `chapter_01_verse_041` | `ContentIds.shloka('chapter_01_verse_041')` = `8c555087-1c57-50db-9632-7bbd1e10a472` |
+| source `some_source` | `ContentIds.source('some_source')` |
+| attribution (verse, source, section) | `ContentIds.attribution(...)` |
+
+1. The same key always gives the same UUID, on every device and in every import. The
+   local cache already uses these UUIDs (Milestone 3). The future Supabase import must
+   insert rows **with these ids** (`insert into shlokas (id, …) values
+   ('8c555087-…', …)`), so server and devices agree without any mapping table, and
+   personal reflections keep pointing at the right verse after sync.
+2. Re-imports upsert on the id. Verses are **never deleted and re-inserted**. Removing
+   a verse means setting `deleted_at` in the database.
+3. **Never change the namespace or the name prefixes** in `content_ids.dart`. That would
+   change every content id.
+4. A verse's content id follows its number, so renumbering a verse changes its UUID.
+   Fix the edition before seeding. A later renumbering is a deliberate migration that
+   carries personal data over to the new id.
 
 ### What gets imported
 
@@ -314,6 +323,6 @@ The recommended gate keeps unreviewed text out of the app:
 | Change | Status |
 |---|---|
 | `shlokas.hindi_meaning_note text NULL`, plus `hindi_meaning_note` in the attribution section check | **Done** in `supabase/migrations/0001_initial_schema.sql` (not yet run on the project) |
-| **A stable key for sources:** `content_sources` has only a UUID, and `name` is not unique, so `sources[].id` has nowhere to go. Recommended: add `content_sources.source_key text NOT NULL UNIQUE` (snake_case check), and upsert sources on it. The alternative is a committed `source_id → UUID` mapping file | **Needed before importing attributions.** Not done; requires a new migration |
+| A stable key for sources | **Not needed any more.** Sources get deterministic UUIDs (`ContentIds.source`), which the Supabase import uses as `content_sources.id`. This replaces the earlier `source_key` proposal |
 | `review_status` | No change needed if the gate above is used. A column would only be needed to store unapproved content in Supabase |
-| `verse.id` | No change needed (natural-key mapping). An optional `shlokas.content_key text UNIQUE` would make the link explicit |
+| `verse.id` | No change needed (deterministic UUID v5). An optional `shlokas.content_key text UNIQUE` would make the link visible in the database, but is not required |
