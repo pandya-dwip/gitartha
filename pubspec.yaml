@@ -1,0 +1,62 @@
+name: gitartha
+description: "Gitartha (गीतार्थ) — a Bhagavad Gita reading and personal reflection app."
+publish_to: 'none'
+
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.11.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management
+  flutter_riverpod: ^3.0.0
+
+  # Navigation
+  go_router: ^17.5.0
+
+  # Environment configuration
+  flutter_dotenv: ^6.0.2
+
+  # Local database (scripture cache) — schemas arrive in a later milestone.
+  # drift_flutter bundles native SQLite (via sqlite3), so sqlite3_flutter_libs
+  # is not needed as a direct dependency.
+  drift: ^2.34.0
+  drift_flutter: ^0.3.1
+
+  # Backend — prepared only; not initialized in this milestone.
+  supabase_flutter: ^2.18.3
+
+  # Model serialization
+  json_annotation: ^4.12.0
+
+  # Lightweight preferences (e.g. theme mode)
+  shared_preferences: ^2.5.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+  # Code generation
+  build_runner: ^2.15.1
+  drift_dev: ^2.34.0
+  json_serializable: ^6.14.1
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - .env
+    - assets/images/branding/
+    - assets/images/icons/
+    - assets/images/illustrations/
+    - assets/data/chapters/
+    - assets/data/sample/
+
+  # Bundled fonts (assets/fonts/devanagari, assets/fonts/english) will be
+  # declared here once the font files are added.
