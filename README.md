@@ -88,6 +88,12 @@ dart run tool/validate_gita_content.dart                 # draft mode, all 18 ch
 dart run tool/validate_gita_content.dart --mode=strict   # publishing rules
 flutter test test/unit/data/content                      # validation + import pipeline tests
 flutter test test/drift                                  # local schema migration tests
+
+# Publish approved content to Supabase (you sign in; start with docs/content/HOW_PUBLISHING_WORKS.md)
+dart run tool/publish_gita_content.dart --all --validate-only
+dart run tool/publish_gita_content.dart --chapter=1 --dry-run
+dart run tool/publish_gita_content.dart --chapter=1 --confirm
+flutter test test/tool test/unit/data/content/publishing   # publisher tests
 ```
 
 Generated files (`*.g.dart`, `app_database.steps.dart`, `drift_schemas/`,

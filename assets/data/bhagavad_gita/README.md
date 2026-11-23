@@ -242,9 +242,15 @@ short:
 - check copyright before using any translation;
 - anything machine-generated stays `draft` until a person verifies it.
 
-## 9. Importing into Supabase (future — not implemented)
+## 9. Importing into Supabase
 
-No import tool exists yet. When one is written, it must follow these rules.
+Publishing is done with `tool/publish_gita_content.dart` (Milestone 3.1), which
+follows these rules. See [`docs/content/CONTENT_PUBLISHING.md`](../../../docs/content/CONTENT_PUBLISHING.md):
+
+```bash
+dart run tool/publish_gita_content.dart --chapter=1 --dry-run    # preview
+dart run tool/publish_gita_content.dart --chapter=1 --confirm    # publish
+```
 
 ### Field mapping
 
@@ -295,7 +301,7 @@ under a fixed Gitartha namespace (`lib/data/content/content_ids.dart`):
 | attribution (verse, source, section) | `ContentIds.attribution(...)` |
 
 1. The same key always gives the same UUID, on every device and in every import. The
-   local cache already uses these UUIDs (Milestone 3). The future Supabase import must
+   local cache already uses these UUIDs (Milestone 3). The Supabase publisher does
    insert rows **with these ids** (`insert into shlokas (id, …) values
    ('8c555087-…', …)`), so server and devices agree without any mapping table, and
    personal reflections keep pointing at the right verse after sync.

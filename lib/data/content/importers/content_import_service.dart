@@ -1,5 +1,6 @@
 import '../../local/database/app_database.dart';
 import '../services/content_asset_loader.dart';
+import '../selection/content_selection.dart';
 import '../services/content_validation_service.dart';
 import '../validators/validation_result.dart';
 import 'chapter_content_importer.dart';
@@ -60,64 +61,37 @@ class ContentImportService {
       return result;
     }
 
-    final importableSourceKeys = await _importSources(report, mode, result);
-
+    // Which records may be written is decided once, by the same selector
+    // the Supabase publisher uses.
+    final selection = const ContentSelector().select(report, mode: mode);
+    result.skipped.addAll(selection.rejected);
+    result.chapters.skipped += selection.rejectedChapters;
+    result.verses.skipped += selection.rejectedVerses;
+    result.sources.skipped += selection.rejectedSources;
     for (final chapter in report.chapters) {
       result.chaptersProcessed++;
-      final model = chapter.model;
-      result.versesProcessed += model?.verses.length ?? 0;
+      result.versesProcessed += chapter.model?.verses.length ?? 0;
+    }
 
-      if (!chapter.isUsable) {
-        result.chapters.skipped++;
-        result.verses.skipped += model?.verses.length ?? 0;
-        result.skipped.add(
-          SkippedRecord(
-            recordType: 'chapter',
-            recordId: '${chapter.expectedChapterId}',
-            fileName: chapter.fileName,
-            reason: ImportSkipReason.fileInvalid,
-            message:
-                'The file failed validation and was not imported. '
-                'See the validation errors.',
-          ),
-        );
-        continue;
-      }
-      if (mode == ImportMode.approved && !model!.chapter.hasAllNames) {
-        result.chapters.skipped++;
-        result.verses.skipped += model.verses.length;
-        result.skipped.add(
-          SkippedRecord(
-            recordType: 'chapter',
-            recordId: '${model.chapter.id}',
-            fileName: chapter.fileName,
-            reason: ImportSkipReason.chapterNamesMissing,
-            message:
-                'Chapter ${model.chapter.id} has no names yet, so '
-                'neither it nor its ${model.verses.length} verse(s) can be '
-                'imported.',
-          ),
-        );
-        continue;
-      }
+    final importableSourceKeys = await _importSources(selection, result);
 
+    for (final selected in selection.chapters) {
       try {
         await _chapterImporter.importChapter(
-          validation: chapter,
-          mode: mode,
+          selected: selected,
           importableSourceKeys: importableSourceKeys,
-          sourcesUsable: report.sourcesUsable,
+          sourcesUsable: selection.sourcesUsable,
           result: result,
         );
       } on Object catch (error) {
         // The chapter's transaction was rolled back: nothing of it was
         // written. Report it and carry on with the other chapters.
         result.chapters.failed++;
-        result.verses.failed += model!.verses.length;
+        result.verses.failed += selected.verses.length;
         result.failures.add(
           ImportFailure(
-            transaction: 'chapter ${model.chapter.id}',
-            fileName: chapter.fileName,
+            transaction: 'chapter ${selected.chapter.id}',
+            fileName: selected.fileName,
             error: error.toString(),
           ),
         );
@@ -128,34 +102,19 @@ class ContentImportService {
     return result;
   }
 
-  /// Imports the sources (draft: every valid source; approved: only sources
-  /// with a verified licence) in one transaction. Returns the keys of the
-  /// sources now available for attributions.
+  /// Imports the selected sources in one transaction. Returns the keys of
+  /// the sources now available for attributions.
   Future<Set<String>> _importSources(
-    ContentValidationReport report,
-    ImportMode mode,
+    ContentSelection selection,
     ImportResult result,
   ) async {
-    if (!report.sourcesUsable) return const {};
+    if (!selection.sourcesUsable) return const {};
     final selected = <String>{};
     final counts = ImportCounts();
     final skipped = <SkippedRecord>[];
     try {
       await _db.transaction(() async {
-        for (final source in report.sources.values) {
-          if (mode == ImportMode.approved && !source.hasVerifiedLicense) {
-            counts.skipped++;
-            skipped.add(
-              SkippedRecord(
-                recordType: 'source',
-                recordId: source.id,
-                fileName: 'sources.json',
-                reason: ImportSkipReason.unverifiedSource,
-                message: 'Source "${source.id}" has no verified licence.',
-              ),
-            );
-            continue;
-          }
+        for (final source in selection.sources) {
           final row = ChapterContentImporter.sourceRow(source);
           final existing = await _db.contentSourceDao.getSource(row.id);
           if (existing == null) {
@@ -184,7 +143,7 @@ class ContentImportService {
         }
       });
     } on Object catch (error) {
-      result.sources.failed += report.sources.length;
+      result.sources.failed += selection.sources.length;
       result.failures.add(
         ImportFailure(
           transaction: 'sources',

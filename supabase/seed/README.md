@@ -38,7 +38,9 @@ supabase/seed/
   (`docs/content/CONTENT_IMPORT_PIPELINE.md`).
 - Map fields exactly as the local import does (`""` → NULL, no `reference`, which is
   generated, and deterministic ids). See the field mapping in the content README, §9.
-- The generator is a future tool. It is not implemented yet.
+- Use the publisher instead of hand-written seed SQL:
+  `dart run tool/publish_gita_content.dart --all --dry-run`, then `--confirm`. It
+  runs as an authorized member under RLS. See `docs/content/CONTENT_PUBLISHING.md`.
 
 ## Rules for the SQL
 

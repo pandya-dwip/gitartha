@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 
+import '../../core/utils/uuid.dart';
+
 /// Deterministic UUIDs for shared content.
 ///
 /// The content repository identifies verses and sources with human-readable
@@ -24,13 +26,18 @@ abstract final class ContentIds {
   /// The Gitartha content namespace. Generated once, fixed forever.
   static const String namespace = '3b798233-c921-47f3-b5eb-a1bdb069565b';
 
-  /// UUID of the verse with content id [shlokaContentId].
+  /// UUID of the verse with content id [shlokaContentId]. An id that is
+  /// already a canonical UUID is kept as it is.
   static String shloka(String shlokaContentId) =>
-      uuidV5(namespace, 'shloka/$shlokaContentId');
+      isCanonicalUuid(shlokaContentId)
+      ? shlokaContentId
+      : uuidV5(namespace, 'shloka/$shlokaContentId');
 
-  /// UUID of the source with key [sourceKey].
-  static String source(String sourceKey) =>
-      uuidV5(namespace, 'source/$sourceKey');
+  /// UUID of the source with key [sourceKey]. A key that is already a
+  /// canonical UUID is kept as it is.
+  static String source(String sourceKey) => isCanonicalUuid(sourceKey)
+      ? sourceKey
+      : uuidV5(namespace, 'source/$sourceKey');
 
   /// UUID of one attribution mapping (verse, source, section).
   static String attribution(

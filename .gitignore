@@ -92,3 +92,6 @@ supabase/.temp/
 *.bak
 *~
 Thumbs.db
+
+# Content publishing reports (tool/publish_gita_content.dart --save-report)
+/reports/

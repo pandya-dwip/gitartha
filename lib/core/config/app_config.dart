@@ -1,8 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../errors/configuration_exception.dart';
+import 'supabase_key_safety.dart';
 
 /// The environment the app is running in, read from `APP_ENV`.
 enum AppEnvironment {
@@ -125,21 +124,12 @@ class AppConfig {
       );
     }
 
-    final uri = Uri.tryParse(url);
-    if (uri == null || !uri.hasScheme || uri.host.isEmpty) {
-      throw ConfigurationException(
-        '$keySupabaseUrl is not a valid URL: "$url". '
-        'Expected something like https://<project-ref>.supabase.co',
-      );
-    }
-    if (uri.scheme != 'https' && !_isLocalHost(uri.host)) {
-      throw const ConfigurationException(
-        '$keySupabaseUrl must use https (http is only allowed for a local '
-        'Supabase instance).',
-      );
+    final urlProblem = supabaseUrlProblem(url);
+    if (urlProblem != null) {
+      throw ConfigurationException('$keySupabaseUrl $urlProblem');
     }
 
-    if (_looksLikeSecretKey(anonKey)) {
+    if (looksLikeSupabaseSecretKey(anonKey)) {
       throw const ConfigurationException(
         '$keySupabaseAnonKey contains a secret / service-role key. '
         'Only the publishable (anon) key may be used in the app, because '
@@ -148,26 +138,5 @@ class AppConfig {
     }
 
     return SupabaseConfig(url: url, anonKey: anonKey);
-  }
-
-  static bool _isLocalHost(String host) =>
-      host == 'localhost' || host == '127.0.0.1' || host == '10.0.2.2';
-
-  /// Detects the two forms of privileged Supabase keys: the new
-  /// `sb_secret_...` keys and legacy JWTs whose role is `service_role`.
-  static bool _looksLikeSecretKey(String key) {
-    if (key.startsWith('sb_secret_')) return true;
-
-    final parts = key.split('.');
-    if (parts.length != 3) return false;
-    try {
-      final payload = utf8.decode(
-        base64Url.decode(base64Url.normalize(parts[1])),
-      );
-      final claims = jsonDecode(payload);
-      return claims is Map && claims['role'] == 'service_role';
-    } on FormatException {
-      return false;
-    }
   }
 }

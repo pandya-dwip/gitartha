@@ -83,7 +83,10 @@ section marks what is in place now and what is planned.
   (`contentRepositoryProvider`). It never runs at startup, and never touches personal
   data.
 - Content ids map to deterministic UUID v5 (`content_ids.dart`), shared with the
-  future Supabase import.
+  Supabase publisher.
+- Publishing approved content to Supabase: `tool/publish_gita_content.dart`
+  (Milestone 3.1). It runs as an `is_accessible` member under RLS, with no
+  privileged keys. See `docs/content/CONTENT_PUBLISHING.md`.
 - The CLI `tool/validate_gita_content.dart` runs the same validation from the command
   line.
 - Documented in `docs/content/`.

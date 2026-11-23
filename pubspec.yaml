@@ -53,6 +53,13 @@ dev_dependencies:
   drift_dev: ^2.34.0
   json_serializable: ^6.14.1
 
+  # Developer-side content publisher (tool/publish_gita_content.dart): the
+  # pure-Dart Supabase client (supabase_flutter cannot run under `dart run`),
+  # and http's MockClient for testing it. Both were already transitive
+  # dependencies; nothing here ships in the app.
+  supabase: ^2.16.5
+  http: ^1.6.0
+
 flutter:
   uses-material-design: true
 

@@ -3,11 +3,10 @@ import 'package:drift/drift.dart' show Value;
 import '../../local/database/app_database.dart';
 import '../content_ids.dart';
 import '../models/chapter_content_model.dart';
-import '../models/content_enums.dart';
 import '../models/shloka_content_model.dart';
 import '../models/source_attribution_model.dart';
 import '../models/source_content_model.dart';
-import '../validators/validation_result.dart';
+import '../selection/content_selection.dart';
 import 'import_result.dart';
 
 /// Timestamp written as `created_at` / `updated_at` of every row imported
@@ -133,33 +132,26 @@ class ChapterContentImporter {
   // Writing
   // ---------------------------------------------------------------------------
 
-  /// Imports one chapter in a single transaction. If anything fails, the
-  /// whole chapter is rolled back and the error is rethrown. Counts are
-  /// applied to [result] only after the transaction commits.
+  /// Imports one selected chapter (row, eligible verses and their
+  /// attributions) in a single transaction. If anything fails, the whole
+  /// chapter is rolled back and the error is rethrown. Counts are applied to
+  /// [result] only after the transaction commits. Which verses are eligible
+  /// was decided by `ContentSelector`; this only adds the database checks.
   Future<void> importChapter({
-    required ChapterValidation validation,
-    required ImportMode mode,
+    required SelectedChapter selected,
     required Set<String> importableSourceKeys,
     required bool sourcesUsable,
     required ImportResult result,
   }) async {
-    final model = validation.model!;
-    final chapter = model.chapter;
-    final fileName = validation.fileName;
+    final chapter = selected.chapter;
+    final fileName = selected.fileName;
     final chapterCounts = ImportCounts();
     final verseCounts = ImportCounts();
     final skipped = <SkippedRecord>[];
     final shlokaIds = <String, String>{};
     var attributionsInserted = 0;
     var attributionsDeleted = 0;
-
-    final includeDescriptions = switch (mode) {
-      ImportMode.draft => true,
-      // README import gate: descriptions only once the metadata itself is
-      // approved and complete. Missing verses don't affect the metadata.
-      ImportMode.approved =>
-        chapter.reviewStatus == ReviewStatus.approved && chapter.isComplete,
-    };
+    final includeDescriptions = selected.includeDescriptions;
 
     await _db.transaction(() async {
       // Chapter row.
@@ -195,32 +187,8 @@ class ChapterContentImporter {
       }
 
       // Verses.
-      for (var i = 0; i < model.verses.length; i++) {
-        final verse = model.verses[i];
-        final assessment = validation.verses[i];
-        final eligible = switch (mode) {
-          ImportMode.draft => !assessment.hasErrors,
-          ImportMode.approved => assessment.isApproved,
-        };
-        if (!eligible) {
-          verseCounts.skipped++;
-          skipped.add(
-            SkippedRecord(
-              recordType: 'shloka',
-              recordId: verse.id,
-              fileName: fileName,
-              reason: ImportSkipReason.validationFailed,
-              message: mode == ImportMode.approved
-                  ? '${verse.reference} is not eligible for approved import '
-                        '(complete: ${assessment.isComplete}, status: '
-                        '${assessment.reviewStatus.jsonValue}, errors: '
-                        '${assessment.hasErrors}).'
-                  : '${verse.reference} has validation errors.',
-            ),
-          );
-          continue;
-        }
-
+      for (final selectedVerse in selected.verses) {
+        final verse = selectedVerse.verse;
         final row = shlokaRow(chapter.id, verse);
         final current = await _db.shlokaDao.getShloka(
           row.id,

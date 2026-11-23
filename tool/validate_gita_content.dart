@@ -74,10 +74,7 @@ Future<void> main(List<String> args) async {
     return _usage(e.message);
   }
 
-  if (outputPath != null &&
-      File(outputPath).absolute.path.replaceAll(r'', '/').contains(
-        Directory(root).absolute.path.replaceAll(r'', '/'),
-      )) {
+  if (outputPath != null && _isInside(outputPath, root)) {
     return _usage('--output must not point inside the content repository.');
   }
 
@@ -106,6 +103,14 @@ Future<void> main(List<String> args) async {
         e.fileName.endsWith('.schema.json'),
   );
   exitCode = schemaFailure ? 2 : (result.isValid ? 0 : 1);
+}
+
+/// Whether [file] lies inside directory [dir]. Compares normalized absolute
+/// file URIs (forward slashes, case-insensitive for Windows drives).
+bool _isInside(String file, String dir) {
+  final f = File(file).absolute.uri.path.toLowerCase();
+  final d = Directory(dir).absolute.uri.path.toLowerCase();
+  return f.startsWith(d.endsWith('/') ? d : '$d/');
 }
 
 String _chapterTable(ContentValidationReport report) {

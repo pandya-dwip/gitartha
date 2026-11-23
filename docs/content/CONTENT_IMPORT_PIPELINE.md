@@ -1,7 +1,10 @@
 # Gitartha — Content Import Pipeline
 
 Imports validated content from the repository into the **local Drift database**.
-Nothing is published to Supabase. Nothing runs automatically at app startup.
+Nothing here publishes to Supabase: that is the separate publisher
+([`CONTENT_PUBLISHING.md`](CONTENT_PUBLISHING.md)), which uses the same
+`ContentSelector`, the same ids and the same rules. Nothing runs automatically at
+app startup.
 
 ```text
 ContentSource → ContentValidationService (draft | strict)
