@@ -121,6 +121,9 @@ feature_name/
 - Personal data (reflections, journal entries, notes, bookmarks, reading progress)
   will **stay on the device**.
 - Sync will initially be **pull-based**, from Supabase to the local cache.
-- Supabase authentication and Row Level Security come in a later milestone.
+- The Supabase schema, Row Level Security and the local SQLite design are documented in
+  [docs/database/](docs/database/DATABASE_ARCHITECTURE.md). The migration is
+  `supabase/migrations/0001_initial_schema.sql`, and the steps to apply it are in
+  [supabase/config/DATABASE_SETUP.md](supabase/config/DATABASE_SETUP.md).
 
 See [docs/architecture/PROJECT_ARCHITECTURE.md](docs/architecture/PROJECT_ARCHITECTURE.md).
