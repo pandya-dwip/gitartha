@@ -133,16 +133,14 @@ WHERE excluded.updated_at >= local_shlokas.updated_at;   -- never go backwards
 
 ### 7. Store the last successful sync timestamp
 
-In the **same transaction** as the last page of an entity, update `sync_state`:
+In the **same transaction** as each applied page, update the cursor in the local
+`sync_metadata` table (`SyncMetadataDao`, keys in `SyncMetadataKeys`):
 
-```sql
-INSERT INTO sync_state (entity, cursor_updated_at, cursor_id, last_successful_sync_at)
-VALUES ('shlokas', :max_updated_at_in_page, :id_of_that_row, :device_now)
-ON CONFLICT (entity) DO UPDATE SET
-  cursor_updated_at = excluded.cursor_updated_at,
-  cursor_id = excluded.cursor_id,
-  last_successful_sync_at = excluded.last_successful_sync_at;
-```
+| Key | Value |
+|---|---|
+| `content_cursor.chapters`, `content_cursor.shlokas` | JSON `{"updated_at": "<server updated_at of the last applied row>", "id": "<its id>"}` |
+| `last_successful_content_sync_at` | Device time when a full run finished (display only) |
+| `content_sync_state` | e.g. `idle` / `failed`, for diagnostics |
 
 - The cursor is **the server's `updated_at` from the data**, never the device clock.
   Device clocks drift or can be wrong.
@@ -163,7 +161,7 @@ ON CONFLICT (entity) DO UPDATE SET
 ## Full resync (escape hatch)
 
 Allow a "Re-download scripture" action in settings, and run it automatically if the
-local schema version changes in a way that affects the cache. It clears `sync_state`
+local schema version changes in a way that affects the cache. It clears the `content_cursor.*` keys
 and repeats steps 4–6 from the beginning. Because the upsert keeps existing ids, this
 never orphans personal data. **Do not** implement it by dropping `local_shlokas`.
 
@@ -189,7 +187,7 @@ This is listed as an open decision in `DATABASE_ARCHITECTURE.md`.
 
 | Case | Handling |
 |---|---|
-| Verse renumbered (A 1.5 → 1.6, B 1.6 → 1.5 in one edit session) | Both arrive as updates of their own UUIDs. The local table has no UNIQUE on `(chapter_id, verse_number)`, so the batch applies cleanly |
+| Verse renumbered (A 1.5 → 1.6, B 1.6 → 1.5 in one edit session) | Both arrive as updates of their own UUIDs. `local_shlokas` has a UNIQUE `(chapter_id, verse_number)` (Milestone 2 spec), which SQLite checks per statement, so a swap can't be applied row by row. Within the page's transaction, first move any row whose slot is claimed by a different UUID to a temporary slot (`verse_number + 1000000` with a matching `reference`), then apply the page. This is rare, because the canonical numbering is fixed before seeding |
 | Chapter soft-deleted while its verses are live | Readers hide the chapter, so its verses are unreachable from navigation. Editors should soft-delete the verses too |
 | User loses membership | Step 3 returns 0 rows. Sync stops, and the cache and personal data stay readable on the device |
 | Clock skew on the device | Irrelevant to correctness. Cursors use server timestamps |

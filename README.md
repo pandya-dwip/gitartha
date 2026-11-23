@@ -15,7 +15,7 @@ A modern Bhagavad Gita reading and personal reflection app for Android and iOS.
 | UI system | Material 3 |
 | State management | Riverpod 3 (`flutter_riverpod`) |
 | Navigation | GoRouter |
-| Local database *(future)* | SQLite via Drift (`drift`, `drift_flutter`) |
+| Local database | SQLite via Drift (`drift`, `drift_flutter`), see `docs/database/LOCAL_DATABASE_IMPLEMENTATION.md` |
 | Local search *(future)* | SQLite FTS5 |
 | Backend *(future)* | Supabase (`supabase_flutter`) |
 | Environment config | `flutter_dotenv` |
@@ -117,7 +117,8 @@ feature_name/
 ## Future architecture
 
 - Shared scripture content will live in **Supabase**.
-- A local **SQLite (Drift)** database will cache that content, so reading works offline.
+- A local **SQLite (Drift)** database (in place since Milestone 2) caches that content, so
+  reading works offline, and holds all personal data.
 - Personal data (reflections, journal entries, notes, bookmarks, reading progress)
   will **stay on the device**.
 - Sync will initially be **pull-based**, from Supabase to the local cache.

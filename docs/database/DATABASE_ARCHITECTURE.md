@@ -9,7 +9,7 @@ decision:
 | **Written by** | Members whose `is_accessible = true`, and the project owner | The app, on behalf of the one person using the device |
 | **Read by** | Every authorized member, during sync | The app's screens. Every screen reads from here. |
 | **Leaves the device?** | Not applicable | **Never.** Personal data is not uploaded. |
-| **Defined in** | [`supabase/migrations/0001_initial_schema.sql`](../../supabase/migrations/0001_initial_schema.sql) | [`LOCAL_SQLITE_SCHEMA.md`](LOCAL_SQLITE_SCHEMA.md) (spec only; no Drift code yet) |
+| **Defined in** | [`supabase/migrations/0001_initial_schema.sql`](../../supabase/migrations/0001_initial_schema.sql) | [`lib/data/local/`](../../lib/data/local/) (Drift), explained in [`LOCAL_SQLITE_SCHEMA.md`](LOCAL_SQLITE_SCHEMA.md) |
 
 ```text
                     ┌──────────────────────────── Supabase ─────────────────────────────┐
@@ -27,10 +27,10 @@ decision:
 │  CACHE (mirrors Supabase)              PERSONAL (local only, never synced)                │
 │  local_chapters ──1:N──► local_shlokas ◄── reflections      (many per shloka, dated)      │
 │                                        ◄── personal_notes   (many per shloka)             │
-│                                        ◄── bookmarks        (one per shloka, label)       │
-│                                        ◄── reading_progress (independent milestones)      │
+│                                        ◄── bookmarks        (one per shloka)              │
+│                                        ◄── reading_progress (one per shloka, status)      │
 │                                        ◄── reading_history  (activity log)                │
-│  sync_state (cursors)                      local_settings   (theme, font size, …)         │
+│  sync_metadata (cursors)                   local_settings   (theme, font size, …)         │
 └───────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -98,7 +98,7 @@ Details: [`RLS_SECURITY.md`](RLS_SECURITY.md).
 The SQLite database has two groups of tables:
 
 - **Cache:** `local_chapters` and `local_shlokas` mirror the Supabase rows (same ids,
-  same fields, including `deleted_at`), and `sync_state` stores the sync cursors.
+  same fields, including `deleted_at`), and `sync_metadata` stores the sync cursors.
 - **Personal:** `reflections`, `personal_notes`, `bookmarks`, `reading_progress`,
   `reading_history` and `local_settings`. These reference cached verses by their
   Supabase UUID and are never uploaded.
@@ -120,7 +120,9 @@ docs/database/
 ├── DATABASE_ARCHITECTURE.md             this file
 ├── DATABASE_TABLES.md                   every table, column, constraint, index, trigger
 ├── RLS_SECURITY.md                      every grant/policy; granting & revoking editors
-├── LOCAL_SQLITE_SCHEMA.md               future Drift schema (cache + personal data)
+├── LOCAL_SQLITE_SCHEMA.md               on-device Drift schema (cache + personal data)
+├── LOCAL_DATABASE_IMPLEMENTATION.md     Drift code layout, DAOs, repository, migrations
+├── LOCAL_DATABASE_TESTING.md            how the local database is tested
 └── SYNC_STRATEGY.md                     pull-based incremental sync procedure
 ```
 

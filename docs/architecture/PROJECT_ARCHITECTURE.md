@@ -49,22 +49,29 @@ section marks what is in place now and what is planned.
 
 - Repository implementations that fulfil the domain contracts.
 - Code shared across features goes in `lib/data/`:
-  - `local/`: the Drift database and its DAOs *(planned)*.
+  - `local/`: the Drift database, its DAOs and `LocalDatabaseRepository` *(in place, Milestone 2)*.
   - `remote/`: Supabase data sources *(planned)*.
   - `models/`: serializable models (`json_serializable`) for Supabase payloads and
     their mapping to entities *(planned)*.
   - `repositories/`: repositories that span more than one feature *(planned)*.
 
-## Local database (planned)
+## Local database (in place)
 
 - SQLite through **Drift**, opened with `drift_flutter`, which bundles native SQLite.
-- It will hold:
-  - a **scripture cache**, a read-only copy of content pulled from Supabase;
-  - **personal data** (journal, notes, bookmarks, reading progress), which exists only
-    locally;
-  - **FTS5** full-text indexes for offline search.
-- Schemas and migrations will be designed in their own milestone and documented in
-  `docs/database/`. No schema exists yet.
+  The file is `gitartha.sqlite` in the app's documents directory.
+- It holds:
+  - a **scripture cache** (`local_chapters`, `local_shlokas`), a copy of content that
+    will be pulled from Supabase;
+  - **personal data** (reflections, notes, bookmarks, reading progress and history,
+    settings), which exists only locally;
+  - `sync_metadata` for the future sync.
+- Opened in `main()` before the first frame and provided through
+  `appDatabaseProvider` / `localDatabaseRepositoryProvider`
+  (`lib/data/local/local_database_providers.dart`).
+- Full-text (FTS5) search is planned for the search milestone. Search uses `LIKE` for
+  now.
+- Documented in `docs/database/LOCAL_SQLITE_SCHEMA.md`,
+  `LOCAL_DATABASE_IMPLEMENTATION.md` and `LOCAL_DATABASE_TESTING.md`.
 
 ## Supabase backend (planned)
 
@@ -95,7 +102,9 @@ section marks what is in place now and what is planned.
 main()
   → WidgetsFlutterBinding.ensureInitialized()
   → AppConfig.load()                 // reads and validates .env
-  → runApp(ProviderScope(overrides: [appConfigProvider], child: GitarthaApp()))
+  → container = ProviderContainer(overrides: [appConfigProvider])
+  → container.read(appDatabaseProvider).ensureInitialized()   // opens gitartha.sqlite
+  → runApp(UncontrolledProviderScope(container: container, child: GitarthaApp()))
         → MaterialApp.router(theme: AppTheme.light, darkTheme: AppTheme.dark,
                              routerConfig: appRouterProvider)
 ```
