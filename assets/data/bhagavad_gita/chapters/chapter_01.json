@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0.0",
+  "chapter": {
+    "id": 1,
+    "sanskrit_name": "",
+    "hindi_name": "",
+    "english_name": "",
+    "introduction": "",
+    "overview": "",
+    "central_theme": "",
+    "key_topics": [],
+    "summary": "",
+    "conclusion": "",
+    "review_status": "draft"
+  },
+  "verses": [
+    {
+      "id": "chapter_01_verse_041",
+      "verse_number": 41,
+      "reference": "1.41",
+      "index_title": "The Consequences of Adharma and Social Disorder",
+      "index_summary": "",
+      "sanskrit_text": "अधर्माभिभवात्कृष्ण प्रदुष्यन्ति कुलस्त्रियः।\nस्त्रीषु दुष्टासु वार्ष्णेय जायते वर्णसङ्करः॥ १.४१॥",
+      "transliteration": "Adharmābhibhavāt Kṛṣṇa praduṣyanti kula-striyaḥ,\nStrīṣu duṣṭāsu Vārṣṇeya jāyate varṇa-saṅkaraḥ.",
+      "hindi_meaning": "हे कृष्ण (श्रीकृष्ण)! अधर्म के बढ़ने से परिवार की स्त्रियाँ दूषित हो जाती हैं। हे वार्ष्णेय (वृष्णि वंश में जन्मे श्रीकृष्ण)! स्त्रियों के दूषित होने पर वर्णसंकर उत्पन्न होता है।",
+      "hindi_meaning_note": "This is a traditional translation of the verse. The terms *kula-striyaḥ* and *varṇa-saṅkara* carry historical and social meanings, and different commentators interpret them differently. We should understand the verse in its ancient context rather than treating its social assumptions as universal truths today.",
+      "english_meaning": "O Krishna, when unrighteousness prevails, the women of the family become vulnerable to corruption. And when the women are thus corrupted, social disorder and confusion of lineage arise.",
+      "context": "Arjuna is continuing his argument about what he believes will happen after the destruction of families.\n\nIn the social structure of his time, women were closely associated with maintaining family traditions, customs, and continuity between generations.\n\nArjuna fears that war will destroy the stability of families, leaving people vulnerable to exploitation and social disorder.\n\nThe term *Varṇa-saṅkara* refers to the mixing or confusion of social and familial classifications. It reflects the social concerns and assumptions of the period in which this dialogue is set.\n\nIt is important to recognise that Arjuna is expressing his understanding of society at this moment. The verse is not a statement that women are responsible for maintaining the morality of an entire society.",
+      "life_lesson": "When a society becomes unstable, its most vulnerable members often suffer first.\n\nConflict doesn't affect everyone equally. Children, women, the elderly, and people who depend on others can face consequences far beyond the original disagreement.\n\nThis verse invites us to think about the people who may suffer indirectly because of decisions made by others.\n\nA responsible decision should consider not only the people directly involved, but also those who have no control over the situation.",
+      "spiritual_meaning": "The broader theme is the relationship between *Dharma* and social harmony.\n\nArjuna fears that when righteousness disappears, the structures that protect people and pass values between generations will also weaken.\n\nThe deeper concern is the breakdown of social responsibility and the suffering that follows.\n\nAs we continue, we'll see how Krishna challenges Arjuna's reasoning and helps him look beyond fear and attachment.",
+      "reflection_question": "When a conflict happens between two people, do you naturally think about the people directly involved, or do you also consider how their actions might affect everyone around them—even those who have nothing to do with the conflict?",
+      "source_attributions": [],
+      "review_status": "draft"
+    }
+  ]
+}

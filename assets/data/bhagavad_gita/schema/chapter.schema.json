@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gitartha:bhagavad-gita:chapter:1.0.0",
+  "title": "Gitartha — Bhagavad Gita chapter file",
+  "description": "Structure of one chapters/chapter_NN.json file. Validates STRUCTURE only: empty strings are allowed so drafts can be saved. Completeness, cross-references (unique verse ids/numbers, id/reference consistency, source ids) and review readiness are checked by tool/validate_gita_content.dart, because JSON Schema cannot express them.",
+  "type": "object",
+  "required": ["schema_version", "chapter", "verses"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "description": "Version of this content format. Files in this version must say exactly 1.0.0.",
+      "const": "1.0.0"
+    },
+    "chapter": { "$ref": "#/$defs/chapter" },
+    "verses": {
+      "description": "Verses of this chapter, ordered by verse_number. May be empty while authoring. Uniqueness of id and verse_number is enforced by the validator script.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/verse" }
+    }
+  },
+  "$defs": {
+    "text": {
+      "description": "Free text. Empty string = not written yet. If not empty, it must not start or end with whitespace.",
+      "type": "string",
+      "pattern": "^(?:\\S|\\S[\\s\\S]*\\S)?$"
+    },
+    "nonEmptyText": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?:\\S|\\S[\\s\\S]*\\S)$"
+    },
+    "reviewStatus": {
+      "description": "Editorial workflow state, set by people (not computed). draft = being written; in_review = submitted for review; approved = verified and approved for publication. Not imported into Supabase as a column.",
+      "enum": ["draft", "in_review", "approved"]
+    },
+    "contentSection": {
+      "description": "A verse field that a source can be attributed to. Must match the allowed values of shloka_source_attributions.content_section in Supabase.",
+      "enum": [
+        "sanskrit_text",
+        "transliteration",
+        "hindi_meaning",
+        "hindi_meaning_note",
+        "english_meaning",
+        "context",
+        "life_lesson",
+        "spiritual_meaning",
+        "reflection_question"
+      ]
+    },
+    "sourceAttribution": {
+      "type": "object",
+      "required": ["source_id", "content_section"],
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "description": "id of an entry in sources/sources.json.",
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:_[a-z0-9]+)*$"
+        },
+        "content_section": { "$ref": "#/$defs/contentSection" }
+      }
+    },
+    "chapter": {
+      "type": "object",
+      "required": [
+        "id",
+        "sanskrit_name",
+        "hindi_name",
+        "english_name",
+        "introduction",
+        "overview",
+        "central_theme",
+        "key_topics",
+        "summary",
+        "conclusion",
+        "review_status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Chapter number. Must match the file name (chapter_NN.json).",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 18
+        },
+        "sanskrit_name": { "$ref": "#/$defs/text" },
+        "hindi_name": { "$ref": "#/$defs/text" },
+        "english_name": { "$ref": "#/$defs/text" },
+        "introduction": { "$ref": "#/$defs/text" },
+        "overview": { "$ref": "#/$defs/text" },
+        "central_theme": { "$ref": "#/$defs/text" },
+        "key_topics": {
+          "description": "Ordered list of key topics. Empty while not yet written.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/nonEmptyText" }
+        },
+        "summary": { "$ref": "#/$defs/text" },
+        "conclusion": { "$ref": "#/$defs/text" },
+        "review_status": { "$ref": "#/$defs/reviewStatus" }
+      }
+    },
+    "verse": {
+      "type": "object",
+      "required": [
+        "id",
+        "verse_number",
+        "reference",
+        "index_title",
+        "index_summary",
+        "sanskrit_text",
+        "transliteration",
+        "hindi_meaning",
+        "hindi_meaning_note",
+        "english_meaning",
+        "context",
+        "life_lesson",
+        "spiritual_meaning",
+        "reflection_question",
+        "source_attributions",
+        "review_status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Stable human-readable id: chapter_NN_verse_NNN (zero-padded). Must agree with the chapter id and verse_number.",
+          "type": "string",
+          "pattern": "^chapter_(?:0[1-9]|1[0-8])_verse_(?:00[1-9]|0[1-9][0-9]|[1-9][0-9]{2})$"
+        },
+        "verse_number": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "reference": {
+          "description": "\"chapter.verse\" without padding, e.g. 1.41. Must agree with the chapter id and verse_number.",
+          "type": "string",
+          "pattern": "^(?:[1-9]|1[0-8])\\.[1-9][0-9]*$"
+        },
+        "index_title": { "$ref": "#/$defs/text" },
+        "index_summary": { "$ref": "#/$defs/text" },
+        "sanskrit_text": { "$ref": "#/$defs/text" },
+        "transliteration": { "$ref": "#/$defs/text" },
+        "hindi_meaning": { "$ref": "#/$defs/text" },
+        "hindi_meaning_note": {
+          "description": "Optional wording note shown after the Hindi meaning. Never part of the translation itself.",
+          "$ref": "#/$defs/text"
+        },
+        "english_meaning": { "$ref": "#/$defs/text" },
+        "context": { "$ref": "#/$defs/text" },
+        "life_lesson": { "$ref": "#/$defs/text" },
+        "spiritual_meaning": { "$ref": "#/$defs/text" },
+        "reflection_question": { "$ref": "#/$defs/text" },
+        "source_attributions": {
+          "description": "Verified sources for individual sections of this verse. Only add an entry when the source is known and verified.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/sourceAttribution" }
+        },
+        "review_status": { "$ref": "#/$defs/reviewStatus" }
+      }
+    }
+  }
+}
