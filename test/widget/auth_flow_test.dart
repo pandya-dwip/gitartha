@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gitartha/app/widgets/gitartha_splash.dart';
+import 'package:gitartha/features/authentication/presentation/screens/auth_loading_screen.dart';
 import 'package:gitartha/app/app.dart';
 import 'package:gitartha/app/router/app_router.dart';
 import 'package:gitartha/core/config/app_config.dart';
@@ -188,6 +190,13 @@ void main() {
     )..membershipGate = Completer();
     await launch(tester, r, settle: false);
     expect(location(), AppRoutes.loading);
+    // The same splash as at startup (logo + name)...
+    expect(find.byType(GitarthaSplash), findsOneWidget);
+    expect(find.text('गीतार्थ'), findsOneWidget);
+    expect(find.text('Checking your access…'), findsNothing);
+    // ...with a hint only if the check takes a while.
+    await tester.pump(AuthLoadingScreen.hintDelay);
+    await tester.pump(const Duration(milliseconds: 400));
     expect(find.text('Checking your access…'), findsOneWidget);
 
     r.membershipGate!.complete();

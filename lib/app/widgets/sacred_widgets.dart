@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/settings/presentation/providers/app_settings_provider.dart';
+import '../motion/motion.dart';
 import '../theme/app_theme.dart';
 
 /// The surfaces of DESIGN.md's tonal layering.
@@ -35,7 +36,8 @@ class SacredCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
     final radius = BorderRadius.circular(AppRadii.lg);
-    return DecoratedBox(
+    final tappable = onTap != null;
+    final card = DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: radius,
         boxShadow: tone == SacredTone.card ? c.softShadow : null,
@@ -50,13 +52,18 @@ class SacredCard extends StatelessWidget {
                 : c.border.withValues(alpha: 0.7),
           ),
         ),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: Padding(padding: padding, child: child),
-        ),
+        // The clip only exists to keep the ink ripple inside the rounded
+        // corners; static cards (most of the reader) skip it.
+        clipBehavior: tappable ? Clip.antiAlias : Clip.none,
+        child: tappable
+            ? InkWell(
+                onTap: onTap,
+                child: Padding(padding: padding, child: child),
+              )
+            : Padding(padding: padding, child: child),
       ),
     );
+    return tappable ? PressScale(child: card) : card;
   }
 }
 
@@ -202,7 +209,14 @@ class HeaderIconButton extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(icon, size: 20, color: color),
+                  PopSwitcher(
+                    child: Icon(
+                      icon,
+                      key: ValueKey(icon),
+                      size: 20,
+                      color: color,
+                    ),
+                  ),
                   if (label != null) ...[
                     const SizedBox(width: 2),
                     Text(

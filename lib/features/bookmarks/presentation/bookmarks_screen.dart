@@ -9,6 +9,7 @@ import '../../../app/widgets/state_views.dart';
 import '../../journal/presentation/providers/personal_providers.dart';
 import '../../shlokas/presentation/providers/scripture_providers.dart';
 import '../../shlokas/presentation/widgets/verse_tile.dart';
+import '../../../app/motion/motion.dart';
 
 /// Bookmarks tab (code.html bottom navigation). Newest first; stored only
 /// on this device.
@@ -45,8 +46,10 @@ class BookmarksScreen extends ConsumerWidget {
                     padding: const EdgeInsets.all(AppSpacing.page),
                     itemCount: list.length,
                     separatorBuilder: (_, _) => const SizedBox(height: 10),
-                    itemBuilder: (context, i) =>
-                        _BookmarkTile(shlokaId: list[i].shlokaId),
+                    itemBuilder: (context, i) => FadeSlideIn(
+                      index: i,
+                      child: _BookmarkTile(shlokaId: list[i].shlokaId),
+                    ),
                   ),
                   AsyncError() => const ErrorState(),
                   _ => const LoadingState(),

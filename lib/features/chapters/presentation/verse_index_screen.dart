@@ -10,6 +10,7 @@ import '../../../data/local/database/app_database.dart';
 import '../../../data/local/local_database_providers.dart';
 import '../../shlokas/presentation/providers/scripture_providers.dart';
 import '../../shlokas/presentation/widgets/verse_tile.dart';
+import '../../../app/motion/motion.dart';
 
 /// code.html "Chapter Verse Index": every cached verse with its title and
 /// summary, filterable by range (1–10, 11–20 … , Show All).
@@ -172,10 +173,14 @@ class _VerseIndexScreenState extends ConsumerState<VerseIndexScreen> {
                 : SliverList.separated(
                     itemCount: shown.length,
                     separatorBuilder: (_, _) => const SizedBox(height: 10),
-                    itemBuilder: (context, i) => VerseTile(
-                      verse: shown[i],
-                      onTap: () =>
-                          context.go(AppRoutes.verse(id, shown[i].verseNumber)),
+                    itemBuilder: (context, i) => FadeSlideIn(
+                      index: i,
+                      child: VerseTile(
+                        verse: shown[i],
+                        onTap: () => context.go(
+                          AppRoutes.verse(id, shown[i].verseNumber),
+                        ),
+                      ),
                     ),
                   ),
           ),

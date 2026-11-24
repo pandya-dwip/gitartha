@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../app/motion/motion.dart';
 import '../../../app/router/app_router.dart';
 import '../../../app/theme/app_theme.dart';
 import '../../../app/widgets/sacred_widgets.dart';
@@ -116,24 +117,7 @@ class _Reader extends ConsumerWidget {
     final t = context.text;
     final fontSize =
         ref.watch(readerFontSizeProvider).value ?? ReaderFontSize.medium;
-    final bookmarked = ref.watch(isBookmarkedProvider(verse.id)).value ?? false;
     final chapterId = verse.chapterId;
-
-    Future<void> toggleBookmark() async {
-      final messenger = ScaffoldMessenger.of(context);
-      await ref
-          .read(personalActionsProvider)
-          .toggleBookmark(verse.id, bookmarked: bookmarked);
-      messenger
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(
-            content: Text(
-              bookmarked ? 'Bookmark removed' : 'Saved to Bookmarks',
-            ),
-          ),
-        );
-    }
 
     final hasContent = [
       verse.sanskritText,
@@ -192,12 +176,7 @@ class _Reader extends ConsumerWidget {
               },
             ),
             const SizedBox(width: 6),
-            HeaderIconButton(
-              icon: bookmarked ? Icons.bookmark : Icons.bookmark_border,
-              active: bookmarked,
-              tooltip: bookmarked ? 'Remove bookmark' : 'Bookmark this verse',
-              onPressed: toggleBookmark,
-            ),
+            _BookmarkButton(shlokaId: verse.id),
           ],
         ),
       ),
@@ -212,140 +191,198 @@ class _Reader extends ConsumerWidget {
                 ),
               ),
               child: ReadingWidth(
-                child: ListView(
-                  key: PageStorageKey(verse.id),
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.page,
-                    AppSpacing.lg,
-                    AppSpacing.page,
-                    AppSpacing.xl,
-                  ),
-                  children: [
-                    _VerseHeading(
-                      chapterId: chapterId,
-                      verseNumber: verse.verseNumber,
-                      title: verse.indexTitle,
+                child: SelectionArea(
+                  child: ListView(
+                    key: PageStorageKey(verse.id),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.page,
+                      AppSpacing.lg,
+                      AppSpacing.page,
+                      AppSpacing.xl,
                     ),
-                    const SizedBox(height: AppSpacing.lg),
-                    if (!hasContent)
-                      const EmptyState(
-                        icon: Icons.hourglass_empty,
-                        title: 'Not written yet',
-                        message:
-                            'The text and explanation of this verse have not been added yet.',
-                      ),
-                    if (verse.sanskritText != null)
-                      SacredCard(
-                        emphasized: true,
-                        padding: const EdgeInsets.all(AppSpacing.lg),
-                        child: Column(
-                          children: [
-                            Text(
-                              '— संस्कृतम् (Sanskrit) —',
-                              style: t.meta.copyWith(
-                                color: c.accent,
-                                fontSize: 10,
-                                letterSpacing: 1.6,
-                              ),
-                            ),
-                            const SizedBox(height: AppSpacing.gutter),
-                            SelectableText(
-                              verse.sanskritText!,
-                              textAlign: TextAlign.center,
-                              style: t.sanskrit.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: AppSpacing.md),
-                            const SacredDivider(width: 112),
-                          ],
+                    children: [
+                      FadeSlideIn(
+                        child: _VerseHeading(
+                          chapterId: chapterId,
+                          verseNumber: verse.verseNumber,
+                          title: verse.indexTitle,
                         ),
                       ),
-                    _Section(
-                      label: 'Pronunciation & Transliteration',
-                      icon: Icons.record_voice_over_outlined,
-                      text: verse.transliteration,
-                      style: t.transliteration,
-                      tone: SacredTone.well,
-                      accentLabel: false,
-                    ),
-                    _Section(
-                      label: 'हिन्दी अनुवाद (Hindi Meaning)',
-                      icon: Icons.translate,
-                      text: verse.hindiMeaning,
-                      style: t.sanskrit.copyWith(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        height: 1.75,
+                      const SizedBox(height: AppSpacing.lg),
+                      if (!hasContent)
+                        const EmptyState(
+                          icon: Icons.hourglass_empty,
+                          title: 'Not written yet',
+                          message:
+                              'The text and explanation of this verse have not been added yet.',
+                        ),
+                      if (verse.sanskritText != null)
+                        FadeSlideIn(
+                          index: 1,
+                          child: SacredCard(
+                            emphasized: true,
+                            padding: const EdgeInsets.all(AppSpacing.lg),
+                            child: Column(
+                              children: [
+                                Text(
+                                  '— संस्कृतम् (Sanskrit) —',
+                                  style: t.meta.copyWith(
+                                    color: c.accent,
+                                    fontSize: 10,
+                                    letterSpacing: 1.6,
+                                  ),
+                                ),
+                                const SizedBox(height: AppSpacing.gutter),
+                                Text(
+                                  verse.sanskritText!,
+                                  textAlign: TextAlign.center,
+                                  style: t.sanskrit.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: AppSpacing.md),
+                                const SacredDivider(width: 112),
+                              ],
+                            ),
+                          ),
+                        ),
+                      _Section(
+                        index: 2,
+                        label: 'Pronunciation & Transliteration',
+                        icon: Icons.record_voice_over_outlined,
+                        text: verse.transliteration,
+                        style: t.transliteration,
+                        tone: SacredTone.well,
+                        accentLabel: false,
                       ),
-                      footer: verse.hindiMeaningNote == null
-                          ? null
-                          : Padding(
-                              padding: const EdgeInsets.only(
-                                top: AppSpacing.sm,
-                              ),
-                              child: Text(
-                                'टिप्पणी (Note): ${verse.hindiMeaningNote}',
-                                style: t.sanskrit.copyWith(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.6,
-                                  color: c.textSecondary,
+                      _Section(
+                        index: 3,
+                        label: 'हिन्दी अनुवाद (Hindi Meaning)',
+                        icon: Icons.translate,
+                        text: verse.hindiMeaning,
+                        style: t.sanskrit.copyWith(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          height: 1.75,
+                        ),
+                        footer: verse.hindiMeaningNote == null
+                            ? null
+                            : Padding(
+                                padding: const EdgeInsets.only(
+                                  top: AppSpacing.sm,
+                                ),
+                                child: Text(
+                                  'टिप्पणी (Note): ${verse.hindiMeaningNote}',
+                                  style: t.sanskrit.copyWith(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.6,
+                                    color: c.textSecondary,
+                                  ),
                                 ),
                               ),
-                            ),
-                    ),
-                    _Section(
-                      label: 'English Meaning',
-                      icon: Icons.menu_book_outlined,
-                      text: verse.englishMeaning,
-                      style: t.translation,
-                    ),
-                    _Section(
-                      label: 'Context — What is happening here?',
-                      icon: Icons.explore_outlined,
-                      text: verse.context,
-                      style: t.commentary,
-                      tone: SacredTone.well,
-                      accentLabel: false,
-                    ),
-                    _Section(
-                      label: 'Life Lesson',
-                      icon: Icons.psychology_outlined,
-                      text: verse.lifeLesson,
-                      style: t.commentary,
-                    ),
-                    _Section(
-                      label: 'Spiritual Meaning',
-                      icon: Icons.self_improvement,
-                      text: verse.spiritualMeaning,
-                      style: t.commentary,
-                    ),
-                    _Section(
-                      label: 'Reflection Question',
-                      icon: Icons.help_outline,
-                      text: verse.reflectionQuestion,
-                      style: t.commentary.copyWith(fontStyle: FontStyle.italic),
-                      tone: SacredTone.well,
-                      emphasized: true,
-                    ),
-                    const SizedBox(height: _gap),
-                    _VerseJournal(verse: verse),
-                    const SizedBox(height: _gap),
-                    _ProgressRow(verse: verse),
-                    const SizedBox(height: AppSpacing.lg),
-                    _PrevNext(
-                      chapterId: chapterId,
-                      previous: previous,
-                      next: next,
-                    ),
-                  ],
+                      ),
+                      _Section(
+                        index: 4,
+                        label: 'English Meaning',
+                        icon: Icons.menu_book_outlined,
+                        text: verse.englishMeaning,
+                        style: t.translation,
+                      ),
+                      _Section(
+                        index: 5,
+                        label: 'Context — What is happening here?',
+                        icon: Icons.explore_outlined,
+                        text: verse.context,
+                        style: t.commentary,
+                        tone: SacredTone.well,
+                        accentLabel: false,
+                      ),
+                      _Section(
+                        index: 6,
+                        label: 'Life Lesson',
+                        icon: Icons.psychology_outlined,
+                        text: verse.lifeLesson,
+                        style: t.commentary,
+                      ),
+                      _Section(
+                        index: 7,
+                        label: 'Spiritual Meaning',
+                        icon: Icons.self_improvement,
+                        text: verse.spiritualMeaning,
+                        style: t.commentary,
+                      ),
+                      _Section(
+                        index: 8,
+                        label: 'Reflection Question',
+                        icon: Icons.help_outline,
+                        text: verse.reflectionQuestion,
+                        style: t.commentary.copyWith(
+                          fontStyle: FontStyle.italic,
+                        ),
+                        tone: SacredTone.well,
+                        emphasized: true,
+                      ),
+                      const SizedBox(height: _gap),
+                      SelectionContainer.disabled(
+                        child: _VerseJournal(verse: verse),
+                      ),
+                      const SizedBox(height: _gap),
+                      SelectionContainer.disabled(
+                        child: _ProgressRow(verse: verse),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      SelectionContainer.disabled(
+                        child: _PrevNext(
+                          chapterId: chapterId,
+                          previous: previous,
+                          next: next,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Bookmark toggle in the reader's top bar. It watches the bookmark state on
+/// its own, so toggling rebuilds only this button, not the whole verse.
+class _BookmarkButton extends ConsumerWidget {
+  const _BookmarkButton({required this.shlokaId});
+
+  final String shlokaId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bookmarked = ref.watch(isBookmarkedProvider(shlokaId)).value ?? false;
+
+    Future<void> toggle() async {
+      final messenger = ScaffoldMessenger.of(context);
+      await ref
+          .read(personalActionsProvider)
+          .toggleBookmark(shlokaId, bookmarked: bookmarked);
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(
+              bookmarked ? 'Bookmark removed' : 'Saved to Bookmarks',
+            ),
+          ),
+        );
+    }
+
+    return HeaderIconButton(
+      icon: bookmarked ? Icons.bookmark : Icons.bookmark_border,
+      active: bookmarked,
+      tooltip: bookmarked ? 'Remove bookmark' : 'Bookmark this verse',
+      onPressed: toggle,
     );
   }
 }
@@ -361,8 +398,11 @@ class _Section extends StatelessWidget {
     this.emphasized = false,
     this.accentLabel = true,
     this.footer,
+    this.index = 0,
   });
 
+  /// Position in the reading order, for the staggered entrance.
+  final int index;
   final String label;
   final IconData icon;
   final String? text;
@@ -375,19 +415,22 @@ class _Section extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (text == null) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.only(top: _gap),
-      child: SacredCard(
-        tone: tone,
-        emphasized: emphasized,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SectionLabel(label, icon: icon, accent: accentLabel),
-            const SizedBox(height: AppSpacing.sm),
-            SelectableText(text!, style: style),
-            ?footer,
-          ],
+    return FadeSlideIn(
+      index: index,
+      child: Padding(
+        padding: const EdgeInsets.only(top: _gap),
+        child: SacredCard(
+          tone: tone,
+          emphasized: emphasized,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SectionLabel(label, icon: icon, accent: accentLabel),
+              const SizedBox(height: AppSpacing.sm),
+              Text(text!, style: style),
+              ?footer,
+            ],
+          ),
         ),
       ),
     );

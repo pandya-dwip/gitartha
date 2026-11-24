@@ -18,6 +18,7 @@ import '../../features/journal/presentation/journal_screen.dart';
 import '../../features/shlokas/presentation/shloka_reader_screen.dart';
 import '../shell/app_shell.dart';
 import '../widgets/state_views.dart';
+import '../motion/motion.dart';
 
 /// Route paths.
 abstract final class AppRoutes {
@@ -129,14 +130,21 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
     ),
     routes: [
-      StatefulShellRoute.indexedStack(
+      StatefulShellRoute(
         builder: (context, state, shell) => AppShell(shell: shell),
+        // Like indexedStack (tabs keep their state), with a fade between tabs.
+        navigatorContainerBuilder: (context, shell, children) =>
+            FadingBranchContainer(
+              currentIndex: shell.currentIndex,
+              children: children,
+            ),
         branches: [
           StatefulShellBranch(
             routes: [
               GoRoute(
                 path: AppRoutes.home,
-                builder: (context, state) => const HomeScreen(),
+                builder: (context, state) =>
+                    const EntranceScope(child: HomeScreen()),
               ),
             ],
           ),
@@ -144,25 +152,32 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: AppRoutes.chapters,
-                builder: (context, state) => const ChapterLibraryScreen(),
+                builder: (context, state) =>
+                    const EntranceScope(child: ChapterLibraryScreen()),
                 routes: [
                   GoRoute(
                     path: ':chapterId',
-                    builder: (context, state) => ChapterOverviewScreen(
-                      chapterId: _intParam(state, 'chapterId'),
+                    builder: (context, state) => EntranceScope(
+                      child: ChapterOverviewScreen(
+                        chapterId: _intParam(state, 'chapterId'),
+                      ),
                     ),
                     routes: [
                       GoRoute(
                         path: 'verses',
-                        builder: (context, state) => VerseIndexScreen(
-                          chapterId: _intParam(state, 'chapterId'),
+                        builder: (context, state) => EntranceScope(
+                          child: VerseIndexScreen(
+                            chapterId: _intParam(state, 'chapterId'),
+                          ),
                         ),
                         routes: [
                           GoRoute(
                             path: ':verse',
-                            builder: (context, state) => ShlokaReaderScreen(
-                              chapterId: _intParam(state, 'chapterId'),
-                              verseNumber: _intParam(state, 'verse'),
+                            builder: (context, state) => EntranceScope(
+                              child: ShlokaReaderScreen(
+                                chapterId: _intParam(state, 'chapterId'),
+                                verseNumber: _intParam(state, 'verse'),
+                              ),
                             ),
                           ),
                         ],
@@ -177,7 +192,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: AppRoutes.bookmarks,
-                builder: (context, state) => const BookmarksScreen(),
+                builder: (context, state) =>
+                    const EntranceScope(child: BookmarksScreen()),
               ),
             ],
           ),
@@ -185,7 +201,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: AppRoutes.journal,
-                builder: (context, state) => const JournalScreen(),
+                builder: (context, state) =>
+                    const EntranceScope(child: JournalScreen()),
               ),
             ],
           ),

@@ -6,7 +6,11 @@ import '../../../../data/local/repositories/local_database_repository.dart';
 // Personal data: device-local only (SQLite). Nothing here talks to
 // Supabase, and nothing in sync touches these tables.
 
-final isBookmarkedProvider = StreamProvider.family<bool, String>(
+// Per-verse providers are autoDispose: each holds a live database watch,
+// so it must be released when no screen shows that verse (otherwise
+// every verse ever opened keeps a query running for the whole session).
+
+final isBookmarkedProvider = StreamProvider.autoDispose.family<bool, String>(
   (ref, shlokaId) =>
       ref.watch(localDatabaseRepositoryProvider).watchIsBookmarked(shlokaId),
 );
@@ -16,14 +20,15 @@ final bookmarksProvider = StreamProvider<List<Bookmark>>(
   (ref) => ref.watch(localDatabaseRepositoryProvider).watchBookmarks(),
 );
 
-final progressProvider = StreamProvider.family<ReadingProgressEntry?, String>(
-  (ref, shlokaId) =>
-      ref.watch(localDatabaseRepositoryProvider).watchProgress(shlokaId),
-);
+final progressProvider = StreamProvider.autoDispose
+    .family<ReadingProgressEntry?, String>(
+      (ref, shlokaId) =>
+          ref.watch(localDatabaseRepositoryProvider).watchProgress(shlokaId),
+    );
 
 /// Oldest first (dated answers to this verse's reflection question).
-final reflectionsForShlokaProvider =
-    StreamProvider.family<List<Reflection>, String>(
+final reflectionsForShlokaProvider = StreamProvider.autoDispose
+    .family<List<Reflection>, String>(
       (ref, shlokaId) => ref
           .watch(localDatabaseRepositoryProvider)
           .watchReflectionsForShloka(shlokaId),
@@ -34,8 +39,8 @@ final allReflectionsProvider = StreamProvider<List<Reflection>>(
   (ref) => ref.watch(localDatabaseRepositoryProvider).watchRecentReflections(),
 );
 
-final notesForShlokaProvider =
-    StreamProvider.family<List<PersonalNote>, String>(
+final notesForShlokaProvider = StreamProvider.autoDispose
+    .family<List<PersonalNote>, String>(
       (ref, shlokaId) => ref
           .watch(localDatabaseRepositoryProvider)
           .watchNotesForShloka(shlokaId),

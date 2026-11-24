@@ -13,6 +13,7 @@ import '../../../data/local/local_database_providers.dart';
 import '../../shlokas/presentation/providers/scripture_providers.dart';
 import '../../shlokas/presentation/widgets/verse_tile.dart';
 import 'widgets/chapter_cards.dart';
+import '../../../app/motion/motion.dart';
 
 /// code.html "Chapter Library": all chapters, plus local search over the
 /// cached scripture (DESIGN.md search input).
@@ -171,10 +172,14 @@ class _ChapterLibraryScreenState extends ConsumerState<ChapterLibraryScreen> {
                       itemCount: list.length,
                       separatorBuilder: (_, _) =>
                           const SizedBox(height: AppSpacing.gutter),
-                      itemBuilder: (context, i) => ChapterCard(
-                        chapter: list[i],
-                        summary: summaries[list[i].id],
-                        onTap: () => context.go(AppRoutes.chapter(list[i].id)),
+                      itemBuilder: (context, i) => FadeSlideIn(
+                        index: i,
+                        child: ChapterCard(
+                          chapter: list[i],
+                          summary: summaries[list[i].id],
+                          onTap: () =>
+                              context.go(AppRoutes.chapter(list[i].id)),
+                        ),
                       ),
                     ),
                   ),

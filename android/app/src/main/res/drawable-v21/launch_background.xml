@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Launch screen: the app's canvas colour (light / dark via values-night). -->
+<!-- Launch screen: only the app's canvas colour. The logo and name appear
+     together in Flutter's splash (lib/app/widgets/gitartha_splash.dart), so
+     there is a single splash instead of a native one followed by another. -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/gitartha_canvas" />
-    <item>
-        <bitmap android:gravity="center" android:src="@mipmap/ic_launcher" />
-    </item>
 </layer-list>

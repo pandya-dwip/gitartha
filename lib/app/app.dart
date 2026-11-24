@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/config/app_config_provider.dart';
+import '../features/connectivity/presentation/network_gate.dart';
 import '../features/settings/presentation/providers/app_settings_provider.dart';
 import 'router/app_router.dart';
 import 'theme/app_theme.dart';
@@ -24,6 +25,9 @@ class GitarthaApp extends ConsumerWidget {
       darkTheme: AppTheme.dark,
       themeMode: themeMode,
       routerConfig: router,
+      // Above every screen: the "turn on the internet" prompt.
+      builder: (context, child) =>
+          NetworkGate(child: child ?? const SizedBox.shrink()),
     );
   }
 }

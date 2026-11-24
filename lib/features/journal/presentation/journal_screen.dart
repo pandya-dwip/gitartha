@@ -11,6 +11,7 @@ import '../../settings/presentation/settings_sheet.dart';
 import '../../shlokas/presentation/providers/scripture_providers.dart';
 import 'journal_editors.dart';
 import 'providers/personal_providers.dart';
+import '../../../app/motion/motion.dart';
 
 /// "My Journal" tab: reflection answers and personal notes, all stored only
 /// on this device.
@@ -98,7 +99,10 @@ class _ReflectionsList extends ConsumerWidget {
         padding: const EdgeInsets.all(AppSpacing.page),
         itemCount: list.length,
         separatorBuilder: (_, _) => const SizedBox(height: 10),
-        itemBuilder: (context, i) => _ReflectionCard(reflection: list[i]),
+        itemBuilder: (context, i) => FadeSlideIn(
+          index: i,
+          child: _ReflectionCard(reflection: list[i]),
+        ),
       ),
       AsyncError() => const ErrorState(),
       _ => const LoadingState(),
@@ -187,32 +191,35 @@ class _NotesList extends ConsumerWidget {
           final verse = note.shlokaId == null
               ? null
               : ref.watch(shlokaByIdProvider(note.shlokaId!)).value;
-          return SacredCard(
-            onTap: () => showNoteEditor(
-              context,
-              note: note,
-              reference: verse?.reference,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${verse == null ? '' : 'BG ${verse.reference} · '}${formatDateTime(context, note.updatedAt)}',
-                  style: t.meta.copyWith(color: c.accent, fontSize: 11),
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                if (note.title != null)
+          return FadeSlideIn(
+            index: i,
+            child: SacredCard(
+              onTap: () => showNoteEditor(
+                context,
+                note: note,
+                reference: verse?.reference,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    note.title!,
-                    style: t.ui.copyWith(fontWeight: FontWeight.w600),
+                    '${verse == null ? '' : 'BG ${verse.reference} · '}${formatDateTime(context, note.updatedAt)}',
+                    style: t.meta.copyWith(color: c.accent, fontSize: 11),
                   ),
-                Text(
-                  note.content,
-                  maxLines: 4,
-                  overflow: TextOverflow.ellipsis,
-                  style: t.commentary.copyWith(fontSize: 14),
-                ),
-              ],
+                  const SizedBox(height: AppSpacing.xs),
+                  if (note.title != null)
+                    Text(
+                      note.title!,
+                      style: t.ui.copyWith(fontWeight: FontWeight.w600),
+                    ),
+                  Text(
+                    note.content,
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
+                    style: t.commentary.copyWith(fontSize: 14),
+                  ),
+                ],
+              ),
             ),
           );
         },

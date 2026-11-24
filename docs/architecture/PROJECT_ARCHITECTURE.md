@@ -123,16 +123,45 @@ section marks what is in place now and what is planned.
 ## App bootstrap (in place)
 
 ```text
-main()
-  → WidgetsFlutterBinding.ensureInitialized()
-  → AppConfig.load()                 // reads and validates .env
-  → Supabase.initialize(...)         // if configured; restores the stored session
-  → container = ProviderContainer(overrides: [appConfigProvider, supabaseClientProvider])
-  → container.read(appDatabaseProvider).ensureInitialized()   // opens gitartha.sqlite
-  → runApp(UncontrolledProviderScope(container: container, child: GitarthaApp()))
-        → MaterialApp.router(theme: AppTheme.light, darkTheme: AppTheme.dark,
-                             routerConfig: appRouterProvider)
+Native launch screen        canvas colour only (Android ≤11, Android 12+ system
+                            splash with its icon hidden, iOS LaunchScreen)
+main() → runApp(GitarthaStartup)            first Flutter frame = GitarthaSplash
+  GitarthaSplash            logo + "गीतार्थ" below it; entrance plays once the logo
+                            image is decoded (logo and name never appear apart)
+  behind the splash:
+  → AppConfig.load()                         reads and validates .env
+  → Supabase.initialize(...)                 if configured (12 s limit)
+  → container.read(appDatabaseProvider).ensureInitialized()   opens gitartha.sqlite
+  → wait for the first membership check      (6 s limit) and for the entrance
+  → cross-fade into UncontrolledProviderScope(GitarthaApp)
+        → MaterialApp.router(builder: NetworkGate(...), routerConfig: appRouterProvider)
 ```
+
+There is exactly **one** splash. The router's `/loading` route (membership still being
+checked) renders the same `GitarthaSplash` without replaying its entrance, so app start
+→ checking access → app shows no second screen. If startup takes over 4 s, a quiet
+"Preparing your library…" appears under the name. Errors appear there too, with "Try
+again".
+
+**Network prompt.** `NetworkGate` (`lib/features/connectivity/`) sits above every
+screen. On launch and on every resume it checks that the Supabase host is reachable (a
+TCP connection, not just "Wi-Fi is on"). Offline, it shows a modal ("No internet
+connection") with *Open network settings* (Android, via the `gitartha/network` method
+channel in `MainActivity.kt`) and *Try again*. It re-checks every 3 s and closes by
+itself when the connection is back, then re-runs a membership check that failed offline
+and the content sync. It is off when no backend is configured.
+
+**Motion** (`lib/app/motion/motion.dart`):
+
+- one-shot entrances (`FadeSlideIn`, staggered per list, only during a screen's first
+  700 ms via `EntranceScope`);
+- a press effect on tappable cards (`PressScale`);
+- animated icon swaps (`PopSwitcher`);
+- a fade between tabs (`FadingBranchContainer`);
+- zoom page transitions on Android and the native slide on iOS.
+
+Everything animates opacity or transform only, nothing loops, and everything is off
+when the system's "reduce motion" setting is on.
 
 Routes are guarded by `authRedirect` (`lib/app/router/app_router.dart`). Signed-out
 visitors see `/welcome`, then `/login`. Only confirmed members (read-only or editor)

@@ -13,6 +13,7 @@ import '../../settings/presentation/settings_sheet.dart';
 import '../../shlokas/presentation/providers/scripture_providers.dart';
 import '../../synchronization/domain/sync_result.dart';
 import '../../synchronization/presentation/providers/content_sync_provider.dart';
+import '../../../app/motion/motion.dart';
 
 /// code.html "Home": continue reading, daily contemplation, calm progress
 /// and a preview of the chapters. Everything comes from SQLite.
@@ -45,12 +46,23 @@ class HomeScreen extends ConsumerWidget {
                     ),
                     sliver: SliverList.list(
                       children: [
-                        _ContinueReading(firstChapter: list.first),
+                        FadeSlideIn(
+                          child: _ContinueReading(firstChapter: list.first),
+                        ),
                         const SizedBox(height: AppSpacing.page),
-                        const _DailyContemplation(),
-                        const _ContemplationProgress(),
+                        const FadeSlideIn(
+                          index: 1,
+                          child: _DailyContemplation(),
+                        ),
+                        const FadeSlideIn(
+                          index: 2,
+                          child: _ContemplationProgress(),
+                        ),
                         const SizedBox(height: AppSpacing.lg),
-                        _ChapterPreview(chapters: list),
+                        FadeSlideIn(
+                          index: 3,
+                          child: _ChapterPreview(chapters: list),
+                        ),
                       ],
                     ),
                   ),

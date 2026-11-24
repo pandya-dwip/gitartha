@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
@@ -341,10 +340,13 @@ abstract final class AppTheme {
           borderRadius: BorderRadius.circular(AppRadii.md),
         ),
       ),
-      // Smooth fade-through between pages on Android; native on iOS.
+      // Android: the zoom transition animates a snapshot of each page instead
+      // of repainting it every frame, so it stays smooth on any phone (the
+      // previous fade-forwards transition was long and faded whole pages
+      // through an opacity layer). iOS: the native slide.
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
-          TargetPlatform.android: FadeForwardsPageTransitionsBuilder(),
+          TargetPlatform.android: ZoomPageTransitionsBuilder(),
           TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         },
       ),

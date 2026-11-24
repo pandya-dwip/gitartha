@@ -34,9 +34,11 @@ final cachedVerseCountProvider = Provider<int>(
 );
 
 /// A shloka by id, live; soft-deleted ones included (`deletedAt != null`).
-final shlokaByIdProvider = StreamProvider.family<LocalShloka?, String>(
-  (ref, id) => ref.watch(localDatabaseRepositoryProvider).watchShloka(id),
-);
+/// autoDispose: one per verse shown in a list, released when scrolled away.
+final shlokaByIdProvider = StreamProvider.autoDispose
+    .family<LocalShloka?, String>(
+      (ref, id) => ref.watch(localDatabaseRepositoryProvider).watchShloka(id),
+    );
 
 /// Local search over cached live verses (reference, titles, texts,
 /// meanings). Empty for blank queries.
@@ -60,7 +62,10 @@ final lastOpenedShlokaProvider = StreamProvider<LocalShloka?>((ref) {
 /// nothing suitable is cached. Never invents content.
 final dailyShlokaProvider = FutureProvider<LocalShloka?>((ref) async {
   final repo = ref.watch(localDatabaseRepositoryProvider);
-  final summaries = ref.watch(chapterSummariesProvider);
+  // Depends only on how many verses each chapter has, not on reading
+  // progress: recording a verse as opened must not re-run this.
+  ref.watch(chapterSummariesProvider.select(_verseCountsKey));
+  final summaries = ref.read(chapterSummariesProvider);
   final total = summaries.values.fold(0, (s, c) => s + c.totalShlokas);
   if (total == 0) return null;
   final now = DateTime.now();
@@ -80,3 +85,9 @@ final dailyShlokaProvider = FutureProvider<LocalShloka?>((ref) async {
   }
   return null;
 });
+
+/// "1:47,2:72,…": changes only when a chapter's verse count changes.
+String _verseCountsKey(Map<int, ChapterProgressSummary> summaries) =>
+    (summaries.keys.toList()..sort())
+        .map((id) => '$id:${summaries[id]!.totalShlokas}')
+        .join(',');
