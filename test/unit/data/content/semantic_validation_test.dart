@@ -339,7 +339,7 @@ void main() {
         expect(r.totalFiles, 19); // 18 chapters + sources.json
         expect(r.validFiles, 19);
         expect(r.totalChapters, 18);
-        expect(r.totalVerses, 1);
+        expect(r.totalVerses, 41); // Chapter 1, verses 1-41 (drafts)
         expect(r.approvedVerses, 0);
       }
     });
@@ -350,17 +350,19 @@ void main() {
       expect(r.publicationReadyChapters, 0);
     });
 
-    test(
-      'Verse 1.41 is structurally valid, incomplete only for its summary',
-      () async {
-        final report = await service.validate(chapterIds: [1]);
-        final verse = report.chapters.single.verses.single;
-        expect(verse.contentId, 'chapter_01_verse_041');
-        expect(verse.hasErrors, isFalse);
-        expect(verse.missingFields, ['index_summary']);
-        expect(verse.isApproved, isFalse);
-      },
-    );
+    test('Chapter 1 verses 1-41 are complete drafts, none approved', () async {
+      final report = await service.validate(chapterIds: [1]);
+      final verses = report.chapters.single.verses;
+      expect(verses.map((v) => v.contentId), [
+        for (var n = 1; n <= 41; n++)
+          'chapter_01_verse_${n.toString().padLeft(3, '0')}',
+      ]);
+      for (final verse in verses) {
+        expect(verse.hasErrors, isFalse, reason: verse.contentId);
+        expect(verse.missingFields, isEmpty, reason: verse.contentId);
+        expect(verse.isApproved, isFalse, reason: verse.contentId);
+      }
+    });
   });
 }
 

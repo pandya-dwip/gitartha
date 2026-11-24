@@ -381,33 +381,40 @@ void main() {
   });
 
   group('the real repository (read-only, into a test database)', () {
-    test('draft import loads all 18 chapters and Verse 1.41', () async {
-      final result = await ContentImportService(
-        source: FileSystemContentSource(),
-        database: db,
-      ).importContent(mode: ImportMode.draft);
+    test(
+      'draft import loads all 18 chapters and Chapter 1 verses 1-41',
+      () async {
+        final result = await ContentImportService(
+          source: FileSystemContentSource(),
+          database: db,
+        ).importContent(mode: ImportMode.draft);
 
-      expect(result.status, ImportStatus.succeeded, reason: result.toReport());
-      expect(result.totalFilesDiscovered, 19);
-      expect(result.chapters.inserted, 18);
-      expect(result.verses.inserted, 1);
-      final v = (await db.shlokaDao.getShloka(
-        ContentIds.shloka('chapter_01_verse_041'),
-      ))!;
-      expect(v.reference, '1.41');
-      expect(
-        v.hindiMeaningNote,
-        startsWith('This is a traditional translation'),
-      );
-      expect(v.indexSummary, isNull);
+        expect(
+          result.status,
+          ImportStatus.succeeded,
+          reason: result.toReport(),
+        );
+        expect(result.totalFilesDiscovered, 19);
+        expect(result.chapters.inserted, 18);
+        expect(result.verses.inserted, 41);
+        final v = (await db.shlokaDao.getShloka(
+          ContentIds.shloka('chapter_01_verse_041'),
+        ))!;
+        expect(v.reference, '1.41');
+        expect(
+          v.hindiMeaningNote,
+          startsWith('This is a traditional translation'),
+        );
+        expect(v.indexSummary, isNotNull);
 
-      final again = await ContentImportService(
-        source: FileSystemContentSource(),
-        database: db,
-      ).importContent(mode: ImportMode.draft);
-      expect(again.chapters.unchanged, 18);
-      expect(again.verses.unchanged, 1);
-    });
+        final again = await ContentImportService(
+          source: FileSystemContentSource(),
+          database: db,
+        ).importContent(mode: ImportMode.draft);
+        expect(again.chapters.unchanged, 18);
+        expect(again.verses.unchanged, 41);
+      },
+    );
 
     test(
       'approved import imports nothing from the unreviewed repository',
@@ -420,7 +427,7 @@ void main() {
         expect(result.isSuccess, isFalse);
         expect(result.status, ImportStatus.completedWithRejections);
         expect(result.chapters.skipped, 18); // no chapter has names yet
-        expect(result.verses.skipped, 1);
+        expect(result.verses.skipped, 41);
         expect(await count('local_chapters'), 0);
         expect(await count('local_shlokas'), 0);
       },

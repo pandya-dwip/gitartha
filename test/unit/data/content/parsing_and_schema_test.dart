@@ -54,7 +54,7 @@ void main() {
     });
 
     test(
-      'the real Chapter 1, Verse 41 sample parses with every field intact',
+      'the real Chapter 1 file parses; Verse 41 keeps every field intact',
       () {
         final text = File(
           '${GitaContent.rootPath}/chapters/chapter_01.json',
@@ -62,12 +62,16 @@ void main() {
         final outcome = parser.parse(text, fileName: 'chapter_01.json');
         expect(outcome.issues, isEmpty);
 
-        final v = outcome.value!.verses.single;
+        final verses = outcome.value!.verses;
+        expect(verses.map((v) => v.verseNumber), [
+          for (var n = 1; n <= 41; n++) n,
+        ]);
+        final v = verses.last;
         expect(v.id, 'chapter_01_verse_041');
         expect(v.verseNumber, 41);
         expect(v.reference, '1.41');
         expect(v.indexTitle, 'The Consequences of Adharma and Social Disorder');
-        expect(v.indexSummary, isNull); // not supplied
+        expect(v.indexSummary, isNotNull);
         expect(v.sanskritText, startsWith('अधर्माभिभवात्कृष्ण'));
         expect(v.sanskritText, endsWith('॥ १.४१॥'));
         expect(v.transliteration, contains('Kṛṣṇa'));
