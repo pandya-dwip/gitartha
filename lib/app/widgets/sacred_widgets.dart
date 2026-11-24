@@ -320,10 +320,13 @@ class InnerTopBar extends StatelessWidget implements PreferredSizeWidget {
               bottom: BorderSide(color: c.border.withValues(alpha: 0.6)),
             ),
           ),
-          child: Row(
-            children: [
-              // Both shrink (with ellipsis) on narrow screens / large text.
-              Flexible(
+          // The title is centred on the screen, not between the side
+          // controls, so it lines up the same on every screen.
+          child: LayoutBuilder(
+            builder: (context, box) => NavigationToolbar(
+              middleSpacing: AppSpacing.sm,
+              leading: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: box.maxWidth * 0.34),
                 child: TextButton.icon(
                   onPressed: onBack,
                   icon: Icon(backIcon, size: 18),
@@ -334,14 +337,12 @@ class InnerTopBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
               ),
-              Expanded(
-                child: Center(
-                  child: FittedBox(fit: BoxFit.scaleDown, child: center),
-                ),
+              middle: FittedBox(fit: BoxFit.scaleDown, child: center),
+              trailing: Padding(
+                padding: const EdgeInsets.only(right: AppSpacing.xs),
+                child: trailing ?? const ThemeToggleButton(),
               ),
-              trailing ?? const ThemeToggleButton(),
-              const SizedBox(width: 8),
-            ],
+            ),
           ),
         ),
       ),

@@ -6,7 +6,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('app launches on a device', (tester) async {
-    await app.main();
+    app.main();
     await tester.pumpAndSettle();
 
     expect(find.text('गीतार्थ'), findsOneWidget);

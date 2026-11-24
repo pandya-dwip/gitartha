@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- DESIGN.md canvas colours, shown before Flutter draws its first frame
-         (instead of the platform default, which is black in dark mode). -->
+    <!-- DESIGN.md warm-ivory canvas, shown before Flutter draws its first
+         frame, in light and dark system modes alike (light is the app's
+         default theme). -->
     <color name="gitartha_canvas">#F7F3EA</color>
+    <!-- Background of the adaptive launcher icon (the logo's own cream). -->
+    <color name="ic_launcher_background">#F9F3E7</color>
 </resources>

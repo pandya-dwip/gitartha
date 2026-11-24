@@ -509,7 +509,7 @@ class _ChapterPreview extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'THE ${chapters.length} CHAPTERS (अध्यायाः)',
+                    'THE CHAPTERS (अध्यायाः)',
                     style: t.ui.copyWith(
                       fontWeight: FontWeight.w600,
                       letterSpacing: 1,
@@ -524,7 +524,7 @@ class _ChapterPreview extends ConsumerWidget {
             ),
             TextButton(
               onPressed: () => context.go(AppRoutes.chapters),
-              child: Text('View All ${chapters.length}'),
+              child: const Text('View all'),
             ),
           ],
         ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_theme.dart';
-import '../../../../app/widgets/lotus_emblem.dart';
+import '../../../../app/widgets/app_logo.dart';
 
 /// Shared layout of every authentication screen (sign in, register, forgot /
 /// reset password, account access), in the DESIGN.md language: a warm
@@ -68,7 +68,7 @@ class AuthPage extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          const Center(child: LotusEmblem(size: 76)),
+                          const Center(child: GitarthaLogo(size: 76)),
                           const SizedBox(height: AppSpacing.md),
                           Text(
                             'गीतार्थ',

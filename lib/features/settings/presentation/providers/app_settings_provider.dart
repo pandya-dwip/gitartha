@@ -25,16 +25,18 @@ enum ReaderFontSize {
   );
 }
 
-/// Stored in `local_settings` (`theme_mode`: "system" | "light" | "dark").
+/// Stored in `local_settings` (`theme_mode`: "light" | "dark" | "system").
+/// Light (warm ivory) is the default.
 final themeModeProvider = StreamProvider<ThemeMode>(
   (ref) => ref
       .watch(localDatabaseRepositoryProvider)
       .watchSetting(LocalSettingKeys.themeMode)
       .map(
         (v) => switch (v) {
-          'light' => ThemeMode.light,
           'dark' => ThemeMode.dark,
-          _ => ThemeMode.system,
+          'system' => ThemeMode.system,
+          // Light is the default until the reader chooses otherwise.
+          _ => ThemeMode.light,
         },
       ),
 );

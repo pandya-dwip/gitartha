@@ -480,4 +480,42 @@ void main() {
       },
     );
   }
+
+  testWidgets(
+    'light is the default theme, even when the phone is in dark mode',
+    (tester) async {
+      tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
+      addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
+      await launch(tester);
+      expect(
+        Theme.of(
+          tester.element(
+            find.text('Peace to the mind, stillness to the heart'),
+          ),
+        ).brightness,
+        Brightness.light,
+      );
+    },
+  );
+
+  testWidgets('reader: journal, then progress; no sources; centred title', (
+    tester,
+  ) async {
+    await launch(tester);
+    await go(tester, AppRoutes.verse(1, 1));
+    expect(find.text('SOURCES'), findsNothing);
+    await scrollTo(tester, find.text('MY PROGRESS'));
+    final journal = tester.getTopLeft(
+      find.text('MY PERSONAL JOURNAL & REFLECTIONS'),
+    );
+    final progress = tester.getTopLeft(find.text('MY PROGRESS'));
+    expect(journal.dy, lessThan(progress.dy));
+    // The top-bar title sits in the middle of the screen. (A wider screen,
+    // because the square-glyph test font is far wider than real text.)
+    tester.view.physicalSize = const Size(1800, 2400);
+    await tester.pumpAndSettle();
+    final title = tester.getCenter(find.text('BG 1.1'));
+    final width = tester.view.physicalSize.width / tester.view.devicePixelRatio;
+    expect((title.dx - width / 2).abs(), lessThan(2));
+  });
 }

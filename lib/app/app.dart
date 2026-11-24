@@ -14,8 +14,8 @@ class GitarthaApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(appConfigProvider);
     final router = ref.watch(appRouterProvider);
-    // Stored preference; system setting until the user chooses.
-    final themeMode = ref.watch(themeModeProvider).value ?? ThemeMode.system;
+    // Stored preference; light until the user chooses otherwise.
+    final themeMode = ref.watch(themeModeProvider).value ?? ThemeMode.light;
 
     return MaterialApp.router(
       title: config.appName,

@@ -13,7 +13,6 @@ import '../../journal/presentation/journal_editors.dart';
 import '../../journal/presentation/providers/personal_providers.dart';
 import '../../settings/presentation/providers/app_settings_provider.dart';
 import '../../settings/presentation/settings_sheet.dart';
-import 'providers/scripture_providers.dart';
 
 /// code.html "Individual Shloka Reader", in its strict reading order:
 /// Sanskrit → Pronunciation → Hindi (+ note) → English → Context →
@@ -158,11 +157,14 @@ class _Reader extends ConsumerWidget {
           children: [
             Text(
               'BG ${verse.reference}',
-              style: t.ui.copyWith(fontWeight: FontWeight.w600),
+              textAlign: TextAlign.center,
+              style: t.ui.copyWith(fontWeight: FontWeight.w600, fontSize: 14),
             ),
+            const SizedBox(height: 2),
             Text(
               'Verse ${position + 1} of $total',
-              style: t.ui.copyWith(fontSize: 10, color: c.textSecondary),
+              textAlign: TextAlign.center,
+              style: t.ui.copyWith(fontSize: 11, color: c.textSecondary),
             ),
           ],
         ),
@@ -219,25 +221,11 @@ class _Reader extends ConsumerWidget {
                     AppSpacing.xl,
                   ),
                   children: [
-                    Text(
-                      'Bhagavad Gita — Chapter $chapterId, Verse ${verse.verseNumber}'
-                          .toUpperCase(),
-                      textAlign: TextAlign.center,
-                      style: t.meta.copyWith(
-                        color: c.accent,
-                        fontSize: 11,
-                        letterSpacing: 2,
-                      ),
+                    _VerseHeading(
+                      chapterId: chapterId,
+                      verseNumber: verse.verseNumber,
+                      title: verse.indexTitle,
                     ),
-                    if (verse.indexTitle != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: AppSpacing.xs),
-                        child: Text(
-                          verse.indexTitle!,
-                          textAlign: TextAlign.center,
-                          style: t.headline.copyWith(fontSize: 17),
-                        ),
-                      ),
                     const SizedBox(height: AppSpacing.lg),
                     if (!hasContent)
                       const EmptyState(
@@ -341,11 +329,10 @@ class _Reader extends ConsumerWidget {
                       tone: SacredTone.well,
                       emphasized: true,
                     ),
-                    const SizedBox(height: AppSpacing.lg),
-                    _ProgressRow(verse: verse),
-                    const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: _gap),
                     _VerseJournal(verse: verse),
-                    _Sources(shlokaId: verse.id),
+                    const SizedBox(height: _gap),
+                    _ProgressRow(verse: verse),
                     const SizedBox(height: AppSpacing.lg),
                     _PrevNext(
                       chapterId: chapterId,
@@ -389,7 +376,7 @@ class _Section extends StatelessWidget {
   Widget build(BuildContext context) {
     if (text == null) return const SizedBox.shrink();
     return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.lg),
+      padding: const EdgeInsets.only(top: _gap),
       child: SacredCard(
         tone: tone,
         emphasized: emphasized,
@@ -429,34 +416,34 @@ class _ProgressRow extends ConsumerWidget {
           label: Text(label),
         );
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          switch (status) {
+    return SacredCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SectionLabel('My Progress', icon: Icons.flag_outlined),
+          const SizedBox(height: AppSpacing.sm),
+          Text(switch (status) {
             ReadingStatus.reflected => 'You have reflected on this verse.',
             ReadingStatus.studied => 'You have studied this verse.',
             ReadingStatus.read => 'You have read this verse.',
             _ => 'Mark your progress when you are ready.',
-          },
-          textAlign: TextAlign.center,
-          style: t.ui.copyWith(fontSize: 12, color: c.textSecondary),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        Row(
-          children: [
-            Expanded(child: mark(ReadingStatus.read, 'Read', Icons.done)),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: mark(
-                ReadingStatus.studied,
-                'Studied',
-                Icons.school_outlined,
+          }, style: t.ui.copyWith(fontSize: 13, color: c.textSecondary)),
+          const SizedBox(height: AppSpacing.gutter),
+          Row(
+            children: [
+              Expanded(child: mark(ReadingStatus.read, 'Read', Icons.done)),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: mark(
+                  ReadingStatus.studied,
+                  'Studied',
+                  Icons.school_outlined,
+                ),
               ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -662,61 +649,6 @@ class _VerseJournalState extends ConsumerState<_VerseJournal> {
   }
 }
 
-/// Sources credited for this verse (licence / required attribution text).
-class _Sources extends ConsumerWidget {
-  const _Sources({required this.shlokaId});
-
-  final String shlokaId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final credits =
-        ref.watch(sourceCreditsProvider(shlokaId)).value ?? const [];
-    if (credits.isEmpty) return const SizedBox.shrink();
-    final c = context.colors;
-    final t = context.text;
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.lg),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SectionLabel(
-            'Sources',
-            icon: Icons.library_books_outlined,
-            accent: false,
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          for (final credit in credits)
-            Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: credit.source.name,
-                      style: const TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    if (credit.source.author != null)
-                      TextSpan(text: ', ${credit.source.author}'),
-                    TextSpan(
-                      text:
-                          ' — ${credit.sections.map((s) => s.replaceAll('_', ' ')).join(', ')}',
-                    ),
-                    if (credit.source.attribution != null)
-                      TextSpan(text: '\n${credit.source.attribution}'),
-                    if (credit.source.license != null)
-                      TextSpan(text: ' (${credit.source.license})'),
-                  ],
-                ),
-                style: t.ui.copyWith(fontSize: 12, color: c.textSecondary),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
 class _PrevNext extends StatelessWidget {
   const _PrevNext({
     required this.chapterId,
@@ -774,6 +706,58 @@ class _PrevNext extends StatelessWidget {
             ),
           ),
         ),
+      ],
+    );
+  }
+}
+
+/// Even spacing between the reading cards.
+const _gap = AppSpacing.md;
+
+/// "BHAGAVAD GITA — CHAPTER 1, VERSE 31", the verse title and a filigree
+/// divider, centred as one block.
+class _VerseHeading extends StatelessWidget {
+  const _VerseHeading({
+    required this.chapterId,
+    required this.verseNumber,
+    required this.title,
+  });
+
+  final int chapterId;
+  final int verseNumber;
+  final String? title;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    final t = context.text;
+    return Column(
+      children: [
+        Text(
+          'BHAGAVAD GITA',
+          textAlign: TextAlign.center,
+          style: t.meta.copyWith(
+            color: c.accent,
+            fontSize: 11,
+            letterSpacing: 2.4,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          'Chapter $chapterId · Verse $verseNumber',
+          textAlign: TextAlign.center,
+          style: t.ui.copyWith(color: c.textSecondary, fontSize: 12),
+        ),
+        if (title != null) ...[
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            title!,
+            textAlign: TextAlign.center,
+            style: t.headline.copyWith(fontSize: 19, height: 1.35),
+          ),
+        ],
+        const SizedBox(height: AppSpacing.gutter),
+        const SacredDivider(width: 120),
       ],
     );
   }

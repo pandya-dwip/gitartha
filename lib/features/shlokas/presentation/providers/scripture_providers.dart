@@ -38,26 +38,6 @@ final shlokaByIdProvider = StreamProvider.family<LocalShloka?, String>(
   (ref, id) => ref.watch(localDatabaseRepositoryProvider).watchShloka(id),
 );
 
-/// A source credited for some sections of a verse.
-typedef SourceCredit = ({LocalContentSource source, List<String> sections});
-
-/// The sources credited for [shlokaId], grouped by source.
-final sourceCreditsProvider = FutureProvider.family<List<SourceCredit>, String>(
-  (ref, shlokaId) async {
-    final repo = ref.watch(localDatabaseRepositoryProvider);
-    final bySource = <String, List<String>>{};
-    for (final a in await repo.getSourceAttributionsForShloka(shlokaId)) {
-      (bySource[a.sourceId] ??= []).add(a.contentSection);
-    }
-    return [
-      for (final MapEntry(key: id, value: sections) in bySource.entries)
-        if (await repo.getContentSource(id) case final source?
-            when source.deletedAt == null)
-          (source: source, sections: sections),
-    ];
-  },
-);
-
 /// Local search over cached live verses (reference, titles, texts,
 /// meanings). Empty for blank queries.
 final verseSearchProvider = FutureProvider.autoDispose
