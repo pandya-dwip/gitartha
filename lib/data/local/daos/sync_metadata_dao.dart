@@ -5,24 +5,34 @@ import '../database/tables/sync_metadata.dart';
 
 part 'sync_metadata_dao.g.dart';
 
-/// Keys reserved for the future content-sync milestone.
+/// Keys used by content sync (lib/features/synchronization). Values never
+/// contain credentials or tokens.
 abstract final class SyncMetadataKeys {
   /// UTC timestamp of the last fully successful content sync (device clock,
   /// for display only).
   static const String lastSuccessfulContentSyncAt =
       'last_successful_content_sync_at';
 
-  /// Last known sync state, e.g. `idle`, `failed`.
+  /// Last known sync state: `syncing`, `success` or `failed`.
   static const String contentSyncState = 'content_sync_state';
 
-  /// Per-table cursor prefix: `content_cursor.<table>`. The value is the
-  /// server's `updated_at` and id of the last applied row (see
-  /// docs/database/SYNC_STRATEGY.md).
+  /// UTC timestamp (device clock) of the last sync attempt.
+  static const String lastContentSyncAttemptAt = 'last_content_sync_attempt_at';
+
+  /// `SyncFailureKind` name of the last failed attempt; removed on success.
+  static const String lastContentSyncError = 'last_content_sync_error';
+
+  /// Sync protocol version that wrote the cursors. A different version
+  /// invalidates them and forces a full sync.
+  static const String contentSyncProtocol = 'content_sync_protocol';
+
+  /// Per-table cursor: `content_cursor.<remote table>`. The value is the
+  /// newest server `updated_at` (`created_at` for attributions) applied, as
+  /// fixed-width UTC text (see docs/database/SYNC_STRATEGY.md).
   static String contentCursor(String table) => 'content_cursor.$table';
 }
 
-/// Plain key/value storage for sync bookkeeping. This milestone has no sync
-/// logic; this only provides storage for it.
+/// Plain key/value storage for sync bookkeeping.
 @DriftAccessor(tables: [SyncMetadata])
 class SyncMetadataDao extends DatabaseAccessor<AppDatabase>
     with _$SyncMetadataDaoMixin {

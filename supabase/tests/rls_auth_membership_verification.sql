@@ -10,7 +10,9 @@
 --     membership (their own or anyone else's), including editors;
 --   * read-only members can read scripture but every write is rejected;
 --   * editors (is_accessible = true) can insert / update / soft-delete;
---   * signed-in users without a membership, and anon, can read nothing.
+--   * signed-in users without a membership, and anon, can read nothing;
+--   * (content sync) members can read tombstones and attributions in all
+--     four synced tables.
 --
 -- RUN ONLY ON AN ISOLATED PROJECT: `supabase start` (local) or a throwaway
 -- Supabase project. Never on production.
@@ -60,6 +62,15 @@ insert into public.chapters (id, sanskrit_name, hindi_name, english_name)
 values (18, 'RLS TEST', 'RLS TEST', 'RLS TEST')
 on conflict (id) do nothing;
 
+-- Content sync (Milestone 5) needs members to read TOMBSTONES too: a
+-- soft-deleted verse and source, plus an attribution between them.
+insert into public.content_sources (id, name, deleted_at)
+values ('00000000-0000-4000-8000-0000000000c1', 'RLS TEST deleted source', now());
+insert into public.shlokas (id, chapter_id, verse_number, hindi_meaning_note, deleted_at)
+values ('00000000-0000-4000-8000-0000000000c2', 18, 997, 'RLS TEST note', now());
+insert into public.shloka_source_attributions (shloka_id, source_id, content_section)
+values ('00000000-0000-4000-8000-0000000000c2', '00000000-0000-4000-8000-0000000000c1', 'hindi_meaning_note');
+
 
 -- ---------------------------------------------------------------------------
 -- READ-ONLY MEMBER
@@ -69,8 +80,21 @@ select set_config('request.jwt.claims',
 set local role authenticated;
 
 do $$
-declare n int;
+declare
+  n   int;
+  who text := 'reader';
 begin
+  -- Sync can download tombstones and attributions (SELECT ignores deleted_at).
+  if (select count(*) from public.shlokas
+      where id = '00000000-0000-4000-8000-0000000000c2' and deleted_at is not null
+        and hindi_meaning_note = 'RLS TEST note') <> 1
+     or (select count(*) from public.content_sources
+         where id = '00000000-0000-4000-8000-0000000000c1' and deleted_at is not null) <> 1
+     or (select count(*) from public.shloka_source_attributions
+         where shloka_id = '00000000-0000-4000-8000-0000000000c2') <> 1 then
+    raise exception 'FAIL %: cannot read tombstones/attributions needed by sync', who;
+  end if;
+
   -- Own membership only.
   if (select count(*) from public.app_members) <> 1
      or (select user_id from public.app_members) <> auth.uid() then
@@ -158,7 +182,19 @@ declare
   n   int;
   src uuid;
   shl uuid;
+  who text := 'editor';
 begin
+  -- Sync can download tombstones and attributions (SELECT ignores deleted_at).
+  if (select count(*) from public.shlokas
+      where id = '00000000-0000-4000-8000-0000000000c2' and deleted_at is not null
+        and hindi_meaning_note = 'RLS TEST note') <> 1
+     or (select count(*) from public.content_sources
+         where id = '00000000-0000-4000-8000-0000000000c1' and deleted_at is not null) <> 1
+     or (select count(*) from public.shloka_source_attributions
+         where shloka_id = '00000000-0000-4000-8000-0000000000c2') <> 1 then
+    raise exception 'FAIL %: cannot read tombstones/attributions needed by sync', who;
+  end if;
+
   if not public.can_edit_shared_content() then
     raise exception 'FAIL editor: can_edit_shared_content() is false';
   end if;
@@ -205,8 +241,11 @@ select set_config('request.jwt.claims',
 set local role authenticated;
 
 do $$ begin
-  if (select count(*) from public.chapters) <> 0 then
-    raise exception 'FAIL outsider: can read chapters without a membership';
+  if (select count(*) from public.chapters) <> 0
+     or (select count(*) from public.shlokas) <> 0
+     or (select count(*) from public.content_sources) <> 0
+     or (select count(*) from public.shloka_source_attributions) <> 0 then
+    raise exception 'FAIL outsider: can read shared content without a membership';
   end if;
   if (select count(*) from public.app_members) <> 0 then
     raise exception 'FAIL outsider: can see membership rows';

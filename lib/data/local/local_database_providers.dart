@@ -31,3 +31,30 @@ final appDatabaseProvider = Provider<AppDatabase>((ref) {
 final localDatabaseRepositoryProvider = Provider<LocalDatabaseRepository>(
   (ref) => LocalDatabaseRepository(ref.watch(appDatabaseProvider)),
 );
+
+// --- Cached scripture, read from SQLite -------------------------------------
+//
+// Reading features use these, never Supabase. They are Drift watch queries,
+// so they re-emit by themselves whenever content sync commits new rows: the
+// local database is the single source of truth for what is displayed.
+
+/// Live (not soft-deleted) cached chapters, in chapter order.
+final localChaptersProvider = StreamProvider<List<LocalChapter>>(
+  (ref) => ref.watch(localDatabaseRepositoryProvider).watchChapters(),
+);
+
+/// Live cached shlokas of a chapter, in verse order.
+final localShlokasForChapterProvider =
+    StreamProvider.family<List<LocalShloka>, int>(
+      (ref, chapterId) => ref
+          .watch(localDatabaseRepositoryProvider)
+          .watchShlokasForChapter(chapterId),
+    );
+
+/// Per-chapter live verse counts and reading progress.
+final chapterProgressSummariesProvider =
+    StreamProvider<List<ChapterProgressSummary>>(
+      (ref) => ref
+          .watch(localDatabaseRepositoryProvider)
+          .watchChapterProgressSummaries(),
+    );

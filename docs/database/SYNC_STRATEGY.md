@@ -1,202 +1,130 @@
-# Gitartha — Pull-Based Synchronization Strategy
+# Gitartha — Shared-Content Synchronization (Supabase → SQLite)
 
-This is the design only. No sync code, Edge Functions or realtime subscriptions exist,
-and none are planned for this stage.
+Implemented in Milestone 5, in `lib/features/synchronization/`. This is pull only:
+the device downloads shared scripture and never uploads anything. Personal data is
+not part of sync in any form.
 
 ## Principles
 
-- **Pull only.** The device downloads shared content. It never uploads anything.
-  Personal data is not part of sync in any form.
-- **The cache is the reading source.** Screens read from SQLite. Sync only refreshes the
-  cache, so the app works fully offline after the first sync.
-- **Incremental.** Each run fetches only rows changed since the last run, using the
-  server's `updated_at`.
-- **Tombstones, not gaps.** Deletions arrive as rows with `deleted_at` set. A row that
-  simply stops appearing means nothing.
-- **Idempotent.** Applying the same rows twice gives the same result, so overlapping
-  windows and retries are safe.
+- **SQLite is the reading source.** Screens read cached content through Drift watch
+  queries (`localChaptersProvider`, `localShlokasForChapterProvider`,
+  `chapterProgressSummariesProvider` in `lib/data/local/local_database_providers.dart`).
+  Startup renders from the cache immediately. Sync runs in the background and the
+  providers re-emit when it commits, so no invalidation is needed.
+- **Incremental, with overlap.** Each table is read from
+  `checkpoint − overlap` (10 min by default). The checkpoint is the **server's**
+  newest timestamp seen, never the device clock.
+- **Staged, then one transaction.** All pages of all four tables are downloaded first,
+  with no transaction open during network calls. Then the rows and the new checkpoint
+  are written in **one** Drift transaction. Any failure (network, auth, pagination,
+  bad data, SQLite) leaves the previous content **and** the previous checkpoint.
+- **Idempotent.** Upserts keep server ids and never go backwards (`updated_at`), so
+  re-downloads and retries are harmless.
+- **Tombstones are updates.** `deleted_at` is copied and rows are never physically
+  deleted, because personal tables reference shlokas (`ON DELETE RESTRICT`).
 
-## What the server guarantees
+## Components
 
-These guarantees come from [`0001_initial_schema.sql`](../../supabase/migrations/0001_initial_schema.sql):
-
-| Guarantee | Enforced by |
-|---|---|
-| Every insert and update (including soft delete and restore) sets `updated_at = now()` on the server | `set_row_timestamps()` trigger. Client-supplied values are ignored |
-| Chapter ids and verse UUIDs never change | `reject_id_change()` trigger |
-| `(chapter_id, verse_number)` is unique | `shlokas_chapter_verse_key` |
-| Chapters, verses and sources are never physically deleted by clients | No DELETE grant. Soft delete only |
-| Members can read tombstones | SELECT policies do not filter `deleted_at` |
-| Changed rows can be listed cheaply in a stable order | `(updated_at, id)` indexes |
-
-## The sync procedure
-
-### 1. Read cached scripture from SQLite
-
-On launch, render from `local_chapters` / `local_shlokas` (`WHERE deleted_at IS NULL`)
-straight away. Never block reading on the network. If the cache is empty (first launch),
-show a "downloading scripture" state and continue.
-
-### 2. Check network availability
-
-Use a connectivity check as a hint only. A "connected" result does not guarantee that
-Supabase is reachable. If offline, stop and keep the cache. Any request failure later in
-the procedure is treated the same way: abort without moving the cursor.
-
-### 3. Retrieve the authenticated user's membership permission
-
-Sync requires a signed-in session. Without one, skip sync and keep reading the cache.
-
-```dart
-// RLS returns only the caller's own row.
-final rows = await supabase.from('app_members').select('is_accessible');
-```
-
-| Result | Meaning | App behaviour |
+| Piece | File | Role |
 |---|---|---|
-| 1 row, `is_accessible: false` | Read-only member | Sync. Hide edit tools |
-| 1 row, `is_accessible: true` | Editor | Sync. Show edit tools |
-| 0 rows | Not a member, or access removed | Skip sync. Content queries would return nothing anyway. Show "no access". **Do not wipe the cache or personal data** |
+| `SupabaseContentDataSource` | `data/content_remote_datasource.dart` | One ordered page per call, read-only, as the signed-in member (RLS applies). It maps errors to `SyncException` |
+| `RemoteRowMapper` | `data/remote_row_mapper.dart` | Strict row → Drift row mapping. A missing field or wrong type aborts the run. Nulls are kept |
+| `ContentSyncService` | `data/content_sync_service.dart` | Pagination, staging, transaction, checkpoints, counts. Concurrent callers share one run |
+| `ContentSyncController` (`contentSyncProvider`) | `presentation/providers/content_sync_provider.dart` | Auth gating, automatic triggers, `syncContentManually()`, state for the UI |
+| `SyncResult`, `SyncStatus`, `SyncFailureKind` | `domain/sync_result.dart` | Structured outcome and safe user messages |
 
-Hold the flag in memory and refetch it at each sync. Edit tools in the UI are a
-convenience only. The server enforces the real permission on every write.
+Column lists are shared with the publisher's mappers
+(`lib/data/content/publishing/mappers/`), so both sides read the same schema,
+`hindi_meaning_note` included.
 
-### 4. Fetch updated chapters and verses
+## Procedure
 
-Process **chapters first, then shlokas**, so that foreign keys resolve locally. Use
-keyset pagination on `(updated_at, id)`:
+1. Write `content_sync_state = syncing` and the attempt time.
+2. Read the checkpoint. If there is no successful sync yet, or the stored
+   `content_sync_protocol` differs from `ContentSyncService.protocolVersion`, run a
+   **full sync**: no lower bound, so every row including tombstones is fetched.
+3. For **chapters → content_sources → shlokas → shloka_source_attributions**
+   (dependency order), fetch pages with keyset pagination:
 
-```text
-WHERE updated_at > :cursor_ts
-   OR (updated_at = :cursor_ts AND id > :cursor_id)
-ORDER BY updated_at, id
-LIMIT 500
-```
+   ```text
+   first page:  WHERE ts >= :checkpoint − overlap            (none on a full sync)
+   next pages:  WHERE ts > :last_ts OR (ts = :last_ts AND id > :last_id)
+   ORDER BY ts ASC, id ASC   LIMIT :pageSize (500)
+   ```
 
-```dart
-// Sketch only, not final code.
-// First page of a run: everything from (stored cursor − overlap), see below.
-// Later pages: strictly after the last row of the previous page.
-var q = supabase.from('shlokas').select();
-if (pageTs != null) {
-  q = q.or('updated_at.gt."$pageTs",and(updated_at.eq."$pageTs",id.gt.$pageId)');
-} else if (fromTs != null) {
-  q = q.gte('updated_at', fromTs);
-}
-final page = await q.order('updated_at').order('id').limit(500);
-```
+   `ts` is `updated_at`, except for attributions, which have only `created_at`.
+   Fetching stops at an **empty** page, so a server "max rows" setting below the page
+   size can't truncate a table. Each run costs one extra small request per table.
+4. Parse every row strictly. Nothing has been written yet.
+5. In one transaction:
+   - upsert chapters, sources, shlokas (existing DAO upserts with the "not older"
+     guard);
+   - if a verse slot `(chapter, verse)` is held by a *different* cached row, park that
+     row on a unique out-of-range slot and hide it, so the server row can land. The
+     parked row keeps its id, and personal records stay attached;
+   - insert new attributions (`INSERT OR IGNORE`);
+   - on a full sync only, remove cached attributions of server shlokas that the
+     server no longer has (see Limitations);
+   - write the per-table cursors (`content_cursor.<table>`),
+     `last_successful_content_sync_at`, `content_sync_protocol`,
+     `content_sync_state = success`, and clear `last_content_sync_error`.
+6. On failure, write `content_sync_state = failed` and `last_content_sync_error = <kind>`.
+   Nothing else changes.
 
-Repeat until a page comes back with fewer than 500 rows. The first sync has no cursor
-and downloads everything: about 718 rows, a handful of pages.
+Why the cursor comes from the data rather than a "sync start" clock time: the device
+clock can be wrong, and there is no server-time endpoint. A row updated during a run
+has a newer `updated_at` than anything already read, so the next run sees it. The
+overlap covers transactions that committed late with an older `updated_at`.
 
-**Safety overlap.** `updated_at` is the time the writing transaction *started*. A
-transaction that started earlier but committed after the last sync can therefore become
-visible with an `updated_at` older than the cursor. To never miss such rows, start each
-run from `cursor_ts − 10 minutes` (with no `id` tie-break for that first page) rather
-than exactly at the cursor. The overlap re-downloads a few rows, and step 6 makes that
-harmless.
+## Who syncs, and when
 
-### 5. Detect soft-deleted records
+| Auth status (Milestone 4) | Sync |
+|---|---|
+| `readOnly`, `editor` | yes: downloading needs membership, not editing permission |
+| `signedOut` | no; result `unauthenticated` |
+| `membershipMissing`, `membershipError`, `loadingMembership`, `passwordRecovery` | no; result `membershipUnavailable` |
+| `backendUnavailable` | no; result `offline` |
 
-A downloaded row whose `deleted_at` is not null is a tombstone:
+Triggers:
 
-- a verse removed by an editor (`deleted_at` set),
-- or a verse **restored** (`deleted_at` back to null, with a new `updated_at`), which is
-  simply a normal update.
+- **Automatic:** the moment the user becomes an active member (a restored session at
+  startup, or sign-in), and on app resume (`AppLifecycleListener` in `main.dart`).
+  Skipped if a sync is running, or if the last success is newer than
+  `SyncConfig.autoSyncMinInterval` (30 min).
+- **Manual:** `ref.read(contentSyncProvider.notifier).syncContentManually()`. This
+  ignores the interval and joins a running sync.
+- No realtime, no polling, no background jobs.
 
-There is no separate "deletions" endpoint, because tombstones arrive through the same
-query as every other change.
+Sign-out, loss of membership, or a different user during a run cancels it before
+anything is applied. The cache is never cleared by auth changes: shared scripture is
+the same for every member.
 
-### 6. Apply updates to SQLite
-
-Inside **one SQLite transaction per page**:
-
-```sql
-INSERT INTO local_shlokas (id, chapter_id, verse_number, reference, …, updated_at, deleted_at)
-VALUES (…)
-ON CONFLICT (id) DO UPDATE SET
-  chapter_id = excluded.chapter_id,
-  verse_number = excluded.verse_number,
-  reference = excluded.reference,
-  -- … every content column …
-  updated_at = excluded.updated_at,
-  deleted_at = excluded.deleted_at
-WHERE excluded.updated_at >= local_shlokas.updated_at;   -- never go backwards
-```
-
-- **Tombstones are applied as updates.** Set `deleted_at` and keep the row. Never
-  `DELETE` from the cache, because personal reflections, notes and bookmarks reference
-  these rows.
-- The `WHERE excluded.updated_at >= …` guard keeps replayed or overlapping rows
-  harmless.
-- Personal tables are not touched.
-
-### 7. Store the last successful sync timestamp
-
-In the **same transaction** as each applied page, update the cursor in the local
-`sync_metadata` table (`SyncMetadataDao`, keys in `SyncMetadataKeys`):
+## `sync_metadata` keys
 
 | Key | Value |
 |---|---|
-| `content_cursor.chapters`, `content_cursor.shlokas` | JSON `{"updated_at": "<server updated_at of the last applied row>", "id": "<its id>"}` |
-| `last_successful_content_sync_at` | Device time when a full run finished (display only) |
-| `content_sync_state` | e.g. `idle` / `failed`, for diagnostics |
+| `content_cursor.chapters` / `.content_sources` / `.shlokas` / `.shloka_source_attributions` | newest server timestamp applied, fixed-width UTC |
+| `content_sync_protocol` | protocol version that wrote the cursors |
+| `last_successful_content_sync_at` | device time of the last success (display, and the auto-sync interval) |
+| `last_content_sync_attempt_at` | device time of the last attempt |
+| `content_sync_state` | `syncing` / `success` / `failed` (`syncing` with nothing running = interrupted; simply retried) |
+| `last_content_sync_error` | `SyncFailureKind` name |
 
-- The cursor is **the server's `updated_at` from the data**, never the device clock.
-  Device clocks drift or can be wrong.
-- `last_successful_sync_at` uses the device clock and is for display only.
-- Advance the cursor after each committed page (it can be updated per page), so an
-  interrupted sync resumes rather than restarting.
-- If any step fails, roll back that page and leave the cursor where it was. The next run
-  retries from there.
+No credentials or tokens are ever stored here. No migration was needed: the table and
+the four cache tables already existed (schema v2).
 
-## When to sync
+## Limitations
 
-- On app start (after rendering from the cache), and when the app returns to the
-  foreground if the last sync was more than a few hours ago.
-- On a manual pull-to-refresh.
-- **After an editor saves a change**, so their own device reflects it.
-- Not continuously, and not through realtime subscriptions.
-
-## Full resync (escape hatch)
-
-Allow a "Re-download scripture" action in settings, and run it automatically if the
-local schema version changes in a way that affects the cache. It clears the `content_cursor.*` keys
-and repeats steps 4–6 from the beginning. Because the upsert keeps existing ids, this
-never orphans personal data. **Do not** implement it by dropping `local_shlokas`.
-
-## Sources and attributions (cached since schema v2, not yet synced)
-
-Local schema v2 caches both (`local_content_sources`,
-`local_shloka_source_attributions`), and the content import fills them. Sources and
-attributions use deterministic UUIDs (`ContentIds`), so server and cache rows share
-ids. `content_sources` behaves exactly like `chapters` and `shlokas` (`updated_at`,
-`deleted_at`, and a `(updated_at, id)` index), so it can join the same procedure as a
-third entity.
-
-`shloka_source_attributions` is different. Rows are immutable and editors delete them
-physically, so incremental sync cannot detect removals. Options, if attributions must be
-available offline:
-
-1. **Full refresh** of the attribution table on each sync. It is small (at most a few
-   thousand rows) and simple. This is the recommended option.
-2. **Fetch per verse** when online and cache opportunistically.
-3. A later migration adds `deleted_at` to attributions and replaces physical delete with
-   soft delete.
-
-Choosing among these is still an open decision for the sync milestone.
-
-**Repository-imported rows** carry the 1970 sentinel timestamp
-(`docs/content/CONTENT_IMPORT_PIPELINE.md`), so the never-go-backwards upsert lets any
-server row replace them.
-
-## Edge cases
-
-| Case | Handling |
-|---|---|
-| Verse renumbered (A 1.5 → 1.6, B 1.6 → 1.5 in one edit session) | Both arrive as updates of their own UUIDs. `local_shlokas` has a UNIQUE `(chapter_id, verse_number)` (Milestone 2 spec), which SQLite checks per statement, so a swap can't be applied row by row. Within the page's transaction, first move any row whose slot is claimed by a different UUID to a temporary slot (`verse_number + 1000000` with a matching `reference`), then apply the page. This is rare, because the canonical numbering is fixed before seeding |
-| Chapter soft-deleted while its verses are live | Readers hide the chapter, so its verses are unreachable from navigation. Editors should soft-delete the verses too |
-| User loses membership | Step 3 returns 0 rows. Sync stops, and the cache and personal data stay readable on the device |
-| Clock skew on the device | Irrelevant to correctness. Cursors use server timestamps |
-| Very large edit batch | Pagination plus per-page commits keep memory and transaction size bounded |
-| Seed import in one transaction | Every row shares one `updated_at`. The `id` tie-break in the keyset pagination handles that |
+- **Attribution deletions.** Attributions have no `updated_at` and no `deleted_at`,
+  and are physically deleted, so an incremental sync cannot see a removal. A full sync
+  reconciles them. To force one, bump `protocolVersion`, or delete the
+  `content_sync_protocol` key. The publisher never deletes attributions; only manual
+  SQL does. If deletions become routine, the smallest fix is a server migration that
+  adds `deleted_at` to attributions, used as a soft delete.
+- **Rows the server never had** (from a local JSON import, for development) are left
+  alone. Sync only applies server rows.
+- **Memory.** A run stages its changes in memory. A first sync of the whole Gita
+  (about 3,000 rows including attributions) is small. A much larger catalogue would
+  want per-table transactions.
+- **First launch offline.** The cache is empty and the providers emit empty lists.
+  The future UI should show an "offline, nothing downloaded yet" state.

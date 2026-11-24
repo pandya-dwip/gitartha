@@ -7,10 +7,12 @@ import 'package:gitartha/app/app.dart';
 import 'package:gitartha/app/router/app_router.dart';
 import 'package:gitartha/core/config/app_config.dart';
 import 'package:gitartha/core/config/app_config_provider.dart';
+import 'package:gitartha/data/local/local_database_providers.dart';
 import 'package:gitartha/features/authentication/domain/entities/app_user.dart';
 import 'package:gitartha/features/authentication/domain/entities/auth_failure.dart';
 import 'package:gitartha/features/authentication/presentation/providers/auth_state_provider.dart';
 
+import '../unit/data/local/test_database.dart';
 import '../unit/features/authentication/fake_auth_repository.dart';
 
 /// The real app, router and screens over a fake Supabase.
@@ -24,10 +26,13 @@ void main() {
     bool settle = true,
   }) async {
     repo = r;
+    final db = openTestDatabase();
+    addTearDown(db.close);
     container = ProviderContainer(
       overrides: [
         appConfigProvider.overrideWithValue(AppConfig.fromMap(const {})),
         authRepositoryProvider.overrideWithValue(r),
+        appDatabaseProvider.overrideWithValue(db),
       ],
     );
     addTearDown(container.dispose);

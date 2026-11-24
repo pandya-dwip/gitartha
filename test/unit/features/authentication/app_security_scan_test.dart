@@ -51,4 +51,33 @@ void main() {
       'lib/features/authentication/data/models/member_access_model.dart',
     ]);
   });
+
+  test('content sync only reads Supabase and never touches personal data', () {
+    final remote = File(
+      'lib/features/synchronization/data/content_remote_datasource.dart',
+    ).readAsStringSync();
+    for (final banned in [
+      '.insert(',
+      '.upsert(',
+      '.update(',
+      '.delete(',
+      'rpc(',
+    ]) {
+      expect(remote, isNot(contains(banned)), reason: banned);
+    }
+    for (final (path, text) in sources('lib/features/synchronization')) {
+      for (final banned in [
+        'reflections',
+        'personalNotes',
+        'bookmarks',
+        'readingProgress',
+        'readingHistory',
+        'localSettings',
+        'app_members',
+        'is_accessible',
+      ]) {
+        expect(text, isNot(contains(banned)), reason: '$path: $banned');
+      }
+    }
+  });
 }

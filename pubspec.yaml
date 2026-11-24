@@ -33,6 +33,10 @@ dependencies:
   # Android Keystore-backed storage instead of plain SharedPreferences.
   flutter_secure_storage: ^10.3.4
 
+  # Classifies network failures (ClientException) during content sync.
+  # Already a transitive dependency of supabase_flutter.
+  http: ^1.6.0
+
   # Model serialization
   json_annotation: ^4.12.0
 
@@ -58,11 +62,9 @@ dev_dependencies:
   json_serializable: ^6.14.1
 
   # Developer-side content publisher (tool/publish_gita_content.dart): the
-  # pure-Dart Supabase client (supabase_flutter cannot run under `dart run`),
-  # and http's MockClient for testing it. Both were already transitive
-  # dependencies; nothing here ships in the app.
+  # pure-Dart Supabase client (supabase_flutter cannot run under `dart run`).
+  # Its tests use http's MockClient from the `http` dependency above.
   supabase: ^2.16.5
-  http: ^1.6.0
 
 flutter:
   uses-material-design: true

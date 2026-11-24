@@ -8,6 +8,7 @@ import 'core/config/app_config_provider.dart';
 import 'data/local/local_database_providers.dart';
 import 'features/authentication/data/secure_session_storage.dart';
 import 'features/authentication/presentation/providers/auth_state_provider.dart';
+import 'features/synchronization/presentation/providers/content_sync_provider.dart';
 
 Future<void> main() async {
   // Bindings are needed before reading `.env` from the asset bundle.
@@ -28,6 +29,12 @@ Future<void> main() async {
   // Open the on-device database and run migrations before the first frame.
   // A failure throws LocalDatabaseException with the original cause.
   await container.read(appDatabaseProvider).ensureInitialized();
+
+  // Content sync runs in the background and never blocks reading: screens
+  // render from SQLite immediately. The controller syncs once the restored
+  // session's membership is confirmed (and on sign-in), and on resume.
+  final sync = container.read(contentSyncProvider.notifier);
+  AppLifecycleListener(onResume: sync.onAppResumed);
 
   runApp(
     UncontrolledProviderScope(container: container, child: const GitarthaApp()),

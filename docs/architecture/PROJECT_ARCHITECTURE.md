@@ -101,8 +101,10 @@ section marks what is in place now and what is planned.
   a session kept in secure storage, individual membership (`app_members.is_accessible`)
   and GoRouter guards, in `lib/features/authentication/`. See
   `docs/authentication/AUTHENTICATION_ARCHITECTURE.md`.
-- **Sync is pull-based** *(planned)*: the app fetches content into the local Drift cache
-  and reads from that cache.
+- **Content sync (in place, Milestone 5):** pull-only, incremental, transactional
+  download of chapters, sources, shlokas and attributions into the Drift cache, in
+  `lib/features/synchronization/`. Screens read only SQLite. See
+  `docs/database/SYNC_STRATEGY.md`.
 
 ## Environment configuration (in place)
 
