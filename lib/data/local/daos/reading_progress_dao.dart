@@ -139,6 +139,14 @@ class ReadingProgressDao extends DatabaseAccessor<AppDatabase>
     readingProgress,
   )..where((p) => p.shlokaId.equals(shlokaId))).watchSingleOrNull();
 
+  /// The most recently opened shloka's progress, or null (for "continue
+  /// reading").
+  Stream<ReadingProgressEntry?> watchLastOpened() =>
+      (select(readingProgress)
+            ..orderBy([(p) => OrderingTerm.desc(p.lastOpenedAt)])
+            ..limit(1))
+          .watchSingleOrNull();
+
   /// Every progress record, most recently opened first.
   Future<List<ReadingProgressEntry>> getAllProgress() => (select(
     readingProgress,

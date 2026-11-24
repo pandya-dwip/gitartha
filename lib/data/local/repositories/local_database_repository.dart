@@ -68,6 +68,10 @@ class LocalDatabaseRepository {
     bool includeDeleted = false,
   }) => _db.shlokaDao.getShloka(shlokaId, includeDeleted: includeDeleted);
 
+  /// A shloka by id, live-updating; includes retired (soft-deleted) ones.
+  Stream<LocalShloka?> watchShloka(String shlokaId) =>
+      _db.shlokaDao.watchShloka(shlokaId);
+
   Future<LocalShloka?> getShlokaByVerse(int chapterId, int verseNumber) =>
       _db.shlokaDao.getShlokaByVerse(chapterId, verseNumber);
 
@@ -129,6 +133,10 @@ class LocalDatabaseRepository {
   Future<List<Reflection>> getRecentReflections({int limit = 20}) =>
       _db.reflectionDao.getRecentReflections(limit: limit);
 
+  /// Newest first; re-emits on every change.
+  Stream<List<Reflection>> watchRecentReflections({int limit = 200}) =>
+      _db.reflectionDao.watchRecentReflections(limit: limit);
+
   // ---------------------------------------------------------------------------
   // Personal notes
   // ---------------------------------------------------------------------------
@@ -163,6 +171,10 @@ class LocalDatabaseRepository {
       _db.personalNoteDao.watchNotesForShloka(shlokaId);
 
   Future<List<PersonalNote>> getAllNotes() => _db.personalNoteDao.getAllNotes();
+
+  /// All notes (including free-standing ones), most recently edited first.
+  Stream<List<PersonalNote>> watchAllNotes() =>
+      _db.personalNoteDao.watchAllNotes();
 
   Future<List<PersonalNote>> searchNotes(String query) =>
       _db.personalNoteDao.searchNotes(query);
@@ -243,6 +255,10 @@ class LocalDatabaseRepository {
 
   Stream<ReadingProgressEntry?> watchProgress(String shlokaId) =>
       _db.readingProgressDao.watchProgress(shlokaId);
+
+  /// Progress of the most recently opened shloka, for "continue reading".
+  Stream<ReadingProgressEntry?> watchLastOpened() =>
+      _db.readingProgressDao.watchLastOpened();
 
   Future<List<ReadingProgressEntry>> getAllProgress() =>
       _db.readingProgressDao.getAllProgress();

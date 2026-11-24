@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/config/app_config_provider.dart';
+import '../features/settings/presentation/providers/app_settings_provider.dart';
 import 'router/app_router.dart';
 import 'theme/app_theme.dart';
 
@@ -13,13 +14,15 @@ class GitarthaApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(appConfigProvider);
     final router = ref.watch(appRouterProvider);
+    // Stored preference; system setting until the user chooses.
+    final themeMode = ref.watch(themeModeProvider).value ?? ThemeMode.system;
 
     return MaterialApp.router(
       title: config.appName,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.system,
+      themeMode: themeMode,
       routerConfig: router,
     );
   }

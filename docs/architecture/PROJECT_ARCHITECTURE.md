@@ -134,7 +134,11 @@ main()
                              routerConfig: appRouterProvider)
 ```
 
-Routes are guarded by `authRedirect` (`lib/app/router/app_router.dart`): signed-out
-users go to `/login`, and only confirmed members (read-only or editor) reach `/`. For
-now `/` is a temporary home screen that shows the access level and a sign-out button.
-Feature milestones will replace it.
+Routes are guarded by `authRedirect` (`lib/app/router/app_router.dart`). Signed-out
+visitors see `/welcome`, then `/login`. Only confirmed members (read-only or editor)
+reach the app: a `StatefulShellRoute` with four tabs (Home `/`, Read `/chapters`,
+Bookmarks `/bookmarks`, My Journal `/journal`). Reading routes nest as
+`/chapters/:id/verses/:verse`, so back navigation walks up the hierarchy. The screens
+and the design system are documented in `docs/design/UI_IMPLEMENTATION.md` (Milestone 6).
+The data flow is UI → Riverpod (Drift watch streams) → `LocalDatabaseRepository` →
+SQLite. Screens never call Supabase.

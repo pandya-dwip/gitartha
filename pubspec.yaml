@@ -83,6 +83,34 @@ flutter:
     - assets/data/bhagavad_gita/sources/
     - assets/data/bhagavad_gita/schema/chapter.schema.json
     - assets/data/bhagavad_gita/schema/sources.schema.json
+    # SIL OFL texts of the bundled fonts (shown in the app's licence page).
+    - assets/fonts/english/OFL-NotoSerif.txt
+    - assets/fonts/english/OFL-PlusJakartaSans.txt
+    - assets/fonts/devanagari/OFL-NotoSerifDevanagari.txt
 
-  # Bundled fonts (assets/fonts/devanagari, assets/fonts/english) will be
-  # declared here once the font files are added.
+  # DESIGN.md typography, bundled so scripture renders the same offline on
+  # every device. All SIL Open Font License 1.1 (licence texts next to the
+  # files). Only the weights the design uses are included.
+  fonts:
+    - family: NotoSerif
+      fonts:
+        - asset: assets/fonts/english/NotoSerif-Regular.ttf
+        - asset: assets/fonts/english/NotoSerif-Italic.ttf
+          style: italic
+        - asset: assets/fonts/english/NotoSerif-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/english/NotoSerif-SemiBold.ttf
+          weight: 600
+    - family: NotoSerifDevanagari
+      fonts:
+        - asset: assets/fonts/devanagari/NotoSerifDevanagari-Regular.ttf
+        - asset: assets/fonts/devanagari/NotoSerifDevanagari-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/devanagari/NotoSerifDevanagari-SemiBold.ttf
+          weight: 600
+    - family: PlusJakartaSans
+      fonts:
+        - asset: assets/fonts/english/PlusJakartaSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/english/PlusJakartaSans-SemiBold.ttf
+          weight: 600

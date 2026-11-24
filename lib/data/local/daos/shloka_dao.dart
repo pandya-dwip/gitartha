@@ -48,6 +48,11 @@ class ShlokaDao extends DatabaseAccessor<AppDatabase> with _$ShlokaDaoMixin {
     return query.getSingleOrNull();
   }
 
+  /// Emits the shloka [id] (soft-deleted ones included, so screens can say
+  /// "no longer available") whenever it changes.
+  Stream<LocalShloka?> watchShloka(String id) =>
+      (select(localShlokas)..where((s) => s.id.equals(id))).watchSingleOrNull();
+
   /// The live shloka at [chapterId].[verseNumber], or null. With
   /// [includeDeleted], whichever row occupies that slot.
   Future<LocalShloka?> getShlokaByVerse(

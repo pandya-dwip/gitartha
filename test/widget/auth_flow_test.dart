@@ -24,6 +24,7 @@ void main() {
     WidgetTester tester,
     FakeAuthRepository r, {
     bool settle = true,
+    bool toLogin = true,
   }) async {
     repo = r;
     final db = openTestDatabase();
@@ -44,6 +45,18 @@ void main() {
     );
     // A spinner never settles; tests that hold a request pump manually.
     settle ? await tester.pumpAndSettle() : await tester.pump();
+    // Signed-out visitors land on the welcome screen first.
+    if (toLogin &&
+        settle &&
+        find.text('Begin Sacred Journey').evaluate().isNotEmpty) {
+      await tester.tap(find.text('Begin Sacred Journey'));
+      await tester.pumpAndSettle();
+    }
+  }
+
+  Future<void> openSettings(WidgetTester tester) async {
+    await tester.tap(find.byTooltip('Settings & About'));
+    await tester.pumpAndSettle();
   }
 
   String location() => container
@@ -67,11 +80,24 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('signed out: protected routes redirect to login', (tester) async {
-    await launch(tester, FakeAuthRepository());
-    expect(location(), AppRoutes.login);
+  testWidgets('signed out: protected routes redirect to the welcome screen', (
+    tester,
+  ) async {
+    await launch(tester, FakeAuthRepository(), toLogin: false);
+    expect(location(), AppRoutes.welcome);
+    expect(find.text('गीतार्थ'), findsOneWidget);
 
-    container.read(appRouterProvider).go(AppRoutes.home); // deep link
+    for (final deepLink in [
+      AppRoutes.home,
+      AppRoutes.verse(2, 47),
+      AppRoutes.journal,
+    ]) {
+      container.read(appRouterProvider).go(deepLink);
+      await tester.pumpAndSettle();
+      expect(location(), AppRoutes.welcome, reason: deepLink);
+    }
+
+    await tester.tap(find.text('Begin Sacred Journey'));
     await tester.pumpAndSettle();
     expect(location(), AppRoutes.login);
     expect(find.text('Sign in'), findsWidgets);
@@ -151,16 +177,17 @@ void main() {
     );
     await signInAs(tester, reader.email!, 'pw-reader');
     expect(location(), AppRoutes.home);
-    expect(find.text('Read-only access'), findsOneWidget);
+    await openSettings(tester);
+    expect(find.text('Read-only access.'), findsOneWidget);
 
     await tester.tap(find.text('Sign out'));
     await tester.pumpAndSettle();
-    expect(location(), AppRoutes.login);
+    expect(location(), AppRoutes.welcome);
 
     // Authenticated routes are no longer reachable.
     container.read(appRouterProvider).go(AppRoutes.home);
     await tester.pumpAndSettle();
-    expect(location(), AppRoutes.login);
+    expect(location(), AppRoutes.welcome);
   });
 
   testWidgets('editor: restored session passes through loading to the app', (
@@ -177,7 +204,8 @@ void main() {
     r.membershipGate!.complete();
     await tester.pumpAndSettle();
     expect(location(), AppRoutes.home);
-    expect(find.text('Editor access'), findsOneWidget);
+    await openSettings(tester);
+    expect(find.textContaining('Editor access'), findsOneWidget);
   });
 
   testWidgets('missing membership is blocked with sign-out', (tester) async {
@@ -191,7 +219,7 @@ void main() {
 
     await tester.tap(find.text('Sign out'));
     await tester.pumpAndSettle();
-    expect(location(), AppRoutes.login);
+    expect(location(), AppRoutes.welcome);
   });
 
   testWidgets('membership error offers retry', (tester) async {
@@ -224,7 +252,7 @@ void main() {
     expect(location(), AppRoutes.home);
     repo.expireSession();
     await tester.pumpAndSettle();
-    expect(location(), AppRoutes.login);
+    expect(location(), AppRoutes.welcome);
   });
 
   testWidgets(

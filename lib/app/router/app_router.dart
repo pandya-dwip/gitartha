@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -8,12 +8,32 @@ import '../../features/authentication/presentation/screens/auth_loading_screen.d
 import '../../features/authentication/presentation/screens/forgot_password_screen.dart';
 import '../../features/authentication/presentation/screens/login_screen.dart';
 import '../../features/authentication/presentation/screens/reset_password_screen.dart';
-import '../bootstrap_screen.dart';
+import '../../features/bookmarks/presentation/bookmarks_screen.dart';
+import '../../features/chapters/presentation/chapter_library_screen.dart';
+import '../../features/chapters/presentation/chapter_overview_screen.dart';
+import '../../features/chapters/presentation/verse_index_screen.dart';
+import '../../features/home/presentation/home_screen.dart';
+import '../../features/home/presentation/welcome_screen.dart';
+import '../../features/journal/presentation/journal_screen.dart';
+import '../../features/shlokas/presentation/shloka_reader_screen.dart';
+import '../shell/app_shell.dart';
+import '../widgets/state_views.dart';
 
-/// Route paths. Feature routes are added here as features are implemented.
+/// Route paths.
 abstract final class AppRoutes {
-  /// The authenticated application entry point.
+  // Bottom navigation destinations.
   static const home = '/';
+  static const chapters = '/chapters';
+  static const bookmarks = '/bookmarks';
+  static const journal = '/journal';
+
+  static String chapter(int id) => '/chapters/$id';
+  static String verses(int chapterId) => '/chapters/$chapterId/verses';
+  static String verse(int chapterId, int verse) =>
+      '/chapters/$chapterId/verses/$verse';
+
+  // Authentication flow.
+  static const welcome = '/welcome';
   static const loading = '/loading';
   static const login = '/login';
   static const forgotPassword = '/forgot-password';
@@ -22,9 +42,13 @@ abstract final class AppRoutes {
   /// Signed in, but membership is missing or could not be checked.
   static const accountAccess = '/account-access';
 
+  /// Reachable while signed out.
+  static const public = {welcome, login, forgotPassword};
+
   /// Routes that only make sense while not (fully) signed in. Every other
   /// route is protected and requires an active membership.
   static const authFlow = {
+    welcome,
     loading,
     login,
     forgotPassword,
@@ -40,9 +64,7 @@ abstract final class AppRoutes {
 String? authRedirect(AuthStatus status, String path) {
   final target = switch (status) {
     AuthStatus.backendUnavailable || AuthStatus.signedOut =>
-      path == AppRoutes.login || path == AppRoutes.forgotPassword
-          ? path
-          : AppRoutes.login,
+      AppRoutes.public.contains(path) ? path : AppRoutes.welcome,
     AuthStatus.passwordRecovery => AppRoutes.resetPassword,
     AuthStatus.loadingMembership => AppRoutes.loading,
     AuthStatus.membershipMissing ||
@@ -52,6 +74,13 @@ String? authRedirect(AuthStatus status, String path) {
       AppRoutes.authFlow.contains(path) ? AppRoutes.home : path,
   };
   return target == path ? null : target;
+}
+
+/// Parses a route parameter as a positive int (bad values → null; the
+/// screen then shows "not found" instead of crashing).
+int? _intParam(GoRouterState state, String name) {
+  final v = int.tryParse(state.pathParameters[name] ?? '');
+  return v != null && v > 0 ? v : null;
 }
 
 /// The application's [GoRouter]. Every navigation — including deep links —
@@ -65,10 +94,80 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     initialLocation: AppRoutes.home,
     refreshListenable: status,
     redirect: (context, state) => authRedirect(status.value, state.uri.path),
+    errorBuilder: (context, state) => const Scaffold(
+      body: EmptyState(
+        icon: Icons.explore_off_outlined,
+        title: 'Page not found',
+        message:
+            'This page does not exist. Use the navigation below or go back.',
+      ),
+    ),
     routes: [
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, shell) => AppShell(shell: shell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.home,
+                builder: (context, state) => const HomeScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.chapters,
+                builder: (context, state) => const ChapterLibraryScreen(),
+                routes: [
+                  GoRoute(
+                    path: ':chapterId',
+                    builder: (context, state) => ChapterOverviewScreen(
+                      chapterId: _intParam(state, 'chapterId'),
+                    ),
+                    routes: [
+                      GoRoute(
+                        path: 'verses',
+                        builder: (context, state) => VerseIndexScreen(
+                          chapterId: _intParam(state, 'chapterId'),
+                        ),
+                        routes: [
+                          GoRoute(
+                            path: ':verse',
+                            builder: (context, state) => ShlokaReaderScreen(
+                              chapterId: _intParam(state, 'chapterId'),
+                              verseNumber: _intParam(state, 'verse'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.bookmarks,
+                builder: (context, state) => const BookmarksScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.journal,
+                builder: (context, state) => const JournalScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
       GoRoute(
-        path: AppRoutes.home,
-        builder: (context, state) => const BootstrapScreen(),
+        path: AppRoutes.welcome,
+        builder: (context, state) => const WelcomeScreen(),
       ),
       GoRoute(
         path: AppRoutes.loading,

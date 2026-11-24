@@ -80,11 +80,17 @@ class ReflectionDao extends DatabaseAccessor<AppDatabase>
 
   /// The most recently written reflections across all shlokas, newest first.
   Future<List<Reflection>> getRecentReflections({int limit = 20}) =>
-      (select(reflections)
-            ..orderBy([
-              (r) => OrderingTerm.desc(r.createdAt),
-              (r) => OrderingTerm.desc(r.rowId),
-            ])
-            ..limit(limit))
-          .get();
+      _recent(limit).get();
+
+  /// Emits [getRecentReflections] again whenever reflections change.
+  Stream<List<Reflection>> watchRecentReflections({int limit = 200}) =>
+      _recent(limit).watch();
+
+  SimpleSelectStatement<$ReflectionsTable, Reflection> _recent(int limit) =>
+      select(reflections)
+        ..orderBy([
+          (r) => OrderingTerm.desc(r.createdAt),
+          (r) => OrderingTerm.desc(r.rowId),
+        ])
+        ..limit(limit);
 }

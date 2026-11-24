@@ -83,6 +83,9 @@ class PersonalNoteDao extends DatabaseAccessor<AppDatabase>
   Future<List<PersonalNote>> getAllNotes() =>
       (select(personalNotes)..orderBy(_newestFirst)).get();
 
+  Stream<List<PersonalNote>> watchAllNotes() =>
+      (select(personalNotes)..orderBy(_newestFirst)).watch();
+
   /// Notes whose title or content contains [query].
   Future<List<PersonalNote>> searchNotes(String query) {
     final term = query.trim();

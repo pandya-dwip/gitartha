@@ -3,7 +3,14 @@ import 'package:gitartha/app/router/app_router.dart';
 import 'package:gitartha/features/authentication/presentation/providers/member_access_provider.dart';
 
 void main() {
-  const protected = [AppRoutes.home, '/chapters/2', '/settings'];
+  const protected = [
+    AppRoutes.home,
+    AppRoutes.chapters,
+    '/chapters/2',
+    '/chapters/2/verses/47',
+    AppRoutes.bookmarks,
+    AppRoutes.journal,
+  ];
   const allPaths = [...protected, ...AppRoutes.authFlow];
 
   test(
@@ -16,14 +23,18 @@ void main() {
         for (final path in protected) {
           expect(
             authRedirect(status, path),
-            AppRoutes.login,
+            AppRoutes.welcome,
             reason: '$status $path',
           );
         }
+        expect(authRedirect(status, AppRoutes.welcome), isNull);
         expect(authRedirect(status, AppRoutes.login), isNull);
         expect(authRedirect(status, AppRoutes.forgotPassword), isNull);
-        expect(authRedirect(status, AppRoutes.accountAccess), AppRoutes.login);
-        expect(authRedirect(status, AppRoutes.loading), AppRoutes.login);
+        expect(
+          authRedirect(status, AppRoutes.accountAccess),
+          AppRoutes.welcome,
+        );
+        expect(authRedirect(status, AppRoutes.loading), AppRoutes.welcome);
       }
     },
   );

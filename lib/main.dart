@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -13,6 +15,7 @@ import 'features/synchronization/presentation/providers/content_sync_provider.da
 Future<void> main() async {
   // Bindings are needed before reading `.env` from the asset bundle.
   WidgetsFlutterBinding.ensureInitialized();
+  _registerFontLicenses();
 
   final config = await AppConfig.load();
   final supabase = await _initializeSupabase(config);
@@ -61,4 +64,22 @@ Future<SupabaseClient?> _initializeSupabase(AppConfig config) async {
     debugPrint('Supabase failed to initialize (${e.runtimeType}).');
     return null;
   }
+}
+
+/// The bundled fonts are under the SIL Open Font License, which must
+/// accompany them; they appear in Flutter's licence page.
+void _registerFontLicenses() {
+  const fonts = {
+    'Noto Serif': 'assets/fonts/english/OFL-NotoSerif.txt',
+    'Noto Serif Devanagari':
+        'assets/fonts/devanagari/OFL-NotoSerifDevanagari.txt',
+    'Plus Jakarta Sans': 'assets/fonts/english/OFL-PlusJakartaSans.txt',
+  };
+  LicenseRegistry.addLicense(() async* {
+    for (final MapEntry(key: name, value: path) in fonts.entries) {
+      yield LicenseEntryWithLineBreaks([
+        name,
+      ], await rootBundle.loadString(path));
+    }
+  });
 }

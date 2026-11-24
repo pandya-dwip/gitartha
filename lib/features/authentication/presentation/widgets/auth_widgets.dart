@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
-/// Minimal centered, width-limited column used by the authentication
-/// screens until the designed UI arrives.
+import '../../../../app/theme/app_theme.dart';
+import '../../../../app/widgets/sacred_widgets.dart';
+
+/// Layout of the authentication screens in the design language: the
+/// Devanagari wordmark, a filigree divider and the form on a vellum card.
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key, required this.title, required this.children});
 
@@ -9,36 +12,48 @@ class AuthPage extends StatelessWidget {
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    body: SafeArea(
-      child: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 420),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  'गीतार्थ',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.displaySmall,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  title,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 24),
-                ...children,
-              ],
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    final t = context.text;
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 420),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'गीतार्थ',
+                    textAlign: TextAlign.center,
+                    style: t.sanskrit.copyWith(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w600,
+                      color: c.accent,
+                      height: 1.4,
+                    ),
+                  ),
+                  const Center(child: SacredDivider(width: 120)),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(title, textAlign: TextAlign.center, style: t.headline),
+                  const SizedBox(height: AppSpacing.lg),
+                  SacredCard(
+                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: children,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 /// An error line in the theme's error colour, announced to screen readers.
