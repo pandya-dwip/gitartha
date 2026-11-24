@@ -40,7 +40,8 @@ void main() {
 
     test('the sources repository and both schemas load', () async {
       final sources = await loader.loadSources();
-      expect(jsonDecode(sources.text), {'sources': <Object>[]});
+      final list = (jsonDecode(sources.text) as Map)['sources'] as List;
+      expect(list.map((s) => (s as Map)['id']), contains('gitartha_editorial'));
       expect(
         await loader.loadSchema('chapter.schema.json'),
         contains('2020-12'),

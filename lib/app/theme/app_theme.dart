@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
@@ -20,12 +21,13 @@ abstract final class AppSpacing {
   static const maxReadingWidth = 680.0;
 }
 
-/// DESIGN.md radii: core elements 4–8 px; badges 4 px.
+/// Corner radii. Softer than DESIGN.md's original 4–8 px at the owner's
+/// request ("smooth, not sharp"); closer to code.html's rounded-2xl cards.
 abstract final class AppRadii {
-  static const sm = 4.0; // buttons, inputs, badges
-  static const md = 6.0; // inner tiles
-  static const lg = 8.0; // cards
-  static const xl = 12.0; // chips, sheets
+  static const sm = 12.0; // number badges, small tiles
+  static const md = 16.0; // buttons, inputs, icon buttons, banners
+  static const lg = 22.0; // cards, dialogs
+  static const xl = 28.0; // sheets, the auth card, pills
 }
 
 /// DESIGN.md type scale ("-mobile" variants, as the app is mobile-first).
@@ -200,7 +202,7 @@ abstract final class AppTheme {
               ? const Color(0xFFBA1A1A)
               : const Color(0xFFFFB4AB),
         );
-    final radius4 = BorderRadius.circular(AppRadii.sm);
+    final control = BorderRadius.circular(AppRadii.md);
     final buttonText = text.ui.copyWith(
       fontWeight: FontWeight.w600,
       letterSpacing: 0.4,
@@ -234,7 +236,7 @@ abstract final class AppTheme {
           foregroundColor: c.onAccent,
           disabledBackgroundColor: c.accent.withValues(alpha: 0.4),
           disabledForegroundColor: c.onAccent,
-          shape: RoundedRectangleBorder(borderRadius: radius4),
+          shape: RoundedRectangleBorder(borderRadius: control),
           padding: buttonPadding,
           minimumSize: const Size(48, 48),
           textStyle: buttonText,
@@ -246,7 +248,7 @@ abstract final class AppTheme {
           backgroundColor: c.card,
           foregroundColor: c.text,
           side: BorderSide(color: c.accent),
-          shape: RoundedRectangleBorder(borderRadius: radius4),
+          shape: RoundedRectangleBorder(borderRadius: control),
           padding: buttonPadding,
           minimumSize: const Size(48, 48),
           textStyle: buttonText,
@@ -272,22 +274,23 @@ abstract final class AppTheme {
         ),
         labelStyle: text.ui.copyWith(color: c.textSecondary),
         border: OutlineInputBorder(
-          borderRadius: radius4,
+          borderRadius: control,
           borderSide: BorderSide(color: c.border),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: radius4,
+          borderRadius: control,
           borderSide: BorderSide(color: c.border),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: radius4,
-          borderSide: BorderSide(color: c.accent),
+          borderRadius: control,
+          borderSide: BorderSide(color: c.accent, width: 1.6),
         ),
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: c.card.withValues(alpha: 0.95),
         surfaceTintColor: Colors.transparent,
-        indicatorColor: Colors.transparent,
+        indicatorColor: c.accent.withValues(alpha: 0.16),
+        indicatorShape: const StadiumBorder(),
         height: 64,
         labelTextStyle: WidgetStateProperty.resolveWith(
           (states) => text.ui.copyWith(
@@ -335,8 +338,15 @@ abstract final class AppTheme {
         backgroundColor: c.text,
         contentTextStyle: text.ui.copyWith(color: c.canvas),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadii.lg),
+          borderRadius: BorderRadius.circular(AppRadii.md),
         ),
+      ),
+      // Smooth fade-through between pages on Android; native on iOS.
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: FadeForwardsPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+        },
       ),
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStatePropertyAll(c.accent),

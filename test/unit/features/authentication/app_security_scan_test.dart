@@ -28,10 +28,9 @@ void main() {
     }
   });
 
-  test('no public sign-up, no admin API, no membership writes', () {
+  test('sign-up only via Supabase Auth; no admin API, no writes', () {
     for (final (path, text) in sources('lib/features/authentication')) {
       for (final banned in [
-        'signUp(',
         'auth.admin',
         'inviteUserByEmail',
         '.insert(',
@@ -42,6 +41,15 @@ void main() {
         expect(text, isNot(contains(banned)), reason: '$path: $banned');
       }
     }
+    // Registration exists in exactly one place: the Supabase repository
+    // (auth.users). Membership rows come from the database trigger.
+    final signUps = sources('lib')
+        .where((s) => s.$2.contains('auth.signUp('))
+        .map((s) => s.$1.replaceAll(r'\', '/'))
+        .toList();
+    expect(signUps, [
+      'lib/features/authentication/data/repositories/auth_repository_impl.dart',
+    ]);
     // app_members is read in exactly one place, through its select.
     final members = sources('lib')
         .where((s) => s.$2.contains("'app_members'"))

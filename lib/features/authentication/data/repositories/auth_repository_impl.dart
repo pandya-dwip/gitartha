@@ -12,8 +12,9 @@ import '../models/member_access_model.dart';
 /// [AuthRepository] over Supabase Auth and the `app_members` table.
 ///
 /// * Uses the app's publishable key and the user's own session only, so
-///   every query is subject to RLS. There is no sign-up and no write to
-///   `app_members` anywhere in the app.
+///   every query is subject to RLS. Registration creates the Auth account
+///   only; its read-only `app_members` row comes from a database trigger.
+///   The app never writes to `app_members`.
 /// * Passwords and tokens are never logged; errors are mapped to
 ///   [AuthFailure] / [MembershipFailure] with user-safe messages.
 class SupabaseAuthRepository implements AuthRepository {
@@ -55,6 +56,27 @@ class SupabaseAuthRepository implements AuthRepository {
       throw const AuthFailure(AuthFailureKind.unknown);
     }
     return user;
+  }
+
+  @override
+  Future<SignUpOutcome> signUp({
+    required String email,
+    required String password,
+    required String fullName,
+  }) async {
+    final response = await _auth(
+      () => _client.auth.signUp(
+        email: email.trim(),
+        password: password,
+        // Display name only. The membership trigger never reads metadata,
+        // so nothing here can influence permissions.
+        data: {'full_name': fullName.trim()},
+        emailRedirectTo: authRedirectUrl,
+      ),
+    );
+    return response.session != null
+        ? SignUpOutcome.signedIn
+        : SignUpOutcome.confirmEmail;
   }
 
   @override
@@ -166,6 +188,10 @@ AuthFailureKind authFailureKindFor(AuthException e) {
       return AuthFailureKind.samePassword;
     case 'validation_failed' || 'email_address_invalid':
       return AuthFailureKind.invalidInput;
+    case 'user_already_exists' || 'email_exists':
+      return AuthFailureKind.emailAlreadyRegistered;
+    case 'signup_disabled' || 'email_provider_disabled':
+      return AuthFailureKind.signupDisabled;
   }
 
   final status = int.tryParse(e.statusCode ?? '');

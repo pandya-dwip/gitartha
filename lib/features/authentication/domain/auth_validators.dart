@@ -16,6 +16,30 @@ abstract final class AuthValidators {
     return null;
   }
 
+  static String? fullName(String? value) {
+    final v = value?.trim() ?? '';
+    if (v.isEmpty) return 'Enter your name.';
+    if (v.length > 80) return 'Use at most 80 characters.';
+    return null;
+  }
+
+  /// 0 (empty) to 4 (strong): length and character variety. Only a hint
+  /// for the registration form; Supabase applies the real policy.
+  static int passwordStrength(String value) {
+    if (value.isEmpty) return 0;
+    var score = 0;
+    if (value.length >= minNewPasswordLength) score++;
+    if (value.length >= 12) score++;
+    if (RegExp(r'[A-Z]').hasMatch(value) && RegExp(r'[a-z]').hasMatch(value)) {
+      score++;
+    }
+    if (RegExp(r'[0-9]').hasMatch(value) &&
+        RegExp(r'[^A-Za-z0-9]').hasMatch(value)) {
+      score++;
+    }
+    return score == 0 ? 1 : score;
+  }
+
   static String? password(String? value) =>
       (value == null || value.isEmpty) ? 'Enter your password.' : null;
 

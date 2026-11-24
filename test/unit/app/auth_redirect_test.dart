@@ -23,18 +23,15 @@ void main() {
         for (final path in protected) {
           expect(
             authRedirect(status, path),
-            AppRoutes.welcome,
+            AppRoutes.login,
             reason: '$status $path',
           );
         }
-        expect(authRedirect(status, AppRoutes.welcome), isNull);
         expect(authRedirect(status, AppRoutes.login), isNull);
+        expect(authRedirect(status, AppRoutes.register), isNull);
         expect(authRedirect(status, AppRoutes.forgotPassword), isNull);
-        expect(
-          authRedirect(status, AppRoutes.accountAccess),
-          AppRoutes.welcome,
-        );
-        expect(authRedirect(status, AppRoutes.loading), AppRoutes.welcome);
+        expect(authRedirect(status, AppRoutes.accountAccess), AppRoutes.login);
+        expect(authRedirect(status, AppRoutes.loading), AppRoutes.login);
       }
     },
   );

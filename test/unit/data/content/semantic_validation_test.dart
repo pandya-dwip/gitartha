@@ -340,7 +340,7 @@ void main() {
         expect(r.validFiles, 19);
         expect(r.totalChapters, 18);
         expect(r.totalVerses, 41); // Chapter 1, verses 1-41 (drafts)
-        expect(r.approvedVerses, 0);
+        expect(r.approvedVerses, 41);
       }
     });
 
@@ -350,7 +350,7 @@ void main() {
       expect(r.publicationReadyChapters, 0);
     });
 
-    test('Chapter 1 verses 1-41 are complete drafts, none approved', () async {
+    test('Chapter 1 verses 1-41 are complete and approved', () async {
       final report = await service.validate(chapterIds: [1]);
       final verses = report.chapters.single.verses;
       expect(verses.map((v) => v.contentId), [
@@ -360,7 +360,7 @@ void main() {
       for (final verse in verses) {
         expect(verse.hasErrors, isFalse, reason: verse.contentId);
         expect(verse.missingFields, isEmpty, reason: verse.contentId);
-        expect(verse.isApproved, isFalse, reason: verse.contentId);
+        expect(verse.isApproved, isTrue, reason: verse.contentId);
       }
     });
   });

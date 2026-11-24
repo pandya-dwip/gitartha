@@ -99,6 +99,30 @@ class AuthController extends Notifier<AuthSession> {
     state = AuthSession(user: user);
   }
 
+  /// Registers a new account. When Supabase returns a session straight away
+  /// the user is signed in (and the router moves on); otherwise they must
+  /// confirm their email first.
+  Future<SignUpOutcome> signUp({
+    required String fullName,
+    required String email,
+    required String password,
+  }) async {
+    if (AuthValidators.fullName(fullName) != null ||
+        AuthValidators.email(email) != null ||
+        AuthValidators.newPassword(password) != null) {
+      throw const AuthFailure(AuthFailureKind.invalidInput);
+    }
+    final outcome = await _repo.signUp(
+      email: email,
+      password: password,
+      fullName: fullName,
+    );
+    if (outcome == SignUpOutcome.signedIn) {
+      state = AuthSession(user: _repo.currentUser);
+    }
+    return outcome;
+  }
+
   Future<void> signOut() async {
     await _repo.signOut();
     state = const AuthSession();

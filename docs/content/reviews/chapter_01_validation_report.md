@@ -30,9 +30,9 @@ The document uses three heading layouts. Each was mapped to the same JSON fields
 
 ## 2. Missing Sanskrit or transliteration
 
-None is missing. Every verse has both. However, the Sanskrit of **1.21, 1.29, 1.30 and
-1.31** appears incomplete or misaligned in the document itself (§8), and **1.22** and
-**1.28** have no verse-end number.
+None is missing. Every verse has both. The suspected issues in 1.21 and 1.29–1.31 (§8)
+were reviewed by the owner, who kept the text as given. The missing verse-end numbers of
+1.22 and 1.28 were added on the owner's confirmation.
 
 The Sanskrit was copied from the document **programmatically**, never retyped. Two
 checks confirm it:
@@ -239,8 +239,11 @@ in the JSON.
 3. **1.21 — first half missing.** Standard editions begin 1.21 with "हृषीकेशं तदा
    वाक्यमिदमाह महीपते।" before "अर्जुन उवाच।". The document has only the speaker line
    and the second half. Verify.
-4. **1.22 and 1.28 — no verse-end number.** They end with "॥" only; every other verse
-   has "॥ १.N॥". Left as in the document.
+4. **1.22 and 1.28 — no verse-end number in the .docx.** Resolved: `॥ १.२२॥` and
+   `॥ १.२८॥` were added after the owner confirmed them.
+
+**Owner review (24 Nov 2026):** items 1–3 were kept as given. Open notes for the source
+check are in the review list (A1–A3).
 5. **1.17 — English meaning.** The document says "…were also present among the Pandava
    warriors", but the sentence continues into 1.18, where they *blow their conches*.
    The Hindi follows the Sanskrit ("…ने भी (अपने-अपने शंख बजाए)"), so the English and
@@ -278,7 +281,7 @@ in the JSON.
 | Aspect | 1.1–1.35 after conversion | Same as 36–41? |
 |---|---|---|
 | Field set and order | identical keys and order | ✅ |
-| Sanskrit layout | half-verses on separate lines, `॥ १.N॥` ending (except 1.22, 1.28) | ✅ |
+| Sanskrit layout | half-verses on separate lines, `॥ १.N॥` ending on every verse | ✅ |
 | Transliteration | IAST, same punctuation and casing rules | ✅ |
 | Hindi meaning | vocative first, epithets and terms glossed in parentheses | ✅ (generated) |
 | English meaning | direct translation, no narrator framing | ✅ |

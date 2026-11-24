@@ -12,48 +12,26 @@ fidelity · **C** = generated content to verify · **D** = removed or unmapped t
 
 ## A. Sanskrit source text
 
-### A1. 1.30 / 1.31: the same half-verse appears twice
+### A1–A2. 1.29–1.31: owner decision, keep as in the document
 
-- **Field:** `sanskrit_text` (and therefore `transliteration`, `hindi_meaning`,
-  `english_meaning`)
-- **Original 1.30:** `न च शक्नोम्यवस्थातुं भ्रमतीव च मे मनः। / निमित्तानि च पश्यामि विपरीतानि केशव॥ १.३०॥`
-- **Original 1.31:** `निमित्तानि च पश्यामि विपरीतानि केशव। / न च श्रेयोऽनुपश्यामि हत्वा स्वजनमाहवे॥ १.३१॥`
-- **Problem:** "निमित्तानि च पश्यामि विपरीतानि केशव" is in both verses. A pada cannot
-  belong to two verses.
-- **Verify:** the correct text and division of 1.29–1.31 in your chosen edition (see A2).
+- **Owner decision (24 Nov 2026):** 1.29–1.31 are correct as given; the repeated line
+  "निमित्तानि च पश्यामि विपरीतानि केशव" (end of 1.30, start of 1.31) is kept.
+- **Open note, for the source check in A5:** in the editions I know, that line occurs only
+  once, and the half-verse "सीदन्ति मम गात्राणि मुखं च परिशुष्यति" is not in this chapter
+  file. Confirm both points against the edition you cite in `sources.json`.
 
-### A2. 1.29 / 1.30: shifted by half a verse; one half-verse missing
+### A3. 1.21: owner decision, complete as given
 
-- **Field:** `sanskrit_text` (+ dependent fields)
-- **Original 1.29:** `वेपथुश्च शरीरे मे रोमहर्षश्च जायते। / गाण्डीवं स्रंसते हस्तात्त्वक्चैव परिदह्यते॥ १.२९॥`
-- **Problem:** the rest of the document (1.28, 1.31–1.41) follows the common numbering.
-  In that numbering, 1.29 is "सीदन्ति मम गात्राणि मुखं च परिशुष्यति। वेपथुश्च शरीरे मे
-  रोमहर्षश्च जायते॥", and 1.30 is "गाण्डीवं स्रंसते … । न च शक्नोम्यवस्थातुं भ्रमतीव च मे
-  मनः॥".
-  - **The half-verse "सीदन्ति मम गात्राणि मुखं च परिशुष्यति" ("my limbs give way and my
-    mouth is parched") is not in the document at all.**
-  - The document's 1.29–1.30 match the grouping used by some other editions, which number
-    1.28 differently, so the document mixes two numbering systems.
-- **Verify:** pick one edition. Correct 1.29–1.31 from it, including the English
-  meanings, context and life lessons, which currently follow the document's division.
-  Record that edition in `sources.json` and attribute it.
+- **Owner decision (24 Nov 2026):** 1.21 is complete (`अर्जुन उवाच। / सेनयोरुभयोर्मध्ये रथं
+  स्थापय मेऽच्युत॥ १.२१॥`). This matches editions that end 1.20 with the narrator's line.
+- **Open note:** in those editions, 1.20 has a third line, "हृषीकेशं तदा वाक्यमिदमाह
+  महीपते।". It is not in the document's 1.20 either, so it is currently nowhere in the
+  chapter. Confirm against your edition whether 1.20 should include it.
 
-### A3. 1.21: first half missing
+### A4. 1.22 and 1.28: resolved
 
-- **Field:** `sanskrit_text`
-- **Original:** `अर्जुन उवाच। / सेनयोरुभयोर्मध्ये रथं स्थापय मेऽच्युत॥ १.२१॥`
-- **Problem:** standard editions read "हृषीकेशं तदा वाक्यमिदमाह महीपते। अर्जुन उवाच।
-  सेनयोरुभयोर्मध्ये रथं स्थापय मेऽच्युत॥". The narrator's half ("then, O King, he spoke
-  these words to Hrishikesha") is missing. It was **not** reconstructed.
-- **Verify:** against the source edition; then add it to the Sanskrit, the
-  transliteration and both meanings.
-
-### A4. 1.22 and 1.28: no verse-end number
-
-- **Field:** `sanskrit_text`
-- **Original endings:** 1.22 `…रणसमुद्यमे॥`. 1.28 `…युयुत्सुं समुपस्थितम्॥`
-- **Problem:** every other verse ends `॥ १.N॥`. Guidelines §2 expect the number.
-- **Verify:** add `१.२२` and `१.२८` once the text is confirmed against the source.
+- Verse-end numbers added on owner confirmation: `॥ १.२२॥` and `॥ १.२८॥`. They were missing
+  in the .docx. All 41 verses now end with their own number.
 
 ### A5. All verses: the Sanskrit has no recorded source
 

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gitartha/features/authentication/data/repositories/auth_repository_impl.dart';
 import 'package:gitartha/features/authentication/domain/entities/auth_failure.dart';
+import 'package:gitartha/features/authentication/domain/repositories/auth_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -348,5 +349,76 @@ void main() {
       authFailureKindFor(AuthSessionMissingException()),
       AuthFailureKind.sessionExpired,
     );
+  });
+
+  group('registration', () {
+    test('creates the Auth account with the name as metadata only', () async {
+      respond = (_) => json(session['user']!); // no session: confirm email
+      final outcome = await repo.signUp(
+        email: ' new@example.test ',
+        password: 'a-long-password',
+        fullName: '  Asha Devi ',
+      );
+      expect(outcome, SignUpOutcome.confirmEmail);
+      final r = requests.single;
+      expect(r.method, 'POST');
+      expect(r.url.path, '/auth/v1/signup');
+      expect(
+        r.url.queryParameters['redirect_to'],
+        SupabaseAuthRepository.authRedirectUrl,
+      );
+      final body = jsonDecode(r.body) as Map;
+      expect(body['email'], 'new@example.test');
+      expect(body['password'], 'a-long-password');
+      expect(body['data'], {'full_name': 'Asha Devi'});
+      expect(r.headers['apikey'], 'sb_publishable_TESTKEY');
+      // Membership is created by the database trigger, never by the app.
+      expect(requests.where((x) => x.url.path.startsWith('/rest/')), isEmpty);
+    });
+
+    test('signed in straight away when no confirmation is required', () async {
+      respond = (_) => json(session);
+      final outcome = await repo.signUp(
+        email: 'new@example.test',
+        password: 'a-long-password',
+        fullName: 'Asha',
+      );
+      expect(outcome, SignUpOutcome.signedIn);
+      expect(repo.currentUser?.id, userId);
+    });
+
+    final cases = <String, (http.Response, AuthFailureKind)>{
+      'existing account': (
+        json({'code': 'user_already_exists', 'msg': 'x'}, 422),
+        AuthFailureKind.emailAlreadyRegistered,
+      ),
+      'sign-ups disabled': (
+        json({'code': 'signup_disabled', 'msg': 'x'}, 422),
+        AuthFailureKind.signupDisabled,
+      ),
+      'weak password': (
+        json({
+          'code': 'weak_password',
+          'msg': 'x',
+          'weak_password': {
+            'reasons': ['length'],
+          },
+        }, 422),
+        AuthFailureKind.weakPassword,
+      ),
+    };
+    cases.forEach((name, c) {
+      test('maps $name', () async {
+        respond = (_) => c.$1;
+        await expectLater(
+          repo.signUp(
+            email: 'new@example.test',
+            password: 'a-long-password',
+            fullName: 'A',
+          ),
+          authFailure(c.$2),
+        );
+      });
+    });
   });
 }

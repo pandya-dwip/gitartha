@@ -92,9 +92,11 @@ so far; add a `from` query parameter when real routes arrive.
 
 - The app only ever uses the **publishable** key and the user's own session.
   `AppConfig` refuses `sb_secret_…` keys and `service_role` JWTs.
-- No sign-up, no admin API, and no write to `app_members` exist in app code. A test
-  (`test/unit/features/authentication/app_security_scan_test.dart`) fails if any
-  appear.
+- Registration (`/register`) calls only Supabase Auth `signUp`; the read-only
+  membership comes from the database trigger. No admin API, no invite API and no write
+  to `app_members` exist in app code. A test
+  (`test/unit/features/authentication/app_security_scan_test.dart`) fails if any appear,
+  or if `signUp` is called anywhere except `SupabaseAuthRepository`.
 - The membership query filters by the **session's** user id, and RLS
   (`app_members_select_own`) returns only that row anyway. The parser rejects a row for
   a different user, or a missing or non-boolean `is_accessible`.

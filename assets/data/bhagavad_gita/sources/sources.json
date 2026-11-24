@@ -1,3 +1,12 @@
 {
-  "sources": []
+  "sources": [
+    {
+      "id": "gitartha_editorial",
+      "name": "Gitartha editorial compilation",
+      "author": "Gitartha team",
+      "source_url": "",
+      "license": "For use in the Gitartha app only",
+      "attribution": "Written and compiled by the Gitartha team while studying the Bhagavad Gita, with the help of AI tools (ChatGPT and Claude). Every verse and chapter is reviewed by the Gitartha team against multiple digital editions of the Gita."
+    }
+  ]
 }

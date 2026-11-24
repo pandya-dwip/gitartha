@@ -29,8 +29,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('गीतार्थ'), findsOneWidget);
-    await tester.tap(find.text('Begin Sacred Journey'));
-    await tester.pumpAndSettle();
+    expect(find.text('Welcome back'), findsOneWidget);
     expect(find.textContaining('not connected to its server'), findsOneWidget);
   });
 }

@@ -35,18 +35,26 @@ class SacredCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
     final radius = BorderRadius.circular(AppRadii.lg);
-    return Material(
-      color: tone == SacredTone.card ? c.card : c.well,
-      shape: RoundedRectangleBorder(
+    return DecoratedBox(
+      decoration: BoxDecoration(
         borderRadius: radius,
-        side: BorderSide(
-          color: emphasized ? c.accent.withValues(alpha: 0.4) : c.border,
-        ),
+        boxShadow: tone == SacredTone.card ? c.softShadow : null,
       ),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(padding: padding, child: child),
+      child: Material(
+        color: tone == SacredTone.card ? c.card : c.well,
+        shape: RoundedRectangleBorder(
+          borderRadius: radius,
+          side: BorderSide(
+            color: emphasized
+                ? c.accent.withValues(alpha: 0.4)
+                : c.border.withValues(alpha: 0.7),
+          ),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(padding: padding, child: child),
+        ),
       ),
     );
   }

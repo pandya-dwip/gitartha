@@ -85,8 +85,10 @@ void main() {
           v.reflectionQuestion,
           endsWith('nothing to do with the conflict?'),
         );
-        expect(v.sourceAttributions, isEmpty);
-        expect(v.reviewStatus, ReviewStatus.draft);
+        expect(v.sourceAttributions.map((a) => a.sourceId).toSet(), {
+          'gitartha_editorial',
+        });
+        expect(v.reviewStatus, ReviewStatus.approved);
 
         // The model round-trips to exactly the file's JSON.
         expect(outcome.value!.toJson(), jsonDecode(text));

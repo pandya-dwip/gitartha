@@ -24,7 +24,6 @@ void main() {
     WidgetTester tester,
     FakeAuthRepository r, {
     bool settle = true,
-    bool toLogin = true,
   }) async {
     repo = r;
     final db = openTestDatabase();
@@ -45,13 +44,6 @@ void main() {
     );
     // A spinner never settles; tests that hold a request pump manually.
     settle ? await tester.pumpAndSettle() : await tester.pump();
-    // Signed-out visitors land on the welcome screen first.
-    if (toLogin &&
-        settle &&
-        find.text('Begin Sacred Journey').evaluate().isNotEmpty) {
-      await tester.tap(find.text('Begin Sacred Journey'));
-      await tester.pumpAndSettle();
-    }
   }
 
   Future<void> openSettings(WidgetTester tester) async {
@@ -80,12 +72,13 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('signed out: protected routes redirect to the welcome screen', (
+  testWidgets('signed out: the app opens on sign-in; deep links redirect', (
     tester,
   ) async {
-    await launch(tester, FakeAuthRepository(), toLogin: false);
-    expect(location(), AppRoutes.welcome);
+    await launch(tester, FakeAuthRepository());
+    expect(location(), AppRoutes.login);
     expect(find.text('गीतार्थ'), findsOneWidget);
+    expect(find.text('Welcome back'), findsOneWidget);
 
     for (final deepLink in [
       AppRoutes.home,
@@ -94,12 +87,8 @@ void main() {
     ]) {
       container.read(appRouterProvider).go(deepLink);
       await tester.pumpAndSettle();
-      expect(location(), AppRoutes.welcome, reason: deepLink);
+      expect(location(), AppRoutes.login, reason: deepLink);
     }
-
-    await tester.tap(find.text('Begin Sacred Journey'));
-    await tester.pumpAndSettle();
-    expect(location(), AppRoutes.login);
     expect(find.text('Sign in'), findsWidgets);
     expect(find.textContaining('Sign up'), findsNothing);
   });
@@ -182,12 +171,12 @@ void main() {
 
     await tester.tap(find.text('Sign out'));
     await tester.pumpAndSettle();
-    expect(location(), AppRoutes.welcome);
+    expect(location(), AppRoutes.login);
 
     // Authenticated routes are no longer reachable.
     container.read(appRouterProvider).go(AppRoutes.home);
     await tester.pumpAndSettle();
-    expect(location(), AppRoutes.welcome);
+    expect(location(), AppRoutes.login);
   });
 
   testWidgets('editor: restored session passes through loading to the app', (
@@ -219,7 +208,7 @@ void main() {
 
     await tester.tap(find.text('Sign out'));
     await tester.pumpAndSettle();
-    expect(location(), AppRoutes.welcome);
+    expect(location(), AppRoutes.login);
   });
 
   testWidgets('membership error offers retry', (tester) async {
@@ -252,7 +241,7 @@ void main() {
     expect(location(), AppRoutes.home);
     repo.expireSession();
     await tester.pumpAndSettle();
-    expect(location(), AppRoutes.welcome);
+    expect(location(), AppRoutes.login);
   });
 
   testWidgets(
@@ -301,4 +290,148 @@ void main() {
     expect(location(), AppRoutes.home);
     expect(find.text('Your password has been changed.'), findsOneWidget);
   });
+
+  Future<void> tapCreateAccount(WidgetTester tester) async {
+    final button = find.widgetWithText(FilledButton, 'Create account');
+    await tester.ensureVisible(button);
+    await tester.pumpAndSettle();
+    await tester.tap(button);
+  }
+
+  Future<void> fillRegistration(
+    WidgetTester tester, {
+    String password = 'long-enough-1',
+    String? confirm,
+  }) async {
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Full name'),
+      'Asha Devi',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Email'),
+      'new@example.test',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Password'),
+      password,
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Confirm password'),
+      confirm ?? password,
+    );
+    await tester.pump();
+  }
+
+  testWidgets('register: validation, then "check your email"', (tester) async {
+    await launch(tester, FakeAuthRepository());
+    await tester.ensureVisible(find.text('Create an account'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Create an account'));
+    await tester.pumpAndSettle();
+    expect(location(), AppRoutes.register);
+    expect(find.text('Begin your journey'), findsOneWidget);
+
+    await tapCreateAccount(tester);
+    await tester.pump();
+    expect(find.text('Enter your name.'), findsOneWidget);
+    expect(find.text('Enter your email address.'), findsOneWidget);
+
+    await fillRegistration(tester, password: 'Long-enough-1', confirm: 'nope');
+    expect(find.text('Strong'), findsOneWidget);
+    await tapCreateAccount(tester);
+    await tester.pump();
+    expect(find.text('The passwords do not match.'), findsOneWidget);
+    expect(repo.signUps, isEmpty);
+
+    await fillRegistration(tester, password: 'Long-enough-1');
+    await tapCreateAccount(tester);
+    await tester.pumpAndSettle();
+    expect(repo.signUps.single, (
+      email: 'new@example.test',
+      fullName: 'Asha Devi',
+    ));
+    expect(find.text('Check your email'), findsOneWidget);
+    expect(find.text('new@example.test'), findsOneWidget);
+    expect(location(), AppRoutes.register);
+
+    await tester.ensureVisible(find.text('Sign in'));
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+    expect(location(), AppRoutes.login);
+  });
+
+  testWidgets('register without email confirmation enters the app', (
+    tester,
+  ) async {
+    const u = FakeAuthRepository.newUser;
+    await launch(
+      tester,
+      FakeAuthRepository(members: {u.id: membership(u, isAccessible: false)})
+        ..signUpSignsIn = true,
+    );
+    await tester.ensureVisible(find.text('Create an account'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Create an account'));
+    await tester.pumpAndSettle();
+    await fillRegistration(tester);
+    await tapCreateAccount(tester);
+    await tester.pumpAndSettle();
+    expect(location(), AppRoutes.home);
+  });
+
+  testWidgets('register shows server errors; sign-in and sign-up link', (
+    tester,
+  ) async {
+    await launch(
+      tester,
+      FakeAuthRepository()
+        ..signUpFailure = const AuthFailure(AuthFailureKind.signupDisabled),
+    );
+    await tester.ensureVisible(find.text('Create an account'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Create an account'));
+    await tester.pumpAndSettle();
+    await fillRegistration(tester);
+    await tapCreateAccount(tester);
+    await tester.pumpAndSettle();
+    expect(find.text(AuthFailureKind.signupDisabled.message), findsOneWidget);
+
+    await tester.ensureVisible(find.text('Sign in'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+    expect(location(), AppRoutes.login);
+    await tester.ensureVisible(find.text('Create an account'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Create an account'));
+    await tester.pumpAndSettle();
+    expect(location(), AppRoutes.register);
+  });
+
+  for (final dark in [false, true]) {
+    testWidgets(
+      'auth screens fit a small phone with large text (${dark ? 'dark' : 'light'})',
+      (tester) async {
+        tester.view.physicalSize = const Size(320 * 2, 640 * 2);
+        tester.view.devicePixelRatio = 2;
+        tester.platformDispatcher.textScaleFactorTestValue = 1.3;
+        tester.platformDispatcher.platformBrightnessTestValue = dark
+            ? Brightness.dark
+            : Brightness.light;
+        addTearDown(tester.view.reset);
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
+        await launch(tester, FakeAuthRepository());
+        for (final path in [
+          AppRoutes.login,
+          AppRoutes.register,
+          AppRoutes.forgotPassword,
+        ]) {
+          container.read(appRouterProvider).go(path);
+          await tester.pumpAndSettle();
+          expect(tester.takeException(), isNull, reason: path);
+        }
+      },
+    );
+  }
 }

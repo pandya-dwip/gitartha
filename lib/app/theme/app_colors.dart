@@ -54,6 +54,16 @@ class GitarthaColors extends ThemeExtension<GitarthaColors> {
   /// Soft gold wash, e.g. number badges and highlighted borders.
   Color get accentSoft => accent.withValues(alpha: 0.15);
 
+  /// A barely-there lift for cards, so they feel soft rather than flat.
+  List<BoxShadow> get softShadow => [
+    BoxShadow(
+      color: const Color(0xFF493A2E).withValues(alpha: 0.06),
+      offset: const Offset(0, 6),
+      blurRadius: 18,
+      spreadRadius: -6,
+    ),
+  ];
+
   /// DESIGN.md "Soft Ambient Halo" for floating controls.
   List<BoxShadow> get halo => [
     BoxShadow(

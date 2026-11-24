@@ -27,6 +27,14 @@ enum AuthFailureKind {
     'characters.',
   ),
   samePassword('Choose a password different from your current one.'),
+  emailAlreadyRegistered(
+    'An account with this email already exists. Sign in instead, or use '
+    '"Forgot password?".',
+  ),
+  signupDisabled(
+    'New registrations are not open right now. Please contact the project '
+    'owner.',
+  ),
   unknown('Something went wrong. Please try again.');
 
   const AuthFailureKind(this.message);

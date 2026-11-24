@@ -1,8 +1,23 @@
-# Gitartha — Invitation-Only Accounts
+# Gitartha — Accounts: Registration and Invitations
 
-Gitartha is private. Nobody can create their own account: the project owner invites
-people from the Supabase Dashboard. The app has no sign-up screen, and it never uses
-administrative credentials.
+People can get an account in two ways:
+
+1. **Self-registration in the app** (added after Milestone 6). The *Create an account*
+   screen calls Supabase Auth `signUp` with the publishable key. Supabase creates the
+   `auth.users` record. The database trigger `on_auth_user_created_provision_membership`
+   then gives the new account a **read-only** membership (`app_members.is_accessible =
+   false`). The app never writes to `app_members`, and nothing a registrant enters can
+   grant editing permission: their name is stored as Auth metadata, which the trigger
+   ignores.
+2. **Invitation by the owner**, from the Supabase Dashboard, as before.
+
+Editing permission is still granted only by the project owner
+([MEMBERSHIP_ACCESS_CONTROL.md](MEMBERSHIP_ACCESS_CONTROL.md)).
+
+> **Consequence:** anyone who has the app can register and then **read** the shared
+> scripture. They cannot change it. To return to invite-only, turn sign-ups off in the
+> Dashboard. The app then shows "New registrations are not open right now" on the
+> registration screen.
 
 ## One-time Supabase configuration
 
@@ -11,10 +26,10 @@ can't be changed from this repository, so check each one yourself.
 
 | Where | Setting | Value | Why |
 |---|---|---|---|
-| Authentication → Sign In / Providers → User Signups | Allow new users to sign up | **Off** | Blocks public `signUp`. Invitations and dashboard-created users still work: disabling sign-ups does **not** disable invites. |
+| Authentication → Sign In / Providers → User Signups | Allow new users to sign up | **On** for in-app registration (**Off** = invite-only) | Off blocks the app's *Create an account* (it shows "registrations are not open"). Invitations work either way. |
 | same | Allow anonymous sign-ins | **Off** | The schema already denies anonymous users |
 | Authentication → Sign In / Providers → Email | Email provider | **On** | Email + password sign-in |
-| same | Confirm email | **On** | Accounts must prove the address |
+| same | Confirm email | **On** (recommended) | New accounts must open the confirmation link (on the same phone; it returns to the app). With it off, registration signs the user in immediately |
 | Authentication → Sign In / Providers | Social / OAuth providers | **Off** | Some providers create accounts on first login |
 | Authentication → URL Configuration → Redirect URLs | add | `com.gitartha.gitartha://auth-callback` | Password-reset links return to the app. If the URL isn't listed, Supabase falls back to the Site URL. |
 | Authentication → URL Configuration → Site URL | | `com.gitartha.gitartha://auth-callback` (or your own web page) | Where invitation links land after confirmation |

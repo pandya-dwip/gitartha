@@ -417,7 +417,7 @@ void main() {
     );
 
     test(
-      'approved import imports nothing from the unreviewed repository',
+      'approved import takes only the approved Chapter 1 and its verses',
       () async {
         final result = await ContentImportService(
           source: FileSystemContentSource(),
@@ -426,10 +426,11 @@ void main() {
 
         expect(result.isSuccess, isFalse);
         expect(result.status, ImportStatus.completedWithRejections);
-        expect(result.chapters.skipped, 18); // no chapter has names yet
-        expect(result.verses.skipped, 41);
-        expect(await count('local_chapters'), 0);
-        expect(await count('local_shlokas'), 0);
+        // Chapters 2-18 are empty drafts and are left out.
+        expect(result.chapters.skipped, 17);
+        expect(result.verses.skipped, 0);
+        expect(await count('local_chapters'), 1);
+        expect(await count('local_shlokas'), 41);
       },
     );
   });

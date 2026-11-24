@@ -2,16 +2,26 @@
   "schema_version": "1.0.0",
   "chapter": {
     "id": 1,
-    "sanskrit_name": "",
-    "hindi_name": "",
+    "sanskrit_name": "अर्जुनविषादयोग",
+    "hindi_name": "अर्जुन विषाद योग",
     "english_name": "Arjuna Vishada Yoga",
-    "introduction": "",
-    "overview": "",
-    "central_theme": "",
-    "key_topics": [],
-    "summary": "",
-    "conclusion": "",
-    "review_status": "draft"
+    "introduction": "The first chapter of the Bhagavad Gita introduces the battlefield of Kurukshetra, where the armies of the Pandavas and Kauravas stand ready for war. As Arjuna asks Lord Krishna to place his chariot between the two armies, he sees his relatives, teachers, elders, and friends standing on both sides. Overwhelmed by grief, compassion, attachment, and moral uncertainty, he begins questioning whether fighting the war is truly right.",
+    "overview": "This chapter presents Arjuna's emotional and moral crisis before the great war begins. Initially prepared to fight for justice, Arjuna loses his resolve when he sees his loved ones among the opposing army. He expresses concern about the destruction of families, the loss of traditions, the breakdown of social values, and the suffering that war could bring to future generations. Unable to reconcile his duty as a warrior with his attachment to his family and loved ones, he ultimately refuses to fight and lays down his bow.",
+    "central_theme": "The conflict between personal attachment and righteous duty. The chapter explores how grief, emotional attachment, fear, and moral confusion can cloud human judgement, even when a person believes they understand what is right.",
+    "key_topics": [
+      "The setting and significance of the Kurukshetra battlefield",
+      "The opposing armies of the Pandavas and Kauravas",
+      "Arjuna's emotional attachment to family, teachers, and loved ones",
+      "The conflict between personal relationships and moral responsibility",
+      "Compassion, grief, fear, and emotional confusion",
+      "The consequences of war and the destruction of family traditions",
+      "The importance of Dharma and righteous action",
+      "The limitations of human judgement when influenced by attachment",
+      "Arjuna's surrender of his will to fight"
+    ],
+    "summary": "Chapter 1 begins with King Dhritarashtra asking Sanjaya about the events unfolding on the battlefield of Kurukshetra. As both armies prepare for war, Arjuna asks Krishna to position their chariot between the opposing forces. Seeing his relatives, respected teachers, elders, friends, and companions on both sides, Arjuna becomes overwhelmed by sorrow and compassion. He experiences physical and emotional distress, questions the purpose of victory and kingdom, and argues that killing his own people would bring suffering rather than happiness. He further expresses concern about the destruction of families, the disappearance of traditional values, and the consequences for future generations and ancestors. Eventually, unable to resolve his inner conflict, Arjuna refuses to fight and puts down his bow and arrows.",
+    "conclusion": "Arjuna Vishada Yoga ends with Arjuna overwhelmed by grief and moral uncertainty, refusing to participate in the battle. Although he initially believes that withdrawing from the war is the right choice, his reasoning is deeply influenced by emotional attachment and fear of the consequences. This chapter establishes the central problem that Krishna will address in the chapters that follow: how can a person recognise and fulfil their Dharma when emotions, relationships, and personal desires stand in conflict with it? Arjuna's crisis becomes the starting point of the spiritual teachings of the Bhagavad Gita.",
+    "review_status": "approved"
   },
   "verses": [
     {
@@ -29,8 +39,41 @@
       "life_lesson": "Attachment can affect how we see things. When we become too attached to our own people, opinions, or interests, we may struggle to see a situation fairly.",
       "spiritual_meaning": "The Gita begins by showing us how attachment can influence our understanding of *Dharma* — what is right.",
       "reflection_question": "Have you ever supported someone simply because they were close to you, even when you knew they might be wrong?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_002",
@@ -47,8 +90,41 @@
       "life_lesson": "Sometimes, even when we appear confident, seeing the strength of others can make us feel uncertain.\n\nRemember: what someone shows on the outside doesn't always reflect what they feel inside.",
       "spiritual_meaning": "The Gita invites us to look beyond outward appearances. A person's real struggle may be happening within their own mind, long before any external battle begins.",
       "reflection_question": "Have you ever felt confident about something until you saw someone else who seemed better prepared than you?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_003",
@@ -65,8 +141,41 @@
       "life_lesson": "Sometimes, insecurity makes us highlight things that trouble us rather than focus on what we need to do.\n\nDuryodhana could simply acknowledge the opposing army, but he draws attention to the fact that his own teacher trained the person helping to lead it.",
       "spiritual_meaning": "When the mind is controlled by fear or rivalry, even our relationships and past experiences can become sources of resentment rather than wisdom.\n\nThe lesson is to recognise when our emotions are influencing how we interpret a situation.",
       "reflection_question": "Have you ever felt uncomfortable seeing someone succeed because you believed you should be doing better than them?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_004",
@@ -83,8 +192,41 @@
       "life_lesson": "Acknowledging someone else's strength is important, but how we respond to it matters even more.\n\nIf we focus only on how strong others are, we may become overwhelmed before we even begin. Recognising their abilities should help us prepare, not paralyse us with fear.",
       "spiritual_meaning": "The mind often magnifies external challenges when it feels threatened. Spiritual awareness helps us recognise reality without allowing fear to control our response.",
       "reflection_question": "When you face strong competition, do you focus more on how capable others are or on improving your own abilities?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_005",
@@ -101,8 +243,41 @@
       "life_lesson": "Sometimes, a challenge feels bigger when we keep counting everything working against us.\n\nRecognising the difficulties is sensible, but repeatedly focusing on them can increase our anxiety without helping us solve anything.",
       "spiritual_meaning": "The mind can become absorbed in the external world — comparing strengths, counting disadvantages, and anticipating threats. Spiritual growth involves learning to observe these thoughts without letting them dominate us.",
       "reflection_question": "When you have a difficult task ahead, does listing everything that could go wrong help you prepare — or does it sometimes make you more anxious?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_006",
@@ -119,8 +294,41 @@
       "life_lesson": "Never underestimate someone because they're young or inexperienced compared with you. A person's ability is not determined by age alone.",
       "spiritual_meaning": "The Gita encourages us to look beyond superficial judgments. True capability comes from qualities such as courage, discipline, and determination—not merely status or seniority.",
       "reflection_question": "Have you ever underestimated someone and later discovered they were far more capable than you expected?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_007",
@@ -137,8 +345,41 @@
       "life_lesson": "There is a difference between recognising a challenge and becoming distracted by it.\n\nDuryodhana has spent several verses discussing the opposing army. Now he reminds himself and his teacher of the strengths they possess.\n\nSometimes, instead of constantly worrying about what others have, we should recognise the strengths and resources available to us.",
       "spiritual_meaning": "Our attention shapes our state of mind. If we constantly focus on what others possess, we may overlook what we already have.\n\nLearning to recognise our own strengths is also a part of self-awareness.",
       "reflection_question": "Do you sometimes spend more time comparing yourself with others than recognising how far you've come?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_008",
@@ -155,8 +396,41 @@
       "life_lesson": "Having capable people around you is a strength, but you should never take that strength for granted.\n\nWhether in work, relationships, or personal life, having good people beside you matters. But you must also learn to recognise and value their contributions.",
       "spiritual_meaning": "The Gita encourages us to recognise the support and resources available to us rather than becoming consumed by comparison.\n\nHowever, remember that having strength around you doesn't automatically mean your decisions are right. Wisdom is just as important as strength.",
       "reflection_question": "Do you genuinely appreciate the people who support you, or do you sometimes realize their importance only when you need them?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_009",
@@ -173,8 +447,41 @@
       "life_lesson": "Having people who stand beside you during difficult situations is valuable.\n\nBut there's something important to remember: having people's loyalty doesn't necessarily mean you're making the right decisions.\n\nA good leader doesn't just expect loyalty; a good leader also takes responsibility for the people who trust them.",
       "spiritual_meaning": "The Gita reminds us that external strength and support are not the same as inner wisdom.\n\nYou may have resources, loyal people, and great abilities, but without the right understanding of *Dharma*, those strengths can be directed towards the wrong purpose.",
       "reflection_question": "If someone is extremely loyal to you and supports you in everything, would you prefer that person to always agree with you, or would you want them to disagree whenever they genuinely believe you're making a mistake?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_010",
@@ -191,8 +498,45 @@
       "life_lesson": "Confidence and insecurity can exist inside the same person.\n\nSometimes we convince ourselves that we are stronger or better prepared because we need reassurance, not necessarily because we have objectively assessed the situation.",
       "spiritual_meaning": "The Gita encourages us to distinguish between genuine confidence and the ego's need to feel superior.\n\nTrue inner strength doesn't require constantly proving that we are stronger than someone else.",
       "reflection_question": "When you feel confident about something, do you usually trust your own abilities, or do you sometimes need reassurance from others that you're capable?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning_note"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_011",
@@ -209,8 +553,41 @@
       "life_lesson": "Even the strongest people need support.\n\nBeing capable doesn't mean you never need anyone. Sometimes, the people everyone depends on also need someone to stand beside them.",
       "spiritual_meaning": "Strength and dependence are not opposites.\n\nThe Gita encourages us to understand that no individual exists entirely independently. We all have relationships, responsibilities and support systems.",
       "reflection_question": "Do you find it easy to ask someone for help when you need it, or is your first instinct to handle everything yourself?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_012",
@@ -227,8 +604,41 @@
       "life_lesson": "Sometimes, a little encouragement from someone we respect can make a significant difference to our mindset.\n\nBut remember, encouragement gives us strength; it doesn't necessarily make our decisions right.",
       "spiritual_meaning": "Bhishma's action reminds us that external encouragement can strengthen our minds. However, true wisdom requires more than courage or motivation. It requires knowing whether we're standing on the side of *Dharma*.",
       "reflection_question": "When you're feeling uncertain or low, does encouragement from someone you respect genuinely change your mindset, or do you prefer to motivate yourself?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_013",
@@ -245,8 +655,41 @@
       "life_lesson": "When many people come together for a common purpose, their combined energy can be incredibly powerful.\n\nBut remember, a large group moving in the same direction doesn't automatically mean they're moving in the right direction.",
       "spiritual_meaning": "The loud sounds represent the external world, full of activity, excitement and pressure.\n\nSometimes, we become so surrounded by external noise that we forget to listen to our own conscience.\n\nLearning to maintain inner clarity amid external noise is an important part of spiritual growth.",
       "reflection_question": "When everyone around you is excited, worried, or convinced about something, do you tend to get influenced by their emotions, or can you maintain your own perspective?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_014",
@@ -263,8 +706,41 @@
       "life_lesson": "Sometimes, you don't need to react immediately to what others are doing.\n\nYou can observe the situation, understand what's happening, and respond at the right moment.",
       "spiritual_meaning": "Krishna is not merely Arjuna's charioteer in this story. He represents divine guidance.\n\nOne beautiful way to understand this is: when we allow wisdom to guide our actions, we are less likely to be controlled by external pressure.",
       "reflection_question": "When someone challenges you or questions your abilities, is your first instinct to prove yourself immediately, or do you prefer to stay calm and respond through your actions?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_015",
@@ -281,8 +757,41 @@
       "life_lesson": "A team doesn't become strong because everyone is the same. It becomes strong when people with different abilities contribute towards a shared purpose.\n\nSometimes your strength may be planning, someone else's may be taking action, and another person's may be keeping everyone steady.",
       "spiritual_meaning": "Krishna's presence among the Pandavas is significant. Beyond the sound of the conches, the verse reminds us that action gains deeper direction when guided by wisdom.",
       "reflection_question": "When you're part of a team, do you naturally prefer taking responsibility for a task yourself, or are you comfortable trusting others to handle their own responsibilities—even when they approach things differently from you?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_016",
@@ -299,8 +808,41 @@
       "life_lesson": "Not every contribution needs to be the loudest or most noticeable to matter.\n\nYudhishthira, Nakula, and Sahadeva may not receive the same attention as Arjuna or Bhima in this moment, but they are equally part of the collective effort.\n\nIn life, don't measure your importance only by how much attention your contribution receives.",
       "spiritual_meaning": "The five Pandava brothers represent different qualities and responsibilities, yet they stand together. Spiritually, this can remind us that different strengths can work in harmony when guided by a shared sense of purpose.",
       "reflection_question": "When your contribution goes unnoticed, does it bother you, or are you generally satisfied as long as you know you've done your part properly?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_017",
@@ -317,8 +859,41 @@
       "life_lesson": "We often recognise only the most visible people in a group and overlook the contributions of others.\n\nBut a successful team is rarely built by just its most famous or powerful members. There are people whose abilities may not be immediately visible but are still essential.",
       "spiritual_meaning": "The verse shows the diversity of people standing together for a common cause. Spiritually, it can remind us that everyone has a different role to fulfil, and no single individual represents the entirety of a greater purpose.",
       "reflection_question": "When you meet someone who is less experienced or less recognised than you, do you naturally give them a chance to prove their abilities, or do you initially judge them based on what you see?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_018",
@@ -335,8 +910,41 @@
       "life_lesson": "A strong foundation becomes even stronger when the next generation carries forward the responsibility.\n\nBut remember, carrying forward someone's legacy doesn't mean blindly copying them. It means learning from what came before and contributing something of your own.",
       "spiritual_meaning": "The verse includes warriors from different generations standing together. It reminds us that duty and purpose can extend beyond one individual or one generation.",
       "reflection_question": "When someone has helped you grow or achieve something, do you feel a responsibility to carry forward what they taught you, or do you prefer to build your own path independently?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_019",
@@ -353,8 +961,41 @@
       "life_lesson": "Sometimes, your preparation and actions speak louder than your words.\n\nYou don't always need to announce your abilities or convince others that you're capable. When the moment comes, let your work speak for itself.",
       "spiritual_meaning": "The Pandavas' conches can be understood symbolically as the declaration of righteousness and inner conviction. When someone stands firmly behind what they believe is right, that conviction can challenge those who stand on the opposite side.",
       "reflection_question": "Have you ever been in a situation where you were underestimated, but instead of arguing or explaining yourself, you let your actions prove what you were capable of?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_020",
@@ -371,8 +1012,41 @@
       "life_lesson": "There is a difference between being ready to act and understanding what you're about to act upon.\n\nSometimes, just before making an important decision, you need to pause, observe the situation, and understand its consequences.\n\nA pause isn't always hesitation. Sometimes it's preparation for a wiser decision.",
       "spiritual_meaning": "Arjuna represents the human mind facing a difficult choice. Even when we believe we are prepared, deeper reflection can reveal questions we haven't considered.\n\nThe Gita begins its central teaching not with an immediate action, but with a moment of observation.",
       "reflection_question": "When you're about to make an important decision, do you usually act once you've made up your mind, or do you sometimes pause and reconsider—even when you're already prepared to move forward?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_021",
@@ -389,8 +1063,41 @@
       "life_lesson": "Sometimes, before making a difficult decision, you need to step back and look at the situation from a different perspective.\n\nYou may have already decided what you're going to do, but understanding the people, circumstances, and consequences can change how you approach it.",
       "spiritual_meaning": "Arjuna asks Krishna to guide his chariot. Symbolically, this can represent the human mind seeking guidance from a higher source of wisdom.\n\nRather than allowing impulses to control our direction, we can learn to let wisdom guide our actions.",
       "reflection_question": "When you face a difficult situation, do you prefer understanding the complete picture yourself, or are you comfortable asking someone you trust to show you a perspective you might be missing?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_022",
@@ -398,7 +1105,7 @@
       "reference": "1.22",
       "index_title": "Arjuna Wishes to See His Opponents",
       "index_summary": "Arjuna wants to look at those eager to fight and see whom he must face in this battle.",
-      "sanskrit_text": "यावदेतान्निरीक्षेऽहं योद्धुकामानवस्थितान्।\nकैर्मया सह योद्धव्यमस्मिन् रणसमुद्यमे॥",
+      "sanskrit_text": "यावदेतान्निरीक्षेऽहं योद्धुकामानवस्थितान्।\nकैर्मया सह योद्धव्यमस्मिन् रणसमुद्यमे॥ १.२२॥",
       "transliteration": "Yāvad etān nirīkṣe 'haṁ yoddhu-kāmān avasthitān,\nKair mayā saha yoddhavyam asmin raṇa-samudyame.",
       "hindi_meaning": "(रथ को वहाँ तब तक खड़ा रखिए,) जब तक मैं युद्ध की इच्छा से यहाँ खड़े इन योद्धाओं को भली-भाँति देख न लूँ कि इस युद्ध के उद्यम में मुझे किन-किनके साथ लड़ना है।",
       "hindi_meaning_note": "",
@@ -407,8 +1114,41 @@
       "life_lesson": "Sometimes, knowing what you're doing isn't enough. You also need to understand why you're doing it and what you're getting yourself into.\n\nBefore committing yourself to something, understand the people involved, the responsibilities you're accepting, and the consequences of your decision.",
       "spiritual_meaning": "Arjuna's request represents the beginning of self-examination.\n\nBefore acting, he wants to see the reality in front of him. Spiritually, this reminds us that self-awareness begins when we are willing to look closely at situations rather than simply following our initial assumptions.",
       "reflection_question": "When you commit yourself to someone or something you deeply care about, do you sometimes overlook the difficulties or sacrifices involved because your emotions make the decision feel worthwhile?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_023",
@@ -425,8 +1165,41 @@
       "life_lesson": "Sometimes, we become so focused on the purpose of a conflict that we forget to consider the personal relationships involved.\n\nYou may believe you're fighting for the right reason, but the situation can become much harder when people you know, respect, or love are on the opposite side.",
       "spiritual_meaning": "This verse introduces an important conflict between intellectual judgement and emotional attachment.\n\nArjuna believes he understands the righteousness of the war, but understanding something intellectually and accepting its emotional consequences are two different things.",
       "reflection_question": "Have you ever strongly believed that you were right about a situation, but when you discovered who would be affected by your decision, you started questioning whether you could actually go through with it?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_024",
@@ -443,8 +1216,41 @@
       "life_lesson": "Sometimes, the best thing someone can do for us isn't to give us advice or make decisions on our behalf.\n\nIt's to help us face the situation clearly, even when the truth might be uncomfortable.\n\nThere are moments when we don't need someone to solve our problems; we need someone who helps us see them properly.",
       "spiritual_meaning": "Krishna is often understood here as the guide or higher consciousness, while Arjuna represents the human mind seeking direction.\n\nThe deeper lesson is that wisdom doesn't always remove difficult situations. Sometimes, it helps us look at them with clarity.",
       "reflection_question": "When you're facing something difficult, do you prefer someone to give you a direct solution, or someone who helps you understand the situation so you can reach your own decision?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_025",
@@ -461,8 +1267,41 @@
       "life_lesson": "The way we look at a situation can influence how we respond to it.\n\nCalling someone an enemy makes it easier to oppose them. Recognising their relationship with us can make the same decision emotionally difficult.\n\nSometimes, changing our perspective doesn't change the situation, but it changes how we experience it.",
       "spiritual_meaning": "Krishna is bringing Arjuna face-to-face with reality rather than allowing him to remain focused on an abstract idea of war.\n\nSpiritually, this can represent the importance of awareness: before making a decision, we must be willing to see the complete truth, including the parts we'd rather avoid.",
       "reflection_question": "Have you ever found it difficult to stand against someone, correct them, or disagree with them because you respect them or share a close relationship with them—even when you knew they were wrong?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_026",
@@ -479,8 +1318,45 @@
       "life_lesson": "Sometimes, a situation looks straightforward until you understand the people involved.\n\nIt's easy to make decisions when we look at things from a distance. But when those decisions affect people we love, the same choices can become incredibly difficult.\n\nThis is why understanding the emotional consequences of a decision is just as important as understanding its practical consequences.",
       "spiritual_meaning": "Arjuna's vision shifts from seeing opponents to seeing relationships.\n\nThis reflects a human struggle: our attachment to people can sometimes make it difficult to distinguish between what we emotionally want and what we believe is right.\n\nThe Gita will explore this conflict in much greater depth.",
       "reflection_question": "Have you ever found yourself in a situation where your responsibilities or principles required one thing, but your emotional attachment to someone made you want to do the opposite?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning_note"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_027",
@@ -497,8 +1373,41 @@
       "life_lesson": "Our relationships can influence how we perceive difficult situations.\n\nSomeone who appears to be just another person in a crowd may become incredibly important once we understand their connection to us.\n\nIt reminds us not to treat people as mere roles or labels. Everyone has a life and relationships of their own.",
       "spiritual_meaning": "Arjuna's growing attachment represents how the mind becomes entangled in relationships and personal connections.\n\nThe Gita isn't saying that relationships or affection are wrong. Rather, it will explore how attachment can sometimes cloud our understanding of duty and truth.",
       "reflection_question": "Do you find it easier to make decisions when they affect only you, compared to situations where your decisions might affect people you care about?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_028",
@@ -506,7 +1415,7 @@
       "reference": "1.28",
       "index_title": "Overcome by Compassion",
       "index_summary": "Filled with deep compassion and sorrow, Arjuna begins to speak to Krishna.",
-      "sanskrit_text": "कृपया परयाविष्टो विषीदन्निदमब्रवीत्।\nअर्जुन उवाच।\nदृष्ट्वेमं स्वजनं कृष्ण युयुत्सुं समुपस्थितम्॥",
+      "sanskrit_text": "कृपया परयाविष्टो विषीदन्निदमब्रवीत्।\nअर्जुन उवाच।\nदृष्ट्वेमं स्वजनं कृष्ण युयुत्सुं समुपस्थितम्॥ १.२८॥",
       "transliteration": "Kṛpayā parayāviṣṭo viṣīdann idam abravīt.\nArjuna uvāca:\nDṛṣṭvemaṁ svajanaṁ Kṛṣṇa yuyutsuṁ samupasthitam.",
       "hindi_meaning": "(तब) अत्यंत करुणा से भरकर और शोक करते हुए वे यह बोले। अर्जुन ने कहा: हे कृष्ण! युद्ध की इच्छा से सामने खड़े अपने इन स्वजनों को देखकर…",
       "hindi_meaning_note": "",
@@ -515,8 +1424,41 @@
       "life_lesson": "Even people who appear confident and prepared can experience emotional vulnerability when reality finally confronts them.\n\nFeeling conflicted doesn't automatically mean you're weak. It means something matters deeply to you.\n\nHowever, it's important not to let a strong emotion become the only basis for a major decision.",
       "spiritual_meaning": "Arjuna's compassion is genuine, but it is mixed with attachment and sorrow.\n\nThe Gita begins exploring an important distinction: compassion is valuable, but when attachment clouds our judgement, even a good emotion can make it difficult to recognise our responsibility.",
       "reflection_question": "When you feel emotionally overwhelmed, do you prefer keeping those feelings to yourself until you understand them, or do you express them to someone you trust?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_029",
@@ -533,8 +1475,41 @@
       "life_lesson": "Emotions aren't merely thoughts in our minds. They can affect our bodies, decisions, behaviour, and ability to function.\n\nSometimes, we don't realise how overwhelmed we are until our body starts showing it.\n\nRecognising these signs early can help us respond before emotions take control of our actions.",
       "spiritual_meaning": "Arjuna's physical reactions represent the depth of his inner conflict.\n\nEven a capable and accomplished person can become overwhelmed when faced with a situation that challenges their emotional attachments and understanding of duty.\n\nThe Gita reminds us that inner stability is something we must cultivate, especially during difficult circumstances.",
       "reflection_question": "When you're under extreme emotional pressure, have you noticed physical signs such as trembling, a racing heartbeat, headaches, or difficulty thinking clearly?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_030",
@@ -551,8 +1526,41 @@
       "life_lesson": "When we're emotionally overwhelmed, our minds can start imagining the worst possible outcomes.\n\nA situation that might have several possible endings can suddenly feel as though only one negative ending is possible.\n\nThis is why it's important not to make major decisions solely based on what we feel during our most emotionally intense moments.",
       "spiritual_meaning": "Arjuna's mind has lost its steadiness. In spiritual terms, this reflects how attachment and emotional disturbance can cloud our ability to see reality clearly.\n\nThe Gita will gradually explore how to develop a mind that remains balanced even when circumstances are difficult.",
       "reflection_question": "When something goes wrong, do you tend to imagine multiple possible outcomes, including the worst ones, or are you generally able to keep your mind focused on what you can actually control?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_031",
@@ -569,8 +1577,41 @@
       "life_lesson": "Sometimes, achieving something isn't the same as gaining something meaningful.\n\nBefore pursuing a goal, it's worth asking yourself:\n\nWhat am I trying to achieve?\n\nWhat might I have to sacrifice?\n\nWill the outcome still be worthwhile after those sacrifices?\n\nNot every victory is worth its price.",
       "spiritual_meaning": "Arjuna is struggling to distinguish between external success and true well-being.\n\nThe Gita begins questioning the idea that simply achieving what we desire necessarily leads to happiness or righteousness.",
       "reflection_question": "Have you ever wanted something very badly, but when you understood what you might have to sacrifice to achieve it, you started questioning whether it was worth pursuing?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_032",
@@ -587,8 +1628,41 @@
       "life_lesson": "Achievements often become meaningful because of the people we share them with.\n\nA promotion, success, wealth, or recognition may feel incomplete when the people who matter to us aren't part of our happiness.\n\nBut there's another side to this: don't make your entire sense of purpose dependent on another person's presence. Your life and aspirations still have value independently.",
       "spiritual_meaning": "Arjuna is beginning to question worldly achievements and pleasures.\n\nThe Gita uses this moment to open a deeper discussion about the difference between temporary happiness and lasting fulfilment.",
       "reflection_question": "When you imagine your future success, do you picture yourself enjoying it independently, or do you naturally imagine certain people standing beside you and sharing those moments?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_033",
@@ -605,8 +1679,41 @@
       "life_lesson": "Sometimes, we pursue goals for the people we love, hoping that one day we can share the rewards with them.\n\nBut don't forget that relationships and achievements both need attention. Don't become so occupied with building a future for your loved ones that you forget to value the present you have with them.",
       "spiritual_meaning": "Arjuna's attachment to his loved ones is becoming the centre of his reasoning.\n\nThe Gita is gradually revealing how even genuine love and affection can create inner conflict when they become entangled with our sense of duty.",
       "reflection_question": "Have you ever postponed your own happiness or personal goals because you wanted someone important to you to be happy first?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_034",
@@ -623,8 +1730,41 @@
       "life_lesson": "People occupy different places in our lives. Some guide us, some protect us, some depend on us, and some grow alongside us.\n\nWhen we face difficult decisions involving these people, we may feel pulled in several directions.\n\nBut remember: loving someone doesn't mean agreeing with everything they do, and respecting someone doesn't mean abandoning your own principles.",
       "spiritual_meaning": "This verse illustrates how deeply human relationships can influence our judgement.\n\nThe Gita is preparing us to examine the difference between genuine compassion, emotional attachment, and our responsibilities.",
       "reflection_question": "Do you find yourself behaving differently around different people depending on how important they are in your life? For example, are you more patient, protective, or forgiving with the people closest to you?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_035",
@@ -641,8 +1781,41 @@
       "life_lesson": "Not everything should be measured by what we stand to gain.\n\nSometimes, personal values and relationships matter more than rewards, recognition, or material success.\n\nHowever, there's an important distinction: refusing to harm someone out of compassion is different from allowing someone to harm you or others without standing up against it.",
       "spiritual_meaning": "Arjuna's compassion is real, but his judgement is becoming clouded by attachment.\n\nThis is an important tension in the Gita: how do we remain compassionate without abandoning our responsibilities?\n\nKrishna's teachings will gradually address this.",
       "reflection_question": "If someone you deeply care about repeatedly hurts you or behaves wrongly, would you eventually stand against them, or would your attachment make it difficult to take a firm position?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_036",
@@ -659,8 +1832,41 @@
       "life_lesson": "Sometimes, doing what is necessary doesn't necessarily feel good.\n\nThere are situations where you may have to confront someone, hold them accountable, or protect yourself or others—even when you don't want to hurt that person.\n\nBut there's an important distinction between doing something because it is right and doing something because you want revenge.\n\nBefore taking an important action, it's worth asking yourself:\n\n*Even if I achieve what I want, will I be at peace with the way I achieved it?*",
       "spiritual_meaning": "Arjuna is struggling with the difference between *Dharma* (righteous duty) and *Pāpa* (sinful action).\n\nHe believes that killing his relatives, even when they have committed serious wrongs, may bring spiritual consequences.\n\nHowever, remember that this is Arjuna's perspective during his moment of confusion. Krishna's teachings will gradually help him understand that Dharma cannot always be judged by emotions alone. One must also consider intention, responsibility, and righteousness.",
       "reflection_question": "Have you ever found yourself avoiding confrontation with someone—not because you believed they were right, but because you didn't want to become the reason they felt hurt?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_037",
@@ -677,8 +1883,41 @@
       "life_lesson": "Sometimes, the hardest decisions are not between right and wrong, but between two things that matter to us.\n\nYou might know what needs to be done, but the people involved make the decision emotionally difficult.\n\nThis is especially true when relationships are involved. We may tolerate things, delay decisions, or question ourselves because we don't want to lose someone important.\n\nBut one thing worth remembering is that being someone’s own person doesn't automatically make their actions right, just as standing against them doesn't automatically make you wrong.",
       "spiritual_meaning": "Arjuna is identifying himself strongly through his relationships.\n\nHis thinking is centred on *my family, my relatives, my people*. This attachment (*Moha*) is clouding his ability to look at the situation objectively.\n\nThe Gita does not teach us to stop loving people. Rather, it teaches us not to let attachment prevent us from recognising our responsibilities.\n\nLove and compassion are important, but they must exist alongside wisdom and Dharma.",
       "reflection_question": "When someone you love makes a decision that you strongly disagree with, do you find yourself questioning your own judgement because you don't want to disappoint or lose that person?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_038",
@@ -695,8 +1934,41 @@
       "life_lesson": "Sometimes people become so focused on what they want that they stop considering what their actions might cost others.\n\nGreed, anger, ambition, and even personal ego can make someone overlook relationships and responsibilities.\n\nBut there's another lesson hidden here:\n\nSomeone else's inability to recognise their mistake doesn't give us permission to stop recognising our own responsibilities.\n\nYou cannot always control whether someone understands their mistake, but you can control whether you allow their actions to determine your own values.",
       "spiritual_meaning": "The key word in this verse is *Lobha* (greed).\n\nIn Hindu philosophy, greed is one of the inner enemies that disturb a person's judgement. When greed dominates the mind, a person begins prioritising personal desires over Dharma.\n\nArjuna recognises this problem in the Kauravas, but his own judgement is also clouded by emotional attachment and grief.\n\nThis creates an interesting contrast: he can see the attachment and greed influencing others, but he is still struggling to recognise how his own emotions are influencing him.",
       "reflection_question": "Have you ever been so focused on protecting a relationship or keeping someone happy that you overlooked something you knew wasn't right?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_039",
@@ -713,8 +1985,41 @@
       "life_lesson": "There's a difference between knowing what is right and actually having the courage to act accordingly.\n\nSometimes we recognise that a situation is harmful, that a decision is wrong, or that a relationship is becoming unhealthy. Yet we continue because stepping away is emotionally difficult.\n\nBut awareness comes with responsibility.\n\nIf you recognise a mistake, you also have to ask yourself what you're going to do with that knowledge.",
       "spiritual_meaning": "This verse highlights *Viveka* — the ability to distinguish between right and wrong, beneficial and harmful, temporary desires and lasting values.\n\nArjuna believes that because he can recognise the consequences of the war, he has a responsibility to avoid participating in it.\n\nHowever, the larger teaching of the Gita will explore an important distinction: recognising that an action has consequences is not always the same as correctly understanding one's Dharma.\n\nSometimes, even avoiding action can have consequences.",
       "reflection_question": "Have you ever known what you should do in a situation, but still struggled to do it because emotionally, it was much harder than simply knowing the right thing?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_040",
@@ -731,8 +2036,41 @@
       "life_lesson": "A family or community is not held together by relationships alone. It is also held together by shared values, mutual respect, and the lessons passed from one generation to another.\n\nThink about it: children often learn how to treat others, handle responsibilities, respect people, and make decisions by observing the people around them.\n\nWhen those values disappear, the impact can extend much further than the people directly involved.\n\nWhat we pass on to the next generation can sometimes matter more than what we leave behind materially.",
       "spiritual_meaning": "The central concept here is *Kula-Dharma* — the duties, values, and traditions that sustain a family.\n\nArjuna believes that preserving these values is essential for maintaining harmony and righteousness within society.\n\nThe verse also introduces the relationship between *Dharma* and *Adharma*: when righteous principles are neglected, unrighteous behaviour can gain influence.\n\nHowever, we should remember that Arjuna is presenting his understanding of the consequences of war. Krishna's response will later help examine Dharma from a broader perspective.",
       "reflection_question": "Do you believe that the values and behaviour of a family are shaped more by what parents and elders teach directly, or by what younger generations observe them doing in everyday life? Why?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     },
     {
       "id": "chapter_01_verse_041",
@@ -749,8 +2087,45 @@
       "life_lesson": "When a society becomes unstable, its most vulnerable members often suffer first.\n\nConflict doesn't affect everyone equally. Children, women, the elderly, and people who depend on others can face consequences far beyond the original disagreement.\n\nThis verse invites us to think about the people who may suffer indirectly because of decisions made by others.\n\nA responsible decision should consider not only the people directly involved, but also those who have no control over the situation.",
       "spiritual_meaning": "The broader theme is the relationship between *Dharma* and social harmony.\n\nArjuna fears that when righteousness disappears, the structures that protect people and pass values between generations will also weaken.\n\nThe deeper concern is the breakdown of social responsibility and the suffering that follows.\n\nAs we continue, we'll see how Krishna challenges Arjuna's reasoning and helps him look beyond fear and attachment.",
       "reflection_question": "When a conflict happens between two people, do you naturally think about the people directly involved, or do you also consider how their actions might affect everyone around them—even those who have nothing to do with the conflict?",
-      "source_attributions": [],
-      "review_status": "draft"
+      "source_attributions": [
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "sanskrit_text"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "transliteration"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "hindi_meaning_note"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "english_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "context"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "life_lesson"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "spiritual_meaning"
+        },
+        {
+          "source_id": "gitartha_editorial",
+          "content_section": "reflection_question"
+        }
+      ],
+      "review_status": "approved"
     }
   ]
 }

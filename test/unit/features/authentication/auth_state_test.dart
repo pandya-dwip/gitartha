@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gitartha/features/authentication/domain/entities/app_user.dart';
 import 'package:gitartha/features/authentication/domain/entities/auth_failure.dart';
+import 'package:gitartha/features/authentication/domain/repositories/auth_repository.dart';
 import 'package:gitartha/features/authentication/presentation/providers/auth_state_provider.dart';
 import 'package:gitartha/features/authentication/presentation/providers/member_access_provider.dart';
 
@@ -410,6 +411,75 @@ void main() {
       expect(container.read(canEditSharedContentProvider), isFalse);
       await settle();
       expect(status(), AuthStatus.readOnly);
+    });
+  });
+
+  group('registration', () {
+    test('invalid input never reaches Supabase', () async {
+      start(FakeAuthRepository());
+      for (final (name, email, pw) in [
+        ('', 'new@example.test', 'long-enough-1'),
+        ('Asha', 'not-an-email', 'long-enough-1'),
+        ('Asha', 'new@example.test', 'short'),
+      ]) {
+        await expectLater(
+          auth().signUp(fullName: name, email: email, password: pw),
+          throwsA(isA<AuthFailure>()),
+        );
+      }
+      expect(repo.signUps, isEmpty);
+    });
+
+    test('email confirmation required: stays signed out', () async {
+      start(FakeAuthRepository());
+      final outcome = await auth().signUp(
+        fullName: 'Asha',
+        email: 'new@example.test',
+        password: 'long-enough-1',
+      );
+      expect(outcome, SignUpOutcome.confirmEmail);
+      expect(repo.signUps.single.fullName, 'Asha');
+      expect(status(), AuthStatus.signedOut);
+    });
+
+    test('immediate session: the new user is a read-only member', () async {
+      const u = FakeAuthRepository.newUser;
+      start(
+        FakeAuthRepository(members: {u.id: membership(u, isAccessible: false)})
+          ..signUpSignsIn = true,
+      );
+      final outcome = await auth().signUp(
+        fullName: 'Asha',
+        email: 'new@example.test',
+        password: 'long-enough-1',
+      );
+      expect(outcome, SignUpOutcome.signedIn);
+      await settle();
+      expect(status(), AuthStatus.readOnly);
+      expect(container.read(canEditSharedContentProvider), isFalse);
+    });
+
+    test('server refusal is reported', () async {
+      start(
+        FakeAuthRepository()
+          ..signUpFailure = const AuthFailure(
+            AuthFailureKind.emailAlreadyRegistered,
+          ),
+      );
+      await expectLater(
+        auth().signUp(
+          fullName: 'Asha',
+          email: 'new@example.test',
+          password: 'long-enough-1',
+        ),
+        throwsA(
+          isA<AuthFailure>().having(
+            (e) => e.kind,
+            'kind',
+            AuthFailureKind.emailAlreadyRegistered,
+          ),
+        ),
+      );
     });
   });
 }

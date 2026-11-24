@@ -96,6 +96,36 @@ class FakeAuthRepository implements AuthRepository {
     return user;
   }
 
+  /// When true, sign-up signs the user in at once (no email confirmation).
+  bool signUpSignsIn = false;
+  AuthFailure? signUpFailure;
+  final List<({String email, String fullName})> signUps = [];
+
+  @override
+  Future<SignUpOutcome> signUp({
+    required String email,
+    required String password,
+    required String fullName,
+  }) async {
+    final failure = signUpFailure;
+    if (failure != null) throw failure;
+    signUps.add((email: email.trim(), fullName: fullName.trim()));
+    passwords[email.trim()] = password;
+    if (!signUpSignsIn) return SignUpOutcome.confirmEmail;
+    emit(
+      AuthChange(
+        user: AppUser(id: newUser.id, email: email.trim()),
+      ),
+    );
+    return SignUpOutcome.signedIn;
+  }
+
+  /// The account a sign-up creates (tests may pre-provision membership).
+  static const newUser = AppUser(
+    id: '00000000-0000-4000-8000-00000000a003',
+    email: 'new@example.test',
+  );
+
   @override
   Future<void> signOut() async {
     final failure = signOutFailure;

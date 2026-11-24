@@ -7,13 +7,13 @@ import '../../features/authentication/presentation/screens/account_access_screen
 import '../../features/authentication/presentation/screens/auth_loading_screen.dart';
 import '../../features/authentication/presentation/screens/forgot_password_screen.dart';
 import '../../features/authentication/presentation/screens/login_screen.dart';
+import '../../features/authentication/presentation/screens/register_screen.dart';
 import '../../features/authentication/presentation/screens/reset_password_screen.dart';
 import '../../features/bookmarks/presentation/bookmarks_screen.dart';
 import '../../features/chapters/presentation/chapter_library_screen.dart';
 import '../../features/chapters/presentation/chapter_overview_screen.dart';
 import '../../features/chapters/presentation/verse_index_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
-import '../../features/home/presentation/welcome_screen.dart';
 import '../../features/journal/presentation/journal_screen.dart';
 import '../../features/shlokas/presentation/shloka_reader_screen.dart';
 import '../shell/app_shell.dart';
@@ -33,9 +33,9 @@ abstract final class AppRoutes {
       '/chapters/$chapterId/verses/$verse';
 
   // Authentication flow.
-  static const welcome = '/welcome';
   static const loading = '/loading';
   static const login = '/login';
+  static const register = '/register';
   static const forgotPassword = '/forgot-password';
   static const resetPassword = '/reset-password';
 
@@ -43,14 +43,14 @@ abstract final class AppRoutes {
   static const accountAccess = '/account-access';
 
   /// Reachable while signed out.
-  static const public = {welcome, login, forgotPassword};
+  static const public = {login, register, forgotPassword};
 
   /// Routes that only make sense while not (fully) signed in. Every other
   /// route is protected and requires an active membership.
   static const authFlow = {
-    welcome,
     loading,
     login,
+    register,
     forgotPassword,
     resetPassword,
     accountAccess,
@@ -64,7 +64,7 @@ abstract final class AppRoutes {
 String? authRedirect(AuthStatus status, String path) {
   final target = switch (status) {
     AuthStatus.backendUnavailable || AuthStatus.signedOut =>
-      AppRoutes.public.contains(path) ? path : AppRoutes.welcome,
+      AppRoutes.public.contains(path) ? path : AppRoutes.login,
     AuthStatus.passwordRecovery => AppRoutes.resetPassword,
     AuthStatus.loadingMembership => AppRoutes.loading,
     AuthStatus.membershipMissing ||
@@ -75,6 +75,32 @@ String? authRedirect(AuthStatus status, String path) {
   };
   return target == path ? null : target;
 }
+
+/// Authentication screens cross-fade with a slight rise, instead of the
+/// platform slide, so moving between sign-in and registration feels calm.
+Page<void> _authPage(GoRouterState state, Widget child) =>
+    CustomTransitionPage<void>(
+      key: state.pageKey,
+      child: child,
+      transitionDuration: const Duration(milliseconds: 350),
+      reverseTransitionDuration: const Duration(milliseconds: 250),
+      transitionsBuilder: (context, animation, _, child) {
+        final curved = CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutCubic,
+        );
+        return FadeTransition(
+          opacity: curved,
+          child: SlideTransition(
+            position: Tween(
+              begin: const Offset(0, 0.03),
+              end: Offset.zero,
+            ).animate(curved),
+            child: child,
+          ),
+        );
+      },
+    );
 
 /// Parses a route parameter as a positive int (bad values → null; the
 /// screen then shows "not found" instead of crashing).
@@ -166,28 +192,33 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         ],
       ),
       GoRoute(
-        path: AppRoutes.welcome,
-        builder: (context, state) => const WelcomeScreen(),
-      ),
-      GoRoute(
         path: AppRoutes.loading,
-        builder: (context, state) => const AuthLoadingScreen(),
+        pageBuilder: (context, state) =>
+            _authPage(state, const AuthLoadingScreen()),
       ),
       GoRoute(
         path: AppRoutes.login,
-        builder: (context, state) => const LoginScreen(),
+        pageBuilder: (context, state) => _authPage(state, const LoginScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.register,
+        pageBuilder: (context, state) =>
+            _authPage(state, const RegisterScreen()),
       ),
       GoRoute(
         path: AppRoutes.forgotPassword,
-        builder: (context, state) => const ForgotPasswordScreen(),
+        pageBuilder: (context, state) =>
+            _authPage(state, const ForgotPasswordScreen()),
       ),
       GoRoute(
         path: AppRoutes.resetPassword,
-        builder: (context, state) => const ResetPasswordScreen(),
+        pageBuilder: (context, state) =>
+            _authPage(state, const ResetPasswordScreen()),
       ),
       GoRoute(
         path: AppRoutes.accountAccess,
-        builder: (context, state) => const AccountAccessScreen(),
+        pageBuilder: (context, state) =>
+            _authPage(state, const AccountAccessScreen()),
       ),
     ],
   );

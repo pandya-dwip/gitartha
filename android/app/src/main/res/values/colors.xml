@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- DESIGN.md canvas colours, shown before Flutter draws its first frame
+         (instead of the platform default, which is black in dark mode). -->
+    <color name="gitartha_canvas">#F7F3EA</color>
+</resources>

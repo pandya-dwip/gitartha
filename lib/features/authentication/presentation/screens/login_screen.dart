@@ -9,8 +9,7 @@ import '../providers/auth_state_provider.dart';
 import '../providers/member_access_provider.dart';
 import '../widgets/auth_widgets.dart';
 
-/// Email + password sign-in for invited members. There is intentionally no
-/// sign-up: accounts are created by invitation only.
+/// Email + password sign-in.
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -35,6 +34,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Future<void> _submit() async {
     if (_busy || !_form.currentState!.validate()) return;
+    FocusScope.of(context).unfocus();
     setState(() {
       _busy = true;
       _error = null;
@@ -57,12 +57,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ref.watch(authStatusProvider) != AuthStatus.backendUnavailable;
 
     return AuthPage(
-      title: 'Sign in',
+      title: 'Welcome back',
+      subtitle: 'Sign in to continue your contemplation',
+      footer: AuthFooterLink(
+        prompt: 'New to Gitartha?',
+        action: 'Create an account',
+        onPressed: _busy || !available
+            ? null
+            : () => context.go(AppRoutes.register),
+      ),
       children: [
-        if (!available)
-          AuthErrorText(AuthFailureKind.backendUnavailable.message)
-        else if (_error != null)
-          AuthErrorText(_error!),
+        AnimatedAuthError(
+          available ? _error : AuthFailureKind.backendUnavailable.message,
+        ),
         Form(
           key: _form,
           child: AutofillGroup(
@@ -71,7 +78,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               children: [
                 TextFormField(
                   controller: _email,
-                  decoration: const InputDecoration(labelText: 'Email'),
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    prefixIcon: Icon(Icons.mail_outline),
+                  ),
                   keyboardType: TextInputType.emailAddress,
                   autofillHints: const [AutofillHints.email],
                   autocorrect: false,
@@ -84,10 +94,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   controller: _password,
                   decoration: InputDecoration(
                     labelText: 'Password',
+                    prefixIcon: const Icon(Icons.lock_outline),
                     suffixIcon: IconButton(
                       tooltip: _obscure ? 'Show password' : 'Hide password',
                       icon: Icon(
-                        _obscure ? Icons.visibility : Icons.visibility_off,
+                        _obscure
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
                       ),
                       onPressed: () => setState(() => _obscure = !_obscure),
                     ),
@@ -103,18 +116,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
           ),
         ),
-        const SizedBox(height: 24),
+        Align(
+          alignment: Alignment.centerRight,
+          child: TextButton(
+            onPressed: _busy || !available
+                ? null
+                : () => context.go(AppRoutes.forgotPassword),
+            child: const Text('Forgot password?'),
+          ),
+        ),
+        const SizedBox(height: 4),
         BusyButton(
           label: 'Sign in',
           busy: _busy,
           onPressed: available ? _submit : null,
-        ),
-        const SizedBox(height: 8),
-        TextButton(
-          onPressed: _busy || !available
-              ? null
-              : () => context.go(AppRoutes.forgotPassword),
-          child: const Text('Forgot password?'),
         ),
       ],
     );
