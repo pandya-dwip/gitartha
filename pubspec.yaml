@@ -26,8 +26,12 @@ dependencies:
   drift: ^2.34.0
   drift_flutter: ^0.3.1
 
-  # Backend — prepared only; not initialized in this milestone.
+  # Backend: Supabase Auth (sign-in, session) and membership lookup.
   supabase_flutter: ^2.18.3
+
+  # Persists the Supabase session (refresh token) in the iOS Keychain /
+  # Android Keystore-backed storage instead of plain SharedPreferences.
+  flutter_secure_storage: ^10.3.4
 
   # Model serialization
   json_annotation: ^4.12.0

@@ -54,7 +54,10 @@ the app reads environment variables directly.
 | `APP_NAME` | no | Display name. Defaults to `Gitartha`. |
 | `APP_ENV` | no | `development` (default), `staging` or `production`. |
 | `SUPABASE_URL` | production only | Supabase project URL, e.g. `https://<ref>.supabase.co`. |
-| `SUPABASE_ANON_KEY` | production only | Supabase **publishable (anon)** key. |
+| `SUPABASE_PUBLISHABLE_KEY` | production only | Supabase **publishable** key (`sb_publishable_…`). |
+| `SUPABASE_ANON_KEY` | legacy | Same key under its old name; used only if `SUPABASE_PUBLISHABLE_KEY` is empty. |
+
+Sign-in, sessions and membership: see [docs/authentication/](docs/authentication/AUTHENTICATION_ARCHITECTURE.md).
 
 Rules:
 

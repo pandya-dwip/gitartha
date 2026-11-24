@@ -25,10 +25,10 @@ enum AppEnvironment {
 /// Supabase connection settings. Only the public, client-safe values live
 /// here: the project URL and the publishable (anon) key.
 class SupabaseConfig {
-  const SupabaseConfig({required this.url, required this.anonKey});
+  const SupabaseConfig({required this.url, required this.publishableKey});
 
   final String url;
-  final String anonKey;
+  final String publishableKey;
 }
 
 /// Centralized, immutable application configuration.
@@ -47,6 +47,10 @@ class AppConfig {
   static const keyAppName = 'APP_NAME';
   static const keyAppEnv = 'APP_ENV';
   static const keySupabaseUrl = 'SUPABASE_URL';
+  static const keySupabasePublishableKey = 'SUPABASE_PUBLISHABLE_KEY';
+
+  /// Legacy name for the same publishable key; used only when
+  /// [keySupabasePublishableKey] is empty.
   static const keySupabaseAnonKey = 'SUPABASE_ANON_KEY';
 
   static const _defaultAppName = 'Gitartha';
@@ -70,7 +74,7 @@ class AppConfig {
     if (config == null) {
       throw const ConfigurationException(
         'Supabase is not configured. Set $keySupabaseUrl and '
-        '$keySupabaseAnonKey in .env (see .env.example).',
+        '$keySupabasePublishableKey in .env (see .env.example).',
       );
     }
     return config;
@@ -95,13 +99,13 @@ class AppConfig {
     final environment = AppEnvironment.parse(read(keyAppEnv));
     final supabase = _parseSupabase(
       url: read(keySupabaseUrl),
-      anonKey: read(keySupabaseAnonKey),
+      key: read(keySupabasePublishableKey) ?? read(keySupabaseAnonKey),
     );
 
     if (supabase == null && environment == AppEnvironment.production) {
       throw const ConfigurationException(
         'Supabase configuration is required when APP_ENV=production. '
-        'Set $keySupabaseUrl and $keySupabaseAnonKey in .env.',
+        'Set $keySupabaseUrl and $keySupabasePublishableKey in .env.',
       );
     }
 
@@ -112,14 +116,14 @@ class AppConfig {
     );
   }
 
-  static SupabaseConfig? _parseSupabase({String? url, String? anonKey}) {
-    if (url == null && anonKey == null) return null;
+  static SupabaseConfig? _parseSupabase({String? url, String? key}) {
+    if (url == null && key == null) return null;
 
-    if (url == null || anonKey == null) {
-      final missing = url == null ? keySupabaseUrl : keySupabaseAnonKey;
+    if (url == null || key == null) {
+      final missing = url == null ? keySupabaseUrl : keySupabasePublishableKey;
       throw ConfigurationException(
         'Incomplete Supabase configuration: $missing is empty. '
-        'Set both $keySupabaseUrl and $keySupabaseAnonKey, '
+        'Set both $keySupabaseUrl and $keySupabasePublishableKey, '
         'or leave both empty to run without a backend.',
       );
     }
@@ -129,14 +133,14 @@ class AppConfig {
       throw ConfigurationException('$keySupabaseUrl $urlProblem');
     }
 
-    if (looksLikeSupabaseSecretKey(anonKey)) {
+    if (looksLikeSupabaseSecretKey(key)) {
       throw const ConfigurationException(
-        '$keySupabaseAnonKey contains a secret / service-role key. '
+        'The Supabase key in .env is a secret / service-role key. '
         'Only the publishable (anon) key may be used in the app, because '
         'everything in .env ships inside the application bundle.',
       );
     }
 
-    return SupabaseConfig(url: url, anonKey: anonKey);
+    return SupabaseConfig(url: url, publishableKey: key);
   }
 }

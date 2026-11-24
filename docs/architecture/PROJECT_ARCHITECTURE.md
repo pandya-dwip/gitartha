@@ -91,15 +91,18 @@ section marks what is in place now and what is planned.
   line.
 - Documented in `docs/content/`.
 
-## Supabase backend (planned)
+## Supabase backend
 
-- The source of truth for **shared scripture content** only.
-- Migrations, seed data and CLI config will go in `supabase/`.
-- The client uses only the project URL and the **publishable (anon) key**. Secret or
+- The source of truth for **shared scripture content** only. Schema and RLS:
+  `supabase/migrations/0001_initial_schema.sql` (see `docs/database/`).
+- The client uses only the project URL and the **publishable key**. Secret or
   service-role keys must never reach the app.
-- Authentication and Row Level Security will be configured in a later milestone.
-- **Sync is pull-based:** the app fetches content into the local Drift cache and reads
-  from that cache. The details of the sync strategy are not designed yet.
+- **Authentication (in place, Milestone 4):** invitation-only email/password sign-in,
+  a session kept in secure storage, individual membership (`app_members.is_accessible`)
+  and GoRouter guards, in `lib/features/authentication/`. See
+  `docs/authentication/AUTHENTICATION_ARCHITECTURE.md`.
+- **Sync is pull-based** *(planned)*: the app fetches content into the local Drift cache
+  and reads from that cache.
 
 ## Environment configuration (in place)
 
@@ -112,7 +115,8 @@ section marks what is in place now and what is planned.
 - Supabase settings are optional outside `production`.
   `AppConfig.isSupabaseConfigured` tells features whether a backend exists.
   `AppConfig.requireSupabase` gets the settings or throws a clear error.
-- No Supabase client is initialized in this milestone.
+- The Supabase client is initialized in `main()` only when it is configured
+  (Milestone 4).
 
 ## App bootstrap (in place)
 
@@ -120,12 +124,15 @@ section marks what is in place now and what is planned.
 main()
   → WidgetsFlutterBinding.ensureInitialized()
   → AppConfig.load()                 // reads and validates .env
-  → container = ProviderContainer(overrides: [appConfigProvider])
+  → Supabase.initialize(...)         // if configured; restores the stored session
+  → container = ProviderContainer(overrides: [appConfigProvider, supabaseClientProvider])
   → container.read(appDatabaseProvider).ensureInitialized()   // opens gitartha.sqlite
   → runApp(UncontrolledProviderScope(container: container, child: GitarthaApp()))
         → MaterialApp.router(theme: AppTheme.light, darkTheme: AppTheme.dark,
                              routerConfig: appRouterProvider)
 ```
 
-The app has one temporary route, `/`, which shows a bootstrap screen. Feature
-milestones will replace it.
+Routes are guarded by `authRedirect` (`lib/app/router/app_router.dart`): signed-out
+users go to `/login`, and only confirmed members (read-only or editor) reach `/`. For
+now `/` is a temporary home screen that shows the access level and a sign-out button.
+Feature milestones will replace it.

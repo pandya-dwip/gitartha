@@ -103,5 +103,24 @@ void main() {
         );
       }
     });
+
+    test('prefers SUPABASE_PUBLISHABLE_KEY over the legacy anon key', () {
+      final config = AppConfig.fromMap(const {
+        'SUPABASE_URL': 'https://example.supabase.co',
+        'SUPABASE_PUBLISHABLE_KEY': 'sb_publishable_new',
+        'SUPABASE_ANON_KEY': 'sb_publishable_old',
+      });
+      expect(config.requireSupabase.publishableKey, 'sb_publishable_new');
+    });
+
+    test('rejects a secret key in SUPABASE_PUBLISHABLE_KEY', () {
+      expect(
+        () => AppConfig.fromMap(const {
+          'SUPABASE_URL': 'https://example.supabase.co',
+          'SUPABASE_PUBLISHABLE_KEY': 'sb_secret_abc',
+        }),
+        throwsA(isA<ConfigurationException>()),
+      );
+    });
   });
 }

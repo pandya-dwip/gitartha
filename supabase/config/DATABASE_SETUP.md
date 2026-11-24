@@ -34,9 +34,10 @@ time, so use the closest equivalent if a name differs.
 3. **Authentication → Sign In / Providers**: leave every social/OAuth provider
    **disabled** unless you add one deliberately. An enabled provider can create accounts
    on first login, depending on its settings.
-4. **Authentication → URL Configuration**: set the Site URL and redirect URLs to the
-   app's deep link (for example `io.gitartha.app://login-callback`) once the app's auth
-   milestone defines it. The invite email links there.
+4. **Authentication → URL Configuration**: add `com.gitartha.gitartha://auth-callback`
+   to **Redirect URLs** (password-reset links return to the app there), and set the
+   Site URL to the same value or to your own web page. The invite email links to the
+   Site URL. See `docs/authentication/INVITATION_WORKFLOW.md`.
 5. **Authentication → Emails → Templates → Invite user**: optionally customise the
    invitation text.
 
