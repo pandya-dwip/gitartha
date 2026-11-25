@@ -103,6 +103,21 @@ Page<void> _authPage(GoRouterState state, Widget child) =>
       },
     );
 
+/// The verse reader: a quick, quiet cross-fade. Moving to the previous or
+/// next verse replaces the page, and a full zoom out-and-in for every verse
+/// feels heavy; this reads like turning a page.
+Page<void> _readerPage(GoRouterState state, Widget child) =>
+    CustomTransitionPage<void>(
+      key: state.pageKey,
+      child: child,
+      transitionDuration: const Duration(milliseconds: 220),
+      reverseTransitionDuration: const Duration(milliseconds: 180),
+      transitionsBuilder: (context, animation, _, child) => FadeTransition(
+        opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+        child: child,
+      ),
+    );
+
 /// Parses a route parameter as a positive int (bad values → null; the
 /// screen then shows "not found" instead of crashing).
 int? _intParam(GoRouterState state, String name) {
@@ -173,10 +188,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                         routes: [
                           GoRoute(
                             path: ':verse',
-                            builder: (context, state) => EntranceScope(
-                              child: ShlokaReaderScreen(
-                                chapterId: _intParam(state, 'chapterId'),
-                                verseNumber: _intParam(state, 'verse'),
+                            pageBuilder: (context, state) => _readerPage(
+                              state,
+                              EntranceScope(
+                                child: ShlokaReaderScreen(
+                                  chapterId: _intParam(state, 'chapterId'),
+                                  verseNumber: _intParam(state, 'verse'),
+                                ),
                               ),
                             ),
                           ),

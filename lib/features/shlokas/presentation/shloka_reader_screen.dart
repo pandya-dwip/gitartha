@@ -131,7 +131,7 @@ class _Reader extends ConsumerWidget {
     ].any((f) => f != null);
 
     final media = MediaQuery.of(context);
-    return Scaffold(
+    final scaffold = Scaffold(
       appBar: InnerTopBar(
         backLabel: 'Index',
         backIcon: Icons.format_list_bulleted,
@@ -348,7 +348,73 @@ class _Reader extends ConsumerWidget {
         ],
       ),
     );
+    return _VerseSwipe(
+      onNext: next == null
+          ? null
+          : () => context.go(AppRoutes.verse(chapterId, next!.verseNumber)),
+      onPrevious: previous == null
+          ? null
+          : () => context.go(AppRoutes.verse(chapterId, previous!.verseNumber)),
+      child: scaffold,
+    );
   }
+}
+
+/// Swipe left for the next verse, right for the previous one. Only a quick,
+/// clearly horizontal flick counts, so vertical scrolling and (long-press)
+/// text selection are unaffected.
+///
+/// Uses raw pointer events rather than a drag recognizer: the reader's
+/// selection area would otherwise win the gesture arena and eat the swipe.
+class _VerseSwipe extends StatefulWidget {
+  const _VerseSwipe({
+    required this.child,
+    required this.onNext,
+    required this.onPrevious,
+  });
+
+  final Widget child;
+  final VoidCallback? onNext;
+  final VoidCallback? onPrevious;
+
+  @override
+  State<_VerseSwipe> createState() => _VerseSwipeState();
+}
+
+class _VerseSwipeState extends State<_VerseSwipe> {
+  static const _minDistance = 72.0; // logical px
+  static const _maxDuration = Duration(milliseconds: 450);
+
+  int? _pointer;
+  Offset _start = Offset.zero;
+  Duration _startTime = Duration.zero;
+
+  void _down(PointerDownEvent e) {
+    if (_pointer != null) {
+      _pointer = -1; // a second finger: not a swipe
+      return;
+    }
+    _pointer = e.pointer;
+    _start = e.position;
+    _startTime = e.timeStamp;
+  }
+
+  void _up(PointerUpEvent e) {
+    final wasSwipe = _pointer == e.pointer;
+    _pointer = null;
+    if (!wasSwipe || e.timeStamp - _startTime > _maxDuration) return;
+    final d = e.position - _start;
+    if (d.dx.abs() < _minDistance || d.dx.abs() < d.dy.abs() * 2) return;
+    (d.dx < 0 ? widget.onNext : widget.onPrevious)?.call();
+  }
+
+  @override
+  Widget build(BuildContext context) => Listener(
+    onPointerDown: _down,
+    onPointerUp: _up,
+    onPointerCancel: (_) => _pointer = null,
+    child: widget.child,
+  );
 }
 
 /// Bookmark toggle in the reader's top bar. It watches the bookmark state on

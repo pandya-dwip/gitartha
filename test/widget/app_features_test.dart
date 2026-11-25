@@ -518,4 +518,38 @@ void main() {
     final width = tester.view.physicalSize.width / tester.view.devicePixelRatio;
     expect((title.dx - width / 2).abs(), lessThan(2));
   });
+
+  testWidgets('swipe left / right on a verse moves to the next / previous', (
+    tester,
+  ) async {
+    await launch(tester);
+    await go(tester, AppRoutes.verse(1, 1));
+    final page = find.byType(ListView).first;
+
+    await tester.fling(page, const Offset(-300, 0), 1200);
+    await tester.pumpAndSettle();
+    expect(location(), AppRoutes.verse(1, 2));
+
+    // Last verse of the chapter: nothing further.
+    await tester.fling(
+      find.byType(ListView).first,
+      const Offset(-300, 0),
+      1200,
+    );
+    await tester.pumpAndSettle();
+    expect(location(), AppRoutes.verse(1, 2));
+
+    await tester.fling(find.byType(ListView).first, const Offset(300, 0), 1200);
+    await tester.pumpAndSettle();
+    expect(location(), AppRoutes.verse(1, 1));
+
+    // Vertical scrolling never changes the verse.
+    await tester.fling(
+      find.byType(ListView).first,
+      const Offset(0, -400),
+      1500,
+    );
+    await tester.pumpAndSettle();
+    expect(location(), AppRoutes.verse(1, 1));
+  });
 }

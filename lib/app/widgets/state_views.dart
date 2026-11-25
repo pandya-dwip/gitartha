@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
@@ -67,12 +69,44 @@ class EmptyState extends StatelessWidget {
   }
 }
 
-class LoadingState extends StatelessWidget {
+/// Shown while data loads. Invisible for the first [delay] (local reads
+/// usually finish well before that, so no spinner flashes on screen), then
+/// the spinner fades in.
+class LoadingState extends StatefulWidget {
   const LoadingState({super.key});
 
+  static const delay = Duration(milliseconds: 300);
+
   @override
-  Widget build(BuildContext context) =>
-      const Center(child: CircularProgressIndicator());
+  State<LoadingState> createState() => _LoadingStateState();
+}
+
+class _LoadingStateState extends State<LoadingState> {
+  Timer? _timer;
+  bool _visible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer(LoadingState.delay, () {
+      if (mounted) setState(() => _visible = true);
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => Center(
+    child: AnimatedOpacity(
+      opacity: _visible ? 1 : 0,
+      duration: const Duration(milliseconds: 250),
+      child: const CircularProgressIndicator(),
+    ),
+  );
 }
 
 /// A failed local read. Shows a safe message, never the exception.

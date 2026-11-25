@@ -116,7 +116,9 @@ class _FadeSlideInState extends State<FadeSlideIn>
     super.didChangeDependencies();
     if (_started) return;
     _started = true;
-    if (Motion.reduced(context) || !EntranceScope.isFresh(context)) {
+    if (Motion.reduced(context) ||
+        !EntranceScope.isFresh(context) ||
+        _routeIsAnimatingIn(context)) {
       _controller.value = 1;
       return;
     }
@@ -129,6 +131,19 @@ class _FadeSlideInState extends State<FadeSlideIn>
         if (mounted) _controller.forward();
       });
     }
+  }
+
+  /// True while this widget's page is still transitioning in. Stacking a
+  /// staggered entrance on top of a page transition doubles the motion
+  /// (and the work in those frames); the page transition is enough.
+  ///
+  /// On a push's first frame the page is built offstage (for hero
+  /// measurement) and its animation then reads as completed, so offstage
+  /// counts as "about to animate in".
+  static bool _routeIsAnimatingIn(BuildContext context) {
+    final route = ModalRoute.of(context);
+    if (route == null) return false;
+    return route.offstage || route.animation?.status == AnimationStatus.forward;
   }
 
   @override
