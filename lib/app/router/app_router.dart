@@ -103,20 +103,11 @@ Page<void> _authPage(GoRouterState state, Widget child) =>
       },
     );
 
-/// The verse reader: a quick, quiet cross-fade. Moving to the previous or
-/// next verse replaces the page, and a full zoom out-and-in for every verse
-/// feels heavy; this reads like turning a page.
-Page<void> _readerPage(GoRouterState state, Widget child) =>
-    CustomTransitionPage<void>(
-      key: state.pageKey,
-      child: child,
-      transitionDuration: const Duration(milliseconds: 220),
-      reverseTransitionDuration: const Duration(milliseconds: 180),
-      transitionsBuilder: (context, animation, _, child) => FadeTransition(
-        opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
-        child: child,
-      ),
-    );
+/// The verse reader: one page per chapter. Its key ignores the verse, so
+/// moving between verses keeps the same page (the reader slides its verse
+/// pages) instead of replacing the whole screen.
+Page<void> _readerPage(int? chapterId, Widget child) =>
+    MaterialPage<void>(key: ValueKey('reader-$chapterId'), child: child);
 
 /// Parses a route parameter as a positive int (bad values → null; the
 /// screen then shows "not found" instead of crashing).
@@ -147,14 +138,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     routes: [
       StatefulShellRoute(
         builder: (context, state, shell) => AppShell(shell: shell),
-        // Like indexedStack (tabs keep their state), with a fade between tabs.
+        // Tabs side by side: swipe between them (tabs keep their state).
         navigatorContainerBuilder: (context, shell, children) =>
-            FadingBranchContainer(
-              currentIndex: shell.currentIndex,
-              children: children,
-            ),
+            SwipeBranchContainer(shell: shell, children: children),
         branches: [
           StatefulShellBranch(
+            preload: true,
             routes: [
               GoRoute(
                 path: AppRoutes.home,
@@ -164,6 +153,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
           StatefulShellBranch(
+            preload: true,
             routes: [
               GoRoute(
                 path: AppRoutes.chapters,
@@ -189,7 +179,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                           GoRoute(
                             path: ':verse',
                             pageBuilder: (context, state) => _readerPage(
-                              state,
+                              _intParam(state, 'chapterId'),
                               EntranceScope(
                                 child: ShlokaReaderScreen(
                                   chapterId: _intParam(state, 'chapterId'),
@@ -207,6 +197,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
           StatefulShellBranch(
+            preload: true,
             routes: [
               GoRoute(
                 path: AppRoutes.bookmarks,
@@ -216,6 +207,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
           StatefulShellBranch(
+            preload: true,
             routes: [
               GoRoute(
                 path: AppRoutes.journal,

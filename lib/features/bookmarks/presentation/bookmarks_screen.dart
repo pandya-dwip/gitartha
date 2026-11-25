@@ -70,7 +70,7 @@ class _BookmarkTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final verse = ref.watch(shlokaByIdProvider(shlokaId)).value;
+    final verse = ref.watch(verseByIdProvider(shlokaId));
     if (verse == null) return const SizedBox(height: 72, child: LoadingState());
     final retired = verse.deletedAt != null;
     return VerseTile(

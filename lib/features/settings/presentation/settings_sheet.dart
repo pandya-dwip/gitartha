@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/theme/app_theme.dart';
-import '../../../app/widgets/sacred_widgets.dart';
 import '../../authentication/domain/entities/auth_failure.dart';
 import '../../authentication/presentation/providers/auth_state_provider.dart';
 import '../../authentication/presentation/providers/member_access_provider.dart';
@@ -33,7 +32,7 @@ class _SettingsSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
     final t = context.text;
-    final dark = Theme.of(context).brightness == Brightness.dark;
+    final brightness = Theme.of(context).brightness;
     final fontSize =
         ref.watch(readerFontSizeProvider).value ?? ReaderFontSize.medium;
     final sync = ref.watch(contentSyncProvider);
@@ -50,9 +49,9 @@ class _SettingsSheet extends ConsumerWidget {
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(
-        AppSpacing.lg,
+        AppSpacing.page,
         0,
-        AppSpacing.lg,
+        AppSpacing.page,
         AppSpacing.lg,
       ),
       child: Column(
@@ -62,8 +61,8 @@ class _SettingsSheet extends ConsumerWidget {
             children: [
               Expanded(
                 child: Text(
-                  'Gitartha Settings',
-                  style: t.headline.copyWith(fontSize: 17),
+                  'Settings',
+                  style: t.headline.copyWith(fontSize: 22),
                 ),
               ),
               IconButton(
@@ -73,87 +72,107 @@ class _SettingsSheet extends ConsumerWidget {
               ),
             ],
           ),
-          const Divider(),
-          const SizedBox(height: AppSpacing.gutter),
-          _Row(
-            title: 'Theme Mode',
-            subtitle: 'Warm Ivory / Deep Night',
-            trailing: FilledButton.icon(
-              onPressed: () =>
-                  settings.toggleTheme(Theme.of(context).brightness),
-              icon: const Icon(Icons.palette_outlined, size: 18),
-              label: Text(dark ? 'Ivory Mode' : 'Night Mode'),
-            ),
-          ),
-          _Row(
-            title: 'Scripture Font Size',
-            subtitle: 'Default reader scale',
-            trailing: OutlinedButton(
-              onPressed: settings.cycleFontSize,
-              child: Text(fontSize.title),
-            ),
-          ),
-          _Row(
-            title: 'Scripture Updates',
-            subtitle: syncText,
-            trailing: OutlinedButton(
-              onPressed: sync.isRunning
-                  ? null
-                  : () => ref
-                        .read(contentSyncProvider.notifier)
-                        .syncContentManually(),
-              child: Text(sync.isRunning ? 'Updating…' : 'Check now'),
-            ),
-          ),
-          SacredCard(
-            tone: SacredTone.well,
-            padding: const EdgeInsets.all(AppSpacing.gutter),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Your Account',
-                  style: t.ui.copyWith(
-                    color: c.accent,
-                    fontWeight: FontWeight.w600,
+          const _SectionLabel('Appearance'),
+          _Group(
+            children: [
+              _Tile(
+                icon: Icons.dark_mode_outlined,
+                title: 'Night mode',
+                subtitle: 'Easier on the eyes at night',
+                onTap: () => settings.toggleTheme(brightness),
+                trailing: Switch(
+                  value: brightness == Brightness.dark,
+                  onChanged: (_) => settings.toggleTheme(brightness),
+                ),
+              ),
+              _Tile(
+                icon: Icons.format_size,
+                title: 'Reading text size',
+                subtitle: 'Size of the scripture text in the reader',
+                below: SizedBox(
+                  width: double.infinity,
+                  child: SegmentedButton<ReaderFontSize>(
+                    showSelectedIcon: false,
+                    // Same font and hairline as the rest of the sheet, and
+                    // tight enough that every size name fits on one line.
+                    style: SegmentedButton.styleFrom(
+                      textStyle: t.ui.copyWith(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      visualDensity: VisualDensity.compact,
+                      side: BorderSide(color: c.border),
+                    ),
+                    segments: [
+                      for (final size in ReaderFontSize.values)
+                        ButtonSegment(value: size, label: Text(size.title)),
+                    ],
+                    selected: {fontSize},
+                    onSelectionChanged: (s) => settings.setFontSize(s.single),
                   ),
                 ),
-                const SizedBox(height: AppSpacing.xs),
-                if (user?.email != null) Text(user!.email!, style: t.ui),
-                Text(
-                  canEdit
-                      ? 'Editor access: you may also publish shared scripture.'
-                      : 'Read-only access.',
-                  style: t.ui.copyWith(color: c.textSecondary, fontSize: 12),
-                ),
-                Text(
-                  'Reflections, notes, bookmarks and progress stay on this device.',
-                  style: t.ui.copyWith(color: c.textSecondary, fontSize: 12),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: TextButton.icon(
-                    onPressed: () => _signOut(context, ref),
-                    icon: const Icon(Icons.logout, size: 18),
-                    label: const Text('Sign out'),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-          const SizedBox(height: AppSpacing.sm),
-          TextButton(
-            onPressed: () => showLicensePage(
-              context: context,
-              applicationName: 'Gitartha (गीतार्थ)',
-            ),
-            child: const Text('About & licences'),
+          const _SectionLabel('Scripture'),
+          _Group(
+            children: [
+              _Tile(
+                icon: Icons.sync,
+                title: 'Scripture updates',
+                subtitle: syncText,
+                trailing: sync.isRunning
+                    ? const SizedBox.square(
+                        dimension: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : TextButton(
+                        onPressed: () => ref
+                            .read(contentSyncProvider.notifier)
+                            .syncContentManually(),
+                        child: const Text('Check now'),
+                      ),
+              ),
+            ],
           ),
-          const SizedBox(height: AppSpacing.sm),
-          FilledButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Done'),
+          const _SectionLabel('Account'),
+          _Group(
+            children: [
+              _Tile(
+                icon: Icons.person_outline,
+                title: user?.email ?? 'Signed in',
+                subtitle: canEdit
+                    ? 'Editor: may also publish shared scripture'
+                    : 'Read-only access',
+              ),
+              _Tile(
+                icon: Icons.logout,
+                title: 'Sign out',
+                destructive: true,
+                onTap: () => _signOut(context, ref),
+              ),
+            ],
+          ),
+          _Footnote(
+            'Your reflections, notes, bookmarks and progress stay on this '
+            'device.',
+            color: c.textSecondary,
+          ),
+          const _SectionLabel('About'),
+          _Group(
+            children: [
+              _Tile(
+                icon: Icons.info_outline,
+                title: 'About & licences',
+                subtitle: 'Gitartha (गीतार्थ)',
+                trailing: Icon(Icons.chevron_right, color: c.textSecondary),
+                onTap: () => showLicensePage(
+                  context: context,
+                  applicationName: 'Gitartha (गीतार्थ)',
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -171,46 +190,176 @@ class _SettingsSheet extends ConsumerWidget {
   }
 }
 
-class _Row extends StatelessWidget {
-  const _Row({
-    required this.title,
-    required this.subtitle,
-    required this.trailing,
-  });
+/// Small upper-case heading above a group, iOS-settings style.
+class _SectionLabel extends StatelessWidget {
+  const _SectionLabel(this.text);
 
-  final String title;
-  final String subtitle;
-  final Widget trailing;
+  final String text;
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: AppSpacing.gutter),
-    child: SacredCard(
-      padding: const EdgeInsets.all(AppSpacing.gutter),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: context.text.ui.copyWith(fontWeight: FontWeight.w600),
-                ),
-                Text(
-                  subtitle,
-                  style: context.text.ui.copyWith(
-                    fontSize: 12,
-                    color: context.colors.textSecondary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          trailing,
-        ],
+    padding: const EdgeInsets.fromLTRB(
+      AppSpacing.xs,
+      AppSpacing.lg,
+      AppSpacing.xs,
+      AppSpacing.sm,
+    ),
+    child: Text(
+      text.toUpperCase(),
+      style: context.text.meta.copyWith(
+        color: context.colors.textSecondary,
+        fontSize: 11,
+        letterSpacing: 1.2,
       ),
     ),
   );
+}
+
+class _Footnote extends StatelessWidget {
+  const _Footnote(this.text, {required this.color});
+
+  final String text;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.fromLTRB(
+      AppSpacing.xs,
+      AppSpacing.sm,
+      AppSpacing.xs,
+      0,
+    ),
+    child: Text(
+      text,
+      style: context.text.ui.copyWith(fontSize: 12, color: color),
+    ),
+  );
+}
+
+/// One rounded card holding rows, separated by hairlines aligned with the
+/// row text (not the icons).
+class _Group extends StatelessWidget {
+  const _Group({required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Material(
+      color: c.card,
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadii.lg),
+        side: BorderSide(color: c.border.withValues(alpha: 0.7)),
+      ),
+      child: Column(
+        children: [
+          for (final (i, child) in children.indexed) ...[
+            if (i > 0)
+              Divider(
+                height: 1,
+                thickness: 1,
+                indent: _Tile.textStart,
+                color: c.border.withValues(alpha: 0.6),
+              ),
+            child,
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// A settings row: icon badge, title and subtitle, an optional control on
+/// the right, and optionally a full-width control underneath. Every row
+/// uses the same paddings, so icons, text and controls line up.
+class _Tile extends StatelessWidget {
+  const _Tile({
+    required this.icon,
+    required this.title,
+    this.subtitle,
+    this.trailing,
+    this.below,
+    this.onTap,
+    this.destructive = false,
+  });
+
+  final IconData icon;
+  final String title;
+  final String? subtitle;
+  final Widget? trailing;
+  final Widget? below;
+  final VoidCallback? onTap;
+  final bool destructive;
+
+  static const _pad = AppSpacing.md;
+  static const _badge = 36.0;
+
+  /// Where the row text starts (also the divider indent).
+  static const textStart = _pad + _badge + AppSpacing.md;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    final t = context.text;
+    final tint = destructive ? Theme.of(context).colorScheme.error : c.accent;
+
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: _pad, vertical: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: _badge,
+                  height: _badge,
+                  decoration: BoxDecoration(
+                    color: tint.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(icon, size: 20, color: tint),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: t.ui.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: destructive ? tint : null,
+                        ),
+                      ),
+                      if (subtitle != null) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          subtitle!,
+                          style: t.ui.copyWith(
+                            fontSize: 12,
+                            color: c.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                if (trailing != null) ...[
+                  const SizedBox(width: AppSpacing.sm),
+                  trailing!,
+                ],
+              ],
+            ),
+            if (below != null) ...[const SizedBox(height: 12), below!],
+          ],
+        ),
+      ),
+    );
+  }
 }

@@ -341,13 +341,14 @@ abstract final class AppTheme {
           borderRadius: BorderRadius.circular(AppRadii.md),
         ),
       ),
-      // Android: the zoom transition animates a snapshot of each page instead
-      // of repainting it every frame, so it stays smooth on any phone (the
-      // previous fade-forwards transition was long and faded whole pages
-      // through an opacity layer). iOS: the native slide.
+      // iPhone-style slide on both platforms (also close to Samsung One UI):
+      // the new page slides in over the old one, which drifts aside and
+      // dims. Pure translation of already-painted pages (no opacity layer,
+      // no scaling), so it is cheap per frame; it also follows the finger
+      // for an edge swipe back.
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
-          TargetPlatform.android: ZoomPageTransitionsBuilder(),
+          TargetPlatform.android: CupertinoPageTransitionsBuilder(),
           TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         },
       ),

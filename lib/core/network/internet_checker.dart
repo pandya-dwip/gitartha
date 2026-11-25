@@ -9,31 +9,51 @@ abstract interface class InternetChecker {
   Future<bool> hasInternet();
 }
 
-/// Opens (and immediately closes) a TCP connection to the app's own server.
+/// "Online" means the device is on a network: Wi-Fi, mobile data or
+/// ethernet. The "no internet" prompt is only for a phone with no network
+/// at all; when the network is there but the server is briefly slow or
+/// unreachable, the screens that need it show their own errors instead of
+/// blocking the whole app.
 ///
-/// This tests what actually matters (reaching Supabase), not merely whether
-/// Wi-Fi or mobile data is switched on, so a captive portal or a network
-/// without internet counts as offline. No package or permission beyond
-/// INTERNET is needed.
-class SocketInternetChecker implements InternetChecker {
-  const SocketInternetChecker({
+/// If the device's network interfaces cannot be read, it falls back to
+/// opening (and immediately closing) a TCP connection to the app's server.
+class DeviceInternetChecker implements InternetChecker {
+  const DeviceInternetChecker({
     required this.host,
     this.port = 443,
     this.timeout = const Duration(seconds: 4),
+    this.onNetwork = hasNetworkConnection,
   });
 
   final String host;
   final int port;
   final Duration timeout;
 
+  /// Whether the device is on a network (replaceable in tests).
+  final Future<bool> Function() onNetwork;
+
   @override
-  Future<bool> hasInternet() async {
+  Future<bool> hasInternet() async =>
+      await onNetwork() || await _reachesServer();
+
+  Future<bool> _reachesServer() async {
     try {
       final socket = await Socket.connect(host, port, timeout: timeout);
       socket.destroy();
       return true;
     } on Object {
       return false; // SocketException, timeout, DNS failure…
+    }
+  }
+
+  /// True when Wi-Fi, mobile data or ethernet has an address. Loopback and
+  /// link-local-only interfaces (present even in airplane mode) don't count.
+  static Future<bool> hasNetworkConnection() async {
+    try {
+      final interfaces = await NetworkInterface.list();
+      return interfaces.any((i) => i.addresses.isNotEmpty);
+    } on Object {
+      return false;
     }
   }
 }

@@ -62,12 +62,14 @@ class AppSettingsActions {
         current == Brightness.dark ? 'light' : 'dark',
       );
 
+  Future<void> setFontSize(ReaderFontSize size) => _ref
+      .read(localDatabaseRepositoryProvider)
+      .setSetting(LocalSettingKeys.bodyFontScale, size.scale);
+
   Future<ReaderFontSize> cycleFontSize() async {
     final next =
         (_ref.read(readerFontSizeProvider).value ?? ReaderFontSize.medium).next;
-    await _ref
-        .read(localDatabaseRepositoryProvider)
-        .setSetting(LocalSettingKeys.bodyFontScale, next.scale);
+    await setFontSize(next);
     return next;
   }
 }

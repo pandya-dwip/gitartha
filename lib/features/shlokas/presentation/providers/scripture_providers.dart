@@ -40,6 +40,29 @@ final shlokaByIdProvider = StreamProvider.autoDispose
       (ref, id) => ref.watch(localDatabaseRepositoryProvider).watchShloka(id),
     );
 
+/// Every live cached verse, by id, held in memory. The shell keeps this
+/// alive from sign-in on, so each chapter's verses are already loaded when a
+/// page opens: screens slide in complete instead of filling in afterwards.
+final liveShlokasByIdProvider = Provider<Map<String, LocalShloka>>((ref) {
+  final chapters = ref.watch(localChaptersProvider).value ?? const [];
+  return {
+    for (final c in chapters)
+      for (final s
+          in ref.watch(localShlokasForChapterProvider(c.id)).value ??
+              const <LocalShloka>[])
+        s.id: s,
+  };
+});
+
+/// A verse for a list row (bookmarks, journal): served at once from memory,
+/// so rows appear complete instead of popping in one by one. Falls back to
+/// the database for verses not in memory (retired ones).
+final verseByIdProvider = Provider.autoDispose.family<LocalShloka?, String>(
+  (ref, id) =>
+      ref.watch(liveShlokasByIdProvider.select((all) => all[id])) ??
+      ref.watch(shlokaByIdProvider(id)).value,
+);
+
 /// Local search over cached live verses (reference, titles, texts,
 /// meanings). Empty for blank queries.
 final verseSearchProvider = FutureProvider.autoDispose

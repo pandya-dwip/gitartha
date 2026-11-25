@@ -9,6 +9,7 @@ import 'package:gitartha/data/local/database/app_database.dart';
 import 'package:gitartha/data/local/local_database_providers.dart';
 import 'package:gitartha/data/local/repositories/local_database_repository.dart';
 import 'package:gitartha/features/authentication/presentation/providers/auth_state_provider.dart';
+import 'package:gitartha/features/settings/presentation/providers/app_settings_provider.dart';
 
 import '../unit/data/local/test_database.dart';
 import '../unit/features/authentication/fake_auth_repository.dart';
@@ -93,7 +94,18 @@ void main() {
   }
 
   Future<void> tap(WidgetTester tester, Finder f) async {
-    await tester.ensureVisible(f.first);
+    // Scroll it into view, but never move the app's pagers (tabs, verses):
+    // a test helper must not swipe to another page.
+    final element = f.evaluate().first;
+    for (
+      var s = Scrollable.maybeOf(element);
+      s != null;
+      s = Scrollable.maybeOf(s.context)
+    ) {
+      if (s.widget.controller is! PageController) {
+        await s.position.ensureVisible(element.renderObject!, alignment: 0.5);
+      }
+    }
     await tester.pumpAndSettle();
     await tester.tap(f.first);
     await tester.pumpAndSettle();
@@ -375,25 +387,32 @@ void main() {
     (tester) async {
       await launch(tester);
       await tap(tester, find.byTooltip('Settings & About'));
-      expect(find.text('Gitartha Settings'), findsOneWidget);
+      expect(find.text('Settings'), findsOneWidget);
       expect(find.text('Not updated on this device yet'), findsOneWidget);
 
-      await tap(tester, find.text('Night Mode'));
+      await tap(tester, find.byType(Switch));
       expect(await db.settingsDao.getValue(LocalSettingKeys.themeMode), 'dark');
-      expect(find.text('Ivory Mode'), findsOneWidget);
+      expect(tester.widget<Switch>(find.byType(Switch)).value, isTrue);
 
-      await tap(tester, find.text('Medium'));
+      await tap(tester, find.text('Large'));
       expect(
         await db.settingsDao.getValue(LocalSettingKeys.bodyFontScale),
         1.15,
       );
-      expect(find.text('Large'), findsOneWidget);
+      expect(
+        tester
+            .widget<SegmentedButton<ReaderFontSize>>(
+              find.byType(SegmentedButton<ReaderFontSize>),
+            )
+            .selected,
+        {ReaderFontSize.large},
+      );
 
       // No backend in this test: a manual check reports offline, cached
       // content stays readable.
       await tap(tester, find.text('Check now'));
       expect(find.textContaining('Offline'), findsOneWidget);
-      await tap(tester, find.text('Done'));
+      await tap(tester, find.byTooltip('Close'));
       expect(find.text('TEST sanskrit name 1'), findsWidgets);
     },
   );
@@ -415,8 +434,8 @@ void main() {
         expect(
           find.text(
             isEditor
-                ? 'Editor access: you may also publish shared scripture.'
-                : 'Read-only access.',
+                ? 'Editor: may also publish shared scripture'
+                : 'Read-only access',
           ),
           findsOneWidget,
         );
@@ -474,7 +493,7 @@ void main() {
         await tap(tester, find.byTooltip('Settings & About'));
         expect(tester.takeException(), isNull, reason: 'settings sheet');
         expect(
-          Theme.of(tester.element(find.text('Gitartha Settings'))).brightness,
+          Theme.of(tester.element(find.text('Settings'))).brightness,
           dark ? Brightness.dark : Brightness.light,
         );
       },
@@ -551,5 +570,63 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(location(), AppRoutes.verse(1, 1));
+  });
+
+  testWidgets('a link to a far verse moves the open reader straight there', (
+    tester,
+  ) async {
+    await launch(tester);
+    await go(tester, AppRoutes.verse(2, 1));
+    await go(tester, AppRoutes.verse(2, 9));
+    expect(find.text('BG 2.9'), findsOneWidget);
+    expect(find.text('Chapter 2 · Verse 9'), findsOneWidget);
+    expect(find.text('Chapter 2 · Verse 1'), findsNothing);
+  });
+
+  testWidgets('a bookmarked verse that was retired still shows in Bookmarks', (
+    tester,
+  ) async {
+    await launch(tester);
+    await go(tester, AppRoutes.verse(1, 1));
+    await tap(tester, find.byTooltip('Bookmark this verse'));
+    await db.shlokaDao.markShlokaDeleted(
+      v11,
+      deletedAt: DateTime.utc(2026),
+      updatedAt: DateTime.utc(2026),
+    );
+    await go(tester, AppRoutes.bookmarks);
+    expect(find.text('TEST first verse'), findsOneWidget);
+  });
+
+  testWidgets('swiping between tabs follows the finger, on tab pages only', (
+    tester,
+  ) async {
+    await launch(tester);
+    const middle = Offset(196, 436);
+    Future<void> swipe(double dx) async {
+      await tester.flingFrom(middle, Offset(dx, 0), 1500);
+      await tester.pumpAndSettle();
+    }
+
+    expect(location(), AppRoutes.home);
+    await swipe(-300);
+    expect(location(), AppRoutes.chapters);
+    await swipe(-300);
+    expect(location(), AppRoutes.bookmarks);
+    expect(find.text('No bookmarks yet'), findsOneWidget);
+    await swipe(300);
+    expect(location(), AppRoutes.chapters);
+
+    // Inside a tab (here a chapter's verse list) a swipe stays put.
+    await go(tester, AppRoutes.verses(2));
+    await swipe(-300);
+    expect(location(), AppRoutes.verses(2));
+
+    // Tapping a far tab in the bar goes straight there.
+    await tap(tester, find.text('My Journal'));
+    expect(location(), AppRoutes.journal);
+    await tap(tester, find.text('Home'));
+    expect(location(), AppRoutes.home);
+    expect(find.byTooltip('Settings & About'), findsOneWidget);
   });
 }

@@ -169,8 +169,9 @@ void main() {
     await signInAs(tester, reader.email!, 'pw-reader');
     expect(location(), AppRoutes.home);
     await openSettings(tester);
-    expect(find.text('Read-only access.'), findsOneWidget);
+    expect(find.text('Read-only access'), findsOneWidget);
 
+    await tester.ensureVisible(find.text('Sign out'));
     await tester.tap(find.text('Sign out'));
     await tester.pumpAndSettle();
     expect(location(), AppRoutes.login);
@@ -203,7 +204,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(location(), AppRoutes.home);
     await openSettings(tester);
-    expect(find.textContaining('Editor access'), findsOneWidget);
+    expect(find.textContaining('Editor: may also publish'), findsOneWidget);
   });
 
   testWidgets('missing membership is blocked with sign-out', (tester) async {
@@ -215,6 +216,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(location(), AppRoutes.accountAccess);
 
+    await tester.ensureVisible(find.text('Sign out'));
     await tester.tap(find.text('Sign out'));
     await tester.pumpAndSettle();
     expect(location(), AppRoutes.login);

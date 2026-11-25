@@ -119,7 +119,7 @@ class _ReflectionCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
     final t = context.text;
-    final verse = ref.watch(shlokaByIdProvider(reflection.shlokaId)).value;
+    final verse = ref.watch(verseByIdProvider(reflection.shlokaId));
     final live = verse != null && verse.deletedAt == null;
     return SacredCard(
       onTap: live
@@ -190,7 +190,7 @@ class _NotesList extends ConsumerWidget {
           final note = list[i];
           final verse = note.shlokaId == null
               ? null
-              : ref.watch(shlokaByIdProvider(note.shlokaId!)).value;
+              : ref.watch(verseByIdProvider(note.shlokaId!));
           return FadeSlideIn(
             index: i,
             child: SacredCard(

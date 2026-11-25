@@ -8,14 +8,14 @@ import '../../../../core/network/internet_checker.dart';
 import '../../../authentication/presentation/providers/member_access_provider.dart';
 import '../../../synchronization/presentation/providers/content_sync_provider.dart';
 
-/// How the app checks connectivity: a connection to the configured Supabase
-/// host. Null when no backend is configured (development), which turns the
-/// network prompt off. Tests override this with a fake.
+/// How the app checks connectivity: is the device on a network (falling
+/// back to reaching the configured Supabase host). Null when no backend is
+/// configured (development), which turns the network prompt off. Tests override this with a fake.
 final internetCheckerProvider = Provider<InternetChecker?>((ref) {
   final supabase = ref.watch(appConfigProvider).supabase;
   if (supabase == null) return null;
   final uri = Uri.parse(supabase.url);
-  return SocketInternetChecker(
+  return DeviceInternetChecker(
     host: uri.host,
     port: uri.hasPort ? uri.port : (uri.scheme == 'http' ? 80 : 443),
   );
